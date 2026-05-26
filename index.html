@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>元大遙控競技夏令營控制系統</title>
+    <style>
+        :root {
+            --racing-black: #111111; 
+            --racing-red: #E50914;   
+            --racing-white: #FFFFFF; 
+            --bg-light: #F4F6F8;     
+            --text-dark: #222222;
+            --text-muted: #777777;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+            --admin-blue: #007AFF;
+            --admin-green: #34C759;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+
+        /* 前台標頭 */
+        header {
+            background-color: var(--racing-black); color: var(--racing-white); padding: 14px 16px;
+            display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 3px solid var(--racing-red);
+        }
+        .brand-title h1 { font-size: 1.15rem; font-weight: 900; }
+        .brand-title span { font-size: 0.65rem; color: var(--racing-red); display: block; font-weight: bold; letter-spacing: 1px;}
+        
+        /* ☰ 漢堡按鈕 */
+        .menu-toggle-btn { background: none; border: none; color: white; font-size: 1.6rem; cursor: pointer; padding: 4px 8px; line-height: 1; }
+
+        /* 側邊導覽選單 */
+        .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 250; display: none; }
+        .side-menu { position: fixed; top: 0; right: -260px; width: 260px; height: 100%; background: var(--racing-black); z-index: 260; transition: 0.3s ease; padding: 20px 0; box-shadow: -4px 0 15px rgba(0,0,0,0.3); }
+        .side-menu.open { right: 0; }
+        .side-menu-close { color: white; font-size: 1.8rem; text-align: right; padding: 0 20px 15px 0; cursor: pointer; font-weight: bold; }
+        .menu-item { display: block; padding: 16px 25px; color: #EEEEEE; text-decoration: none; font-weight: bold; font-size: 1.05rem; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .menu-item:active { background: var(--racing-red); color: white; }
+
+        /* 即時跑馬燈 */
+        .top3-ticker-bar { background: #3c3c3c; color: white; padding: 8px 16px; display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 0.8rem; border-bottom: 1px solid #222; }
+        .ticker-label { background-color: var(--racing-red); color: white; padding: 1px 5px; font-size: 0.65rem; border-radius: 3px; flex-shrink: 0; }
+        .ticker-content { display: flex; gap: 15px; overflow-x: auto; white-space: nowrap; width: 100%; }
+        .ticker-content::-webkit-scrollbar { display: none; }
+        .ticker-item { display: flex; align-items: center; gap: 3px; }
+
+        /* 網頁主包裝 */
+        .main-wrapper { width: 100%; max-width: 600px; margin: 0 auto; background-color: var(--racing-white); min-height: 100vh; position: relative; }
+
+        /* 輪播區 */
+        .carousel-section { width: 100%; height: 190px; position: relative; overflow: hidden; background-color: #000; user-select: none; touch-action: pan-y; }
+        .carousel-track { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-out; cursor: grab; }
+        .carousel-track:active { cursor: grabbing; }
+        .carousel-slide { min-width: 100%; height: 100%; position: relative; background-size: cover; background-position: center; cursor: pointer; }
+        .slide-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.85)); color: white; padding: 15px; font-size: 0.95rem; font-weight: bold; }
+        .carousel-dots { position: absolute; bottom: 8px; right: 12px; display: flex; gap: 5px; z-index: 10; }
+        .dot { width: 7px; height: 7px; background: rgba(255,255,255,0.4); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: var(--racing-red); width: 15px; border-radius: 4px; }
+
+        /* 導覽標籤 */
+        .nav-tabs { display: flex; background-color: var(--racing-black); border-bottom: 3px solid var(--racing-red); position: sticky; top: 57px; z-index: 90; }
+        .tab-item { flex: 1; text-align: center; padding: 14px 2px; color: #AAAAAA; font-weight: bold; font-size: 0.82rem; cursor: pointer; }
+        .tab-item.active { color: var(--racing-white); background-color: var(--racing-red); }
+
+        /* 分頁內文區 */
+        .tab-content { padding: 16px; display: none; }
+        .tab-content.active { display: block; }
+        
+        /* 🚀 修正：標題容器改為彈性佈局，容納右側搜尋按鈕 */
+        .content-title-container { border-left: 4px solid var(--racing-red); padding-left: 10px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .content-title { font-size: 1.15rem; font-weight: 800; color: var(--racing-black); }
+        .title-search-trigger { background: #E50914; color: white; border: none; padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.15); transition: 0.2s; }
+        .title-search-trigger:active { transform: scale(0.95); opacity: 0.9; }
+
+        /* 🚀 修正：雙重搜尋過濾器元件（新增預設折疊隱藏與平滑動畫效果） */
+        .search-filter-box { display: none; flex-direction: column; gap: 8px; background: #F8F9FA; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #EFAAAA; animation: slideDown 0.2s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .search-row { display: flex; gap: 6px; align-items: center; width: 100%; }
+        .search-row label { font-size: 0.8rem; font-weight: bold; color: var(--racing-black); white-space: nowrap; width: 75px; }
+        .search-input-date, .search-input-text { padding: 6px 10px; border: 1px solid #CCC; border-radius: 6px; font-size: 0.85rem; flex: 1; background: #FFF !important; color: #000; }
+        .clear-search-btn { background: #666; color: white; border: none; padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; text-align: center; margin-top: 2px; }
+        .no-data-msg { text-align: center; color: var(--text-muted); padding: 30px 10px; font-size: 0.9rem; font-weight: bold; }
+
+        /* 卡片式樣 */
+        .card-grid { display: flex; flex-direction: column; gap: 15px; }
+        .data-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; border: 1px solid #EEE; }
+        .card-img { width: 100%; height: 160px; background-size: cover; background-position: center; position: relative; }
+        .card-video-play::before { content: '▶'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 3rem; color: var(--racing-red); text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .card-body { padding: 12px; }
+        .card-tag-title { font-size: 1rem; font-weight: bold; margin-bottom: 4px; color: var(--text-dark); }
+        .card-date { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* 彈出式內頁視窗 */
+        .popup-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 200; display: none; padding: 15px; overflow-y: auto; }
+        .popup-content { background: white; border-radius: 12px; max-width: 550px; margin: 10px auto; padding: 16px; position: relative; }
+        .popup-close { position: absolute; top: 8px; right: 12px; font-size: 1.6rem; cursor: pointer; color: #666; font-weight: bold; z-index: 10; }
+        .popup-desc { color: #555; font-size: 0.88rem; margin: 10px 0 12px 0; background: #F8F9FA; padding: 10px; border-radius: 6px; line-height: 1.6; }
+        
+        /* 精彩瞬間內頁橫向手動滑動照片流 */
+        .popup-album-link-btn { display: block; text-align: center; background: #4285F4; color: white; padding: 10px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 0.9rem; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(66,133,244,0.3); }
+        .popup-album-link-btn:active { background: #2A6CD2; }
+        .popup-photo-scroll-x { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 8px; width: 100%; -webkit-overflow-scrolling: touch; }
+        .popup-photo-scroll-x::-webkit-scrollbar { height: 5px; }
+        .popup-photo-scroll-x::-webkit-scrollbar-thumb { background: #CCC; border-radius: 4px; }
+        .popup-scroll-card { flex-shrink: 0; width: 160px; height: 120px; border-radius: 6px; overflow: hidden; position: relative; border: 1px solid #EFEFEF; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+        .popup-scroll-card img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+        .popup-scroll-card .zoom-tag { position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 0.55rem; padding: 1px 4px; border-radius: 3px; pointer-events: none; }
+
+        /* 全螢幕大圖燈箱 */
+        .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 300; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .lightbox-img { max-width: 95%; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .lightbox-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 2rem; cursor: pointer; font-weight: bold; }
+        .lightbox-tip { color: #CCC; font-size: 0.85rem; margin-top: 15px; text-align: center; background: rgba(255,255,255,0.1); padding: 6px 16px; border-radius: 20px; }
+
+        /* YouTube 包裝器 */
+        .video-container { position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; background: #000; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        /* 關於我們 / 聯絡我們一般資訊彈窗 */
+        .info-popup-body { padding-top: 15px; color: #333; }
+        .info-popup-body h4 { font-size: 1.05rem; margin-bottom: 6px; margin-top: 12px; border-bottom: 1px solid #EEE; padding-bottom: 4px; }
+        .contact-link-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 10px; background: #F8F9FA; border-radius: 8px; text-decoration: none; color: #111; font-weight: bold; font-size: 0.9rem; }
+        
+        /* 午餐與課程 */
+        .lunch-section, .course-section { margin-bottom: 25px; }
+        .lunch-swiper { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .lunch-card { flex-shrink: 0; width: 150px; background: #F8F9FA; border-radius: 8px; overflow: hidden; border: 1px solid #EFEFEF; font-size: 0.8rem; cursor: pointer; }
+        .lunch-img { width: 100%; height: 110px; background-size: cover; background-position: center; position: relative; }
+        .lunch-img::after { content: '🔍 放大'; position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; font-size: 0.6rem; padding: 2px 4px; border-radius: 3px; }
+        .lunch-info { padding: 6px; font-weight: bold; text-align: center; }
+        .lunch-info span { color: var(--racing-red); display: block; margin-top: 2px; }
+        .lunch-time-badge { font-size: 0.7rem; color: #666; display: block; font-weight: normal; margin-bottom: 2px; background: #EAEAEA; border-radius: 3px; padding: 1px; }
+        
+        .course-row { display: flex; gap: 12px; background: #F8F9FA; padding: 12px; border-radius: 8px; margin-bottom: 10px; align-items: center; }
+        .course-row img { width: 65px; height: 65px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+        .course-time { font-family: 'Impact', sans-serif; color: var(--racing-red); font-weight: bold; font-size: 0.9rem; width: 85px; flex-shrink: 0; }
+        .course-desc { font-size: 0.85rem; font-weight: bold; }
+
+        /* 積分榜 */
+        .leaderboard-table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .leaderboard-table th { background-color: var(--racing-black); color: white; padding: 12px 6px; font-size: 0.8rem; text-align: center; }
+        .leaderboard-table td { padding: 14px 6px; border-bottom: 1px solid #EEEEEE; background-color: white; font-weight: bold; font-size: 0.9rem; text-align: center; }
+        .rank-col { width: 15%; font-style: italic; }
+        .rank-1 { color: #FFB300; font-size: 1.1rem; }
+        .rank-2 { color: #757575; font-size: 1.1rem; }
+        .rank-3 { color: #A0522D; font-size: 1.1rem; }
+        .name-col { width: 35%; text-align: left !important; padding-left: 10px !important; }
+        .score-col { width: 25%; color: var(--racing-red); font-size: 1.1rem; font-family: 'Impact', sans-serif; }
+
+        .ctrl-btn-group { display: flex; gap: 3px; justify-content: center; align-items: center; }
+        .ctrl-btn { border: none; color: white; padding: 6px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .btn-plus { background-color: #2E7D32; }
+        .btn-minus { background-color: #C62828; }
+
+        /* ⚙️ 後台管理面板 */
+        #adminPanel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #F2F2F7; z-index: 500; display: none; overflow-y: auto; padding-bottom: 60px; }
+        .admin-header { background: #FFFFFF; padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; border-bottom: 1px solid #C6C6C8; box-shadow: 0 2px 8px rgba(0,0,0,0.05); z-index: 510; }
+        .admin-title { font-weight: 900; font-size: 1.1rem; color: #000; }
+        .admin-save-btn { background-color: var(--admin-blue); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        
+        .admin-section { background: white; margin: 15px 10px; padding: 15px; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+        .admin-sec-title { font-size: 1rem; font-weight: 800; border-left: 4px solid var(--admin-blue); padding-left: 8px; margin-bottom: 12px; color: #000; display: flex; justify-content: space-between; align-items: center;}
+        
+        .admin-btn-small { background: #E5E5EA; border: none; padding: 5px 10px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .admin-btn-add { background: var(--admin-blue); color: white; }
+        .admin-btn-confirm { background: var(--admin-green); color: white; }
+        .admin-btn-danger { background: var(--racing-red); color: white; }
+        
+        .admin-item-row { border-bottom: 1px solid #E5E5EA; padding: 12px 0; display: flex; flex-direction: column; gap: 8px; position: relative;}
+        .admin-item-row:last-child { border-bottom: none; }
+        .admin-inline-group { display: flex; gap: 8px; align-items: center; }
+        
+        input[type="text"], input[type="date"], textarea { width: 100%; padding: 8px; border: 1px solid #C6C6C8; border-radius: 6px; font-size: 0.85rem; background: #FAFADA; color: black; }
+        .url-tip { font-size: 0.75rem; color: #555; margin-top: -2px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper" id="frontWrapper">
+    <header>
+        <div class="brand-title">
+            <h1>2026 元大遙控競技夏令營</h1>
+            <span>2026 YUANTA R/C SUMMER CAMP</span>
+        </div>
+        <button class="menu-toggle-btn" onclick="toggleSideMenu(true)">☰</button>
+    </header>
+
+    <div class="side-menu-overlay" id="sideMenuOverlay" onclick="toggleSideMenu(false)"></div>
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-close" onclick="toggleSideMenu(false)">×</div>
+        <div class="menu-item" onclick="openAboutPopup()">✴ 關於我們</div>
+        <div class="menu-item" onclick="openContactPopup()">☎ 聯絡我們</div>
+        <div class="menu-item" onclick="checkAdminAccess()">✳ 設定管理</div>
+    </div>
+
+    <div class="top3-ticker-bar">
+        <span class="ticker-label">TOP 3</span>
+        <div class="ticker-content" id="top3Ticker"></div>
+    </div>
+
+    <div class="carousel-section" id="carouselSection">
+        <div class="carousel-track" id="carouselTrack"></div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <div class="nav-tabs">
+        <div class="tab-item active" onclick="switchTab('moments', this)">精彩瞬間</div>
+        <div class="tab-item" onclick="switchTab('videos', this)">影片展示</div>
+        <div class="tab-item" onclick="switchTab('courses', this)">課程與午餐</div>
+        <div class="tab-item" onclick="switchTab('leaderboard', this)">選手積分榜</div>
+    </div>
+
+    <div id="moments" class="tab-content active">
+        <div class="content-title-container">
+            <h2 class="content-title">精彩瞬間 (活動相簿精選)</h2>
+            <button class="title-search-trigger" onclick="toggleSearchBox('momentSearchBox')">🔍 搜尋</button>
+        </div>
+        <div class="search-filter-box" id="momentSearchBox">
+            <div class="search-row">
+                <label>📅 按日期：</label>
+                <input type="date" id="momentSearchDate" class="search-input-date" onchange="filterMoments()">
+            </div>
+            <div class="search-row">
+                <label>🔍 關鍵字：</label>
+                <input type="text" id="momentSearchKey" class="search-input-text" placeholder="請輸入相簿標題關鍵字..." oninput="filterMoments()">
+            </div>
+            <button class="clear-search-btn" onclick="clearMomentSearch()">重設清除過濾</button>
+        </div>
+        <div class="card-grid" id="momentsGrid"></div>
+    </div>
+
+    <div id="videos" class="tab-content">
+        <div class="content-title-container">
+            <h2 class="content-title">影片展示 (精選動態影音)</h2>
+            <button class="title-search-trigger" onclick="toggleSearchBox('videoSearchBox')">🔍 搜尋</button>
+        </div>
+        <div class="search-filter-box" id="videoSearchBox">
+            <div class="search-row">
+                <label>📅 按日期：</label>
+                <input type="date" id="videoSearchDate" class="search-input-date" onchange="filterVideos()">
+            </div>
+            <div class="search-row">
+                <label>🔍 關鍵字：</label>
+                <input type="text" id="videoSearchKey" class="search-input-text" placeholder="請輸入影片標題關鍵字..." oninput="filterVideos()">
+            </div>
+            <button class="clear-search-btn" onclick="clearVideoSearch()">重設清除過濾</button>
+        </div>
+        <div class="card-grid" id="videosGrid"></div>
+    </div>
+
+    <div id="courses" class="tab-content">
+        <div class="lunch-section">
+            <div class="content-title-container"><h2 class="content-title">🍱 每日營養午餐</h2></div>
+            <div class="lunch-swiper" id="lunchSwiper"></div>
+        </div>
+        <div class="course-section">
+            <div class="content-title-container"><h2 class="content-title">🔧 營隊課程項目總覽</h2></div>
+            <div id="courseList"></div>
+        </div>
+    </div>
+
+    <div id="leaderboard" class="tab-content">
+        <div class="content-title-container"><h2 class="content-title">🏆 選手積分大賽榜 (Standings)</h2></div>
+        <table class="leaderboard-table">
+            <thead>
+                <tr><th>排名</th><th>選手姓名</th><th>總積分</th></tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup-content" id="popupInner"></div>
+</div>
+
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()">
+    <span class="lightbox-close" onclick="closeLightbox()">×</span>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="放大圖片檢視">
+    <div class="lightbox-tip">💡 提示：手機長按圖片即可儲存下載至相簿</div>
+</div>
+
+<div id="adminPanel">
+    <div class="admin-header">
+        <div class="admin-title">🛠️ 後台系統控制中心</div>
+        <button class="admin-save-btn" onclick="saveAndExitAdmin()">💾 完成編輯</button>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">首頁輪播圖管理 <button class="admin-btn-small admin-btn-add" onclick="addAdminCarousel()">+ 新增輪播</button></div>
+        <div id="adminCarouselList"></div>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">精彩瞬間相簿管理 <button class="admin-btn-small admin-btn-add" onclick="addAdminMoment()">+ 新增活動相簿</button></div>
+        <div id="adminMomentsList"></div>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">影片展示清單管理 <button class="admin-btn-small admin-btn-add" onclick="addAdminVideo()">+ 新增影片</button></div>
+        <div id="adminVideosList"></div>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">每日午餐照片與供應時間</div>
+        <div id="adminLunchList"></div>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">課程總覽圖文設置</div>
+        <div id="adminCourseList"></div>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">選手名冊與計分板管理 <button class="admin-btn-small admin-btn-add" onclick="addAdminStudent()">+ 註冊新選手</button></div>
+        <table class="leaderboard-table" style="font-size:0.8rem; width:100%;">
+            <thead>
+                <tr>
+                    <th style="width:30%;">選手姓名</th>
+                    <th style="width:35%;">分數控制</th>
+                    <th style="width:35%;">名冊操控</th>
+                </tr>
+            </thead>
+            <tbody id="adminStudentList"></tbody>
+        </table>
+    </div>
+
+    <div class="admin-section">
+        <div class="admin-sec-title">🌐 關於我們與聯絡我們內容設定</div>
+        <div class="admin-item-row">
+            <label style="font-weight:bold; font-size:0.85rem;">夏令營與主辦單位詳細介紹：</label>
+            <textarea id="cfgAboutText" style="height:100px;" placeholder="請輸入夏令營背景、主辦單位等介紹文字..."></textarea>
+            
+            <label style="font-weight:bold; font-size:0.85rem; margin-top:8px;">聯絡電話：</label>
+            <input type="text" id="cfgContactPhone" placeholder="例如：06-2319168">
+            
+            <label style="font-weight:bold; font-size:0.85rem; margin-top:8px;">LINE 連結網址：</label>
+            <input type="text" id="cfgContactLine" placeholder="請輸入官方 LINE 分享網址">
+            
+            <label style="font-weight:bold; font-size:0.85rem; margin-top:8px;">Facebook 粉絲專頁網址：</label>
+            <input type="text" id="cfgContactFb" placeholder="請輸入 FB 粉絲團網址">
+        </div>
+    </div>
+</div>
+
+<script>
+    // 🗃️ 系統全域動態資料庫
+    let appData = {
+        aboutText: "我們是元大遙控競技團隊，致力於透過微型遙控賽車工程，培養孩子們在動力機械、空氣動力學及電子訊號編碼上的實作興趣。本夏令營結合了科學探究、車體組裝與賽道對抗，讓每個孩子化身專業F1賽事工程師與頂尖車手。",
+        contactPhone: "062319168",
+        contactLine: "https://line.me",
+        contactFb: "https://facebook.com",
+        carousel: [
+            { img: 'https://picsum.photos/600/200?random=111', text: '🏎️ 馳騁賽道！F1 遙控賽車直線衝刺瞬間', link: '' },
+            { img: 'https://picsum.photos/600/200?random=112', text: '🔧 精準組裝！親手打造專屬空氣動力學賽車', link: '' }
+        ],
+        moments: [
+            { 
+                id: 1, 
+                title: 'Day 1：破冰建組與遙控機械原理結構探討', 
+                date: '2026-07-06', 
+                coverImg: 'https://picsum.photos/500/300?random=day1',
+                desc: '今天學員順利完成了分組，並開始動手拆解遙控車電調、伺服馬達與傳動軸。大家都充滿熱情！',
+                albumUrl: 'https://photos.google.com',
+                photos: ['https://picsum.photos/400/300?random=m1', 'https://picsum.photos/400/300?random=m2', 'https://picsum.photos/400/300?random=m3']
+            },
+            { 
+                id: 2, 
+                title: 'Day 2：F1 車體懸吊底盤精密調校特訓', 
+                date: '2026-07-07', 
+                coverImg: 'https://picsum.photos/500/300?random=day2',
+                desc: '進入核心調校！學員動手調整前束角、外傾角以及避震器阻尼油，為明天的計時排位賽做全面準備。',
+                albumUrl: 'https://photos.google.com',
+                photos: ['https://picsum.photos/400/300?random=m4', 'https://picsum.photos/400/300?random=m5']
+            }
+        ],
+        videos: [
+            { id: 1, title: '第一週：基礎繞錐技巧與抓地力操控特訓高光', date: '2026-07-10', cover: '', url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }
+        ],
+        lunch: [
+            { day: '星期一', time: '07/06 中午', menu: '日式炸豬排飯', img: 'https://picsum.photos/300/200?random=401' },
+            { day: '星期二', time: '07/07 中午', menu: '紅燒排骨便當', img: 'https://picsum.photos/300/200?random=402' }
+        ],
+        courses: [
+            { time: '09:00-10:30', desc: 'F1 遙控賽車空氣動力學與定風翼角度科學工程', img: 'https://picsum.photos/100/100?random=501' }
+        ],
+        students: [
+            { id: 1, name: "陳小明", score: 88 }, { id: 2, name: "林大為", score: 92 }, { id: 3, name: "張宇軒", score: 79 }
+        ]
+    };
+
+    // Google 雲端單張圖片通用自動解析轉網址公式
+    function parseNormalDriveUrl(url) {
+        if (!url) return 'https://picsum.photos/400/250?random=g';
+        let cleanUrl = url.trim();
+        if (cleanUrl.includes('drive.google.com') && !cleanUrl.includes('uc?export')) {
+            let matches = cleanUrl.match(/\/file\/d\/([^\/\?]+)/) || cleanUrl.match(/id=([^\&\?]+)/);
+            if (matches && matches[1]) {
+                return `https://drive.google.com/uc?export=view&id=${matches[1]}`;
+            }
+        }
+        return cleanUrl;
+    }
+
+    // YouTube 網址轉換引擎
+    function getYoutubeEmbedUrl(url) {
+        if (!url) return '';
+        let videoId = '';
+        let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        let match = url.match(regExp);
+        return (match && match[2].length == 11) ? `https://www.youtube.com/embed/${match[2]}` : url;
+    }
+
+    function getYoutubeCover(url) {
+        let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        let match = url.match(regExp);
+        return (match && match[2].length == 11) ? `https://img.youtube.com/vi/${match[2]}/mqdefault.jpg` : 'https://picsum.photos/400/250?random=yt';
+    }
+
+    // 漢堡選單開關控制
+    function toggleSideMenu(open) {
+        const menu = document.getElementById('sideMenu');
+        const overlay = document.getElementById('sideMenuOverlay');
+        if(open) {
+            overlay.style.display = 'block';
+            setTimeout(() => menu.classList.add('open'), 10);
+        } else {
+            menu.classList.remove('open');
+            setTimeout(() => overlay.style.display = 'none', 300);
+        }
+    }
+
+    // 🚀 修正：控制搜尋區塊的切換顯示（折疊展開）
+    function toggleSearchBox(boxId) {
+        const box = document.getElementById(boxId);
+        if (box.style.display === 'flex') {
+            box.style.display = 'none';
+        } else {
+            box.style.display = 'flex';
+        }
+    }
+
+    // 彈出「關於我們」頁面
+    function openAboutPopup() {
+        toggleSideMenu(false);
+        document.getElementById('popupInner').innerHTML = `
+            <span class="popup-close" onclick="closePopup()">×</span>
+            <h3 style="font-weight:900; border-left:4px solid var(--racing-red); padding-left:8px;">ℹ️ 關於我們</h3>
+            <div class="info-popup-body">
+                <p style="font-size:0.92rem; line-height:1.7; color:#333; text-align:justify;">${appData.aboutText}</p>
+                <h4>📋 營隊核心亮點</h4>
+                <p style="font-size:0.85rem; color:#555;">科技理論 ➔ 手作工程組裝 ➔ 專業賽道操控計分對抗</p>
+            </div>
+        `;
+        document.getElementById('popupOverlay').style.display = 'block';
+    }
+
+    // 彈出「聯絡我們」頁面
+    function openContactPopup() {
+        toggleSideMenu(false);
+        document.getElementById('popupInner').innerHTML = `
+            <span class="popup-close" onclick="closePopup()">×</span>
+            <h3 style="font-weight:900; border-left:4px solid var(--racing-red); padding-left:8px;">📞 聯絡我們</h3>
+            <div class="info-popup-body" style="margin-top:15px;">
+                <a href="tel:${appData.contactPhone}" class="contact-link-row" style="background:#E8F0FE; color:#1A73E8;">
+                    <span>📞 點擊撥打客服電話：${appData.contactPhone}</span>
+                </a>
+                <a href="${appData.contactLine}" target="_blank" class="contact-link-row" style="background:#E8F5E9; color:#2E7D32;">
+                    <span>💬 加入營隊官方 LINE 帳號</span>
+                </a>
+                <a href="${appData.contactFb}" target="_blank" class="contact-link-row" style="background:#EEF2F6; color:#1877F2;">
+                    <span>📘 追蹤 Facebook 精彩粉絲專頁</span>
+                </a>
+            </div>
+        `;
+        document.getElementById('popupOverlay').style.display = 'block';
+    }
+
+    function closePopup() { document.getElementById('popupOverlay').style.display = 'none'; }
+
+    // 後台安全驗證鎖
+    function checkAdminAccess() {
+        toggleSideMenu(false);
+        const pass = prompt("請輸入後台設定管理密碼：");
+        if (pass === "99552145") {
+            document.getElementById('frontWrapper').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            initAdminInterface();
+        } else if (pass !== null) {
+            alert("密碼安全驗證失敗！");
+        }
+    }
+
+    function saveAndExitAdmin() {
+        syncAdminDataToObject();
+        document.getElementById('adminPanel').style.display = 'none';
+        document.getElementById('frontWrapper').style.display = 'block';
+        renderFrontEnd();
+        alert("變更已成功套用，所有功能同步至前台！");
+    }
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // 🖼️ 前台卓越渲染引擎
+    let carouselIdx = 0;
+    let autoPlayTimer;
+    
+    function renderFrontEnd() {
+        appData.students.sort((a, b) => b.score - a.score);
+        const ticker = document.getElementById('top3Ticker');
+        if(appData.students.length >= 3) {
+            ticker.innerHTML = `
+                <div class="ticker-item"><span style="color:var(--gold);">🥇 1st</span> ${appData.students[0].name} (${appData.students[0].score}分)</div>
+                <div class="ticker-item"><span style="color:var(--silver);">🥈 2nd</span> ${appData.students[1].name} (${appData.students[1].score}分)</div>
+                <div class="ticker-item"><span style="color:var(--bronze);">🥉 3rd</span> ${appData.students[2].name} (${appData.students[2].score}分)</div>
+            `;
+        }
+
+        const lbBody = document.getElementById('leaderboardBody');lbBody.innerHTML = '';
+        appData.students.forEach((s, idx) => {
+            let rank = idx + 1; let rankHtml = rank < 10 ? `0${rank}` : rank;
+            if(rank===1) rankHtml = `<span class="rank-1">01 🥇</span>`;
+            else if(rank===2) rankHtml = `<span class="rank-2">02 🥈</span>`;
+            else if(rank===3) rankHtml = `<span class="rank-3">03 🥉</span>`;
+            lbBody.innerHTML += `<tr><td class="rank-col">${rankHtml}</td><td class="name-col">${s.name}</td><td class="score-col">${s.score} PTS</td></tr>`;
+        });
+
+        buildCarousel();
+        filterMoments();
+        filterVideos();
+
+        const lSwiper = document.getElementById('lunchSwiper'); lSwiper.innerHTML = '';
+        appData.lunch.forEach(l => {
+            let imgUrl = parseNormalDriveUrl(l.img);
+            lSwiper.innerHTML += `
+                <div class="lunch-card" onclick="openLightbox('${imgUrl}')">
+                    <div class="lunch-img" style="background-image:url('${imgUrl}')"></div>
+                    <div class="lunch-info">
+                        <span class="lunch-time-badge">⏱️ ${l.time || l.day}</span>
+                        ${l.day} <span>${l.menu}</span>
+                    </div>
+                </div>`;
+        });
+
+        const cList = document.getElementById('courseList'); cList.innerHTML = '';
+        appData.courses.forEach(c => {
+            let imgUrl = parseNormalDriveUrl(c.img);
+            cList.innerHTML += `<div class="course-row"><div class="course-time">⏱️ ${c.time}</div><div class="course-desc">${c.desc}</div><img src="${imgUrl}"></div>`;
+        });
+    }
+
+    function buildCarousel() {
+        const track = document.getElementById('carouselTrack'); const dotsContainer = document.getElementById('carouselDots');
+        track.innerHTML = ''; dotsContainer.innerHTML = ''; if(appData.carousel.length === 0) return;
+        appData.carousel.forEach((c, i) => {
+            let imgUrl = parseNormalDriveUrl(c.img);
+            let clickAction = c.link ? `onclick="window.open('${c.link.trim()}', '_blank')"` : `onclick="openLightbox('${imgUrl}')"`;
+            track.innerHTML += `<div class="carousel-slide" style="background-image:url('${imgUrl}')" ${clickAction}><div class="slide-caption">${c.text}</div></div>`;
+            dotsContainer.innerHTML += `<div class="dot ${i===0?'active':''}"></div>`;
+        });
+        carouselIdx = 0; track.style.transform = `translateX(0%)`; setupCarouselTouch(track);
+        clearInterval(autoPlayTimer); if(appData.carousel.length > 1) autoPlayTimer = setInterval(() => moveCarousel(1), 4000);
+    }
+
+    function moveCarousel(dir) {
+        const track = document.getElementById('carouselTrack'); const dots = document.querySelectorAll('.dot');
+        if(!track || dots.length === 0) return;
+        carouselIdx = (carouselIdx + dir + appData.carousel.length) % appData.carousel.length;
+        track.style.transform = `translateX(-${carouselIdx * 100}%)`;
+        dots.forEach((d, i) => d.classList.toggle('active', i === carouselIdx));
+    }
+
+    function setupCarouselTouch(track) {
+        let startX = 0, currentX = 0, isDragging = false;
+        track.addEventListener('touchstart', (e) => { clearInterval(autoPlayTimer); startX = e.touches[0].clientX; isDragging = true; }, {passive: true});
+        track.addEventListener('touchmove', (e) => { if(isDragging) currentX = e.touches[0].clientX; }, {passive: true});
+        track.addEventListener('touchend', () => {
+            if(!isDragging) return; isDragging = false;
+            let diff = startX - currentX;
+            if(Math.abs(diff) > 40 && currentX !== 0) { if(diff > 0) moveCarousel(1); else moveCarousel(-1); }
+            currentX = 0; clearInterval(autoPlayTimer); if(appData.carousel.length > 1) autoPlayTimer = setInterval(() => moveCarousel(1), 4000);
+        });
+    }
+
+    function filterMoments() {
+        const searchDate = document.getElementById('momentSearchDate').value;
+        const searchKey = document.getElementById('momentSearchKey').value.trim().toLowerCase();
+        const mGrid = document.getElementById('momentsGrid');
+        mGrid.innerHTML = '';
+
+        let filtered = appData.moments.filter(m => {
+            let matchDate = searchDate ? (m.date === searchDate) : true;
+            let matchKey = searchKey ? (m.title.toLowerCase().includes(searchKey)) : true;
+            return matchDate && matchKey;
+        });
+
+        if(filtered.length === 0) {
+            mGrid.innerHTML = `<div class="no-data-msg">ℹ️ 報告教練，找不到符合條件的精彩相簿。</div>`;
+            return;
+        }
+
+        filtered.forEach((m) => {
+            let originalIdx = appData.moments.findIndex(orig => orig.id === m.id);
+            let cover = m.coverImg ? parseNormalDriveUrl(m.coverImg) : 'https://picsum.photos/500/300?random=rc';
+            mGrid.innerHTML += `
+                <div class="data-card" onclick="openMomentPopup(${originalIdx})">
+                    <div class="card-img" style="background-image:url('${cover}')"></div>
+                    <div class="card-body">
+                        <div class="card-tag-title">${m.title}</div>
+                        <div class="card-date">📅 活動時間：${m.date}</div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function clearMomentSearch() {
+        document.getElementById('momentSearchDate').value = '';
+        document.getElementById('momentSearchKey').value = '';
+        filterMoments();
+    }
+
+    function openMomentPopup(idx) {
+        const m = appData.moments[idx];
+        let scrollPhotosHtml = '';
+        
+        m.photos.forEach(p => {
+            if(p.trim()) {
+                let directUrl = parseNormalDriveUrl(p);
+                scrollPhotosHtml += `
+                    <div class="popup-scroll-card" onclick="openLightbox('${directUrl}')">
+                        <img src="${directUrl}">
+                        <div class="zoom-tag">🔍 放大</div>
+                    </div>`;
+            }
+        });
+
+        let albumBtnHtml = m.albumUrl ? `<a href="${m.albumUrl.trim()}" target="_blank" class="popup-album-link-btn">🌐 進入 Google 高清完整相簿 (享左右流暢滑動與全功能下載)</a>` : '';
+
+        document.getElementById('popupInner').innerHTML = `
+            <span class="popup-close" onclick="closePopup()">×</span>
+            <h3 style="font-weight:900;font-size:1.1rem;color:black;padding-right:20px;border-left:4px solid var(--racing-red);padding-left:6px;">${m.title}</h3>
+            <div style="font-size:0.75rem;color:var(--racing-red);margin-top:4px;margin-bottom:10px;">📅 活動日期：${m.date}</div>
+            
+            ${albumBtnHtml}
+            
+            <div class="popup-desc">${m.desc || '暫無本章節的活動文字介紹說明。'}</div>
+            
+            <p style="font-size:0.8rem; font-weight:bold; margin-bottom:6px; color:#111;">📸 精選速覽 (可左右手動滑動圖片流/點擊放大)：</p>
+            <div class="popup-photo-scroll-x">${scrollPhotosHtml || '<span style="font-size:0.8rem;color:#999;">本日精選照片整理中...</span>'}</div>
+        `;
+        document.getElementById('popupOverlay').style.display = 'block';
+    }
+
+    function filterVideos() {
+        const searchDate = document.getElementById('videoSearchDate').value;
+        const searchKey = document.getElementById('videoSearchKey').value.trim().toLowerCase();
+        const vGrid = document.getElementById('videosGrid');
+        vGrid.innerHTML = '';
+
+        let filtered = appData.videos.filter(v => {
+            let matchDate = searchDate ? (v.date === searchDate) : true;
+            let matchKey = searchKey ? (v.title.toLowerCase().includes(searchKey)) : true;
+            return matchDate && matchKey;
+        });
+
+        if(filtered.length === 0) {
+            vGrid.innerHTML = `<div class="no-data-msg">ℹ️ 報告教練，沒有找到符合條件的影音紀錄。</div>`;
+            return;
+        }
+
+        filtered.forEach((v) => {
+            let originalIdx = appData.videos.findIndex(orig => orig.id === v.id);
+            vGrid.innerHTML += `
+                <div class="data-card" onclick="openVideoPopup(${originalIdx})">
+                    <div class="card-img card-video-play" style="background-image:url('${getYoutubeCover(v.url)}')"></div>
+                    <div class="card-body">
+                        <div class="card-tag-title">${v.title}</div>
+                        <div class="card-date">🎬 影片發布日：${v.date}</div>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function clearVideoSearch() {
+        document.getElementById('videoSearchDate').value = '';
+        document.getElementById('videoSearchKey').value = '';
+        filterVideos();
+    }
+
+    function openVideoPopup(idx) {
+        const v = appData.videos[idx];
+        document.getElementById('popupInner').innerHTML = `
+            <span class="popup-close" onclick="closePopup()">×</span>
+            <h3 style="font-weight:900;font-size:1.1rem;margin-bottom:10px;color:black;padding-right:20px;">${v.title}</h3>
+            <div class="video-container">
+                <iframe src="${getYoutubeEmbedUrl(v.url)}?autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">🎬 精選影片錄製日：${v.date}</div>
+        `;
+        document.getElementById('popupOverlay').style.display = 'block';
+    }
+
+    function openLightbox(imgSrc) {
+        document.getElementById('lightboxImg').src = imgSrc;
+        document.getElementById('lightboxOverlay').style.display = 'flex';
+    }
+    function closeLightbox() { document.getElementById('lightboxOverlay').style.display = 'none'; }
+
+    // --------------------------------------------------------------------------------------------------------------------
+    // ⚙️ 後台控制面板引擎
+    function initAdminInterface() {
+        document.getElementById('cfgAboutText').value = appData.aboutText;
+        document.getElementById('cfgContactPhone').value = appData.contactPhone;
+        document.getElementById('cfgContactLine').value = appData.contactLine;
+        document.getElementById('cfgContactFb').value = appData.contactFb;
+
+        const aCar = document.getElementById('adminCarouselList'); aCar.innerHTML = '';
+        appData.carousel.forEach(c => {
+            aCar.innerHTML += `
+                <div class="admin-item-row" data-type="carousel">
+                    <input type="text" class="c-img" value="${c.img}" placeholder="圖片網址">
+                    <input type="text" class="c-text" value="${c.text}" placeholder="輪播文案">
+                    <input type="text" class="c-link" value="${c.link || ''}" placeholder="🔗 點擊跳轉網址 (選填)">
+                    <button class="admin-btn-small admin-btn-danger" style="align-self:flex-end;" onclick="this.parentElement.remove()">❌ 刪除</button>
+                </div>`;
+        });
+
+        const aMom = document.getElementById('adminMomentsList'); aMom.innerHTML = '';
+        appData.moments.forEach(m => {
+            aMom.innerHTML += `
+                <div class="admin-item-row" data-type="moment">
+                    <input type="text" class="m-title" value="${m.title}" placeholder="相簿主題/營隊天數名稱" style="font-weight:bold;">
+                    <div class="admin-inline-group">
+                        <input type="date" class="m-date" value="${m.date}">
+                        <button class="admin-btn-small admin-btn-danger" onclick="this.parentElement.parentElement.remove()">❌ 刪除相簿</button>
+                    </div>
+                    <input type="text" class="m-coverImg" value="${m.coverImg || ''}" placeholder="🖼️ 自訂封面圖片網址 (可直接貼雲端分享代換網址)">
+                    <input type="text" class="m-albumUrl" value="${m.albumUrl || ''}" placeholder="🔗 Google 相簿整體分享共享連結">
+                    <textarea class="m-desc" placeholder="請輸入內頁本日活動的文字介紹導覽描述...">${m.desc || ''}</textarea>
+                    <textarea class="m-photos" placeholder="內頁精選速覽照片：貼上多張網址（請用英文半形逗號 , 隔開）">${m.photos ? m.photos.join(',') : ''}</textarea>
+                    <span class="url-tip">💡 精選速覽區可留空不填，家長依然能透過大按鈕直接跳轉 Google 原生相簿。</span>
+                </div>`;
+        });
+
+        updateAdminVideoList(document.getElementById('adminVideosList'));
+
+        const aLun = document.getElementById('adminLunchList'); aLun.innerHTML = '';
+        appData.lunch.forEach(l => {
+            aLun.innerHTML += `
+                <div class="admin-item-row" data-type="lunch">
+                    <div class="admin-inline-group">
+                        <span style="font-weight:bold; width:60px;" class="l-day">${l.day}</span>
+                        <input type="text" class="l-time" value="${l.time || ''}" placeholder="供應日期時間（例：07/06 中午）">
+                    </div>
+                    <input type="text" class="l-menu" value="${l.menu}" placeholder="午餐便當菜色">
+                    <input type="text" class="l-img" value="${l.img}" placeholder="午餐照片連結網址">
+                </div>`;
+        });
+
+        const aCou = document.getElementById('adminCourseList'); aCou.innerHTML = '';
+        appData.courses.forEach(c => {
+            aCou.innerHTML += `
+                <div class="admin-item-row" data-type="course">
+                    <input type="text" class="co-time" value="${c.time}" placeholder="上課時間區段">
+                    <textarea class="co-desc" placeholder="課堂介紹內容描述">${c.desc}</textarea>
+                    <input type="text" class="co-img" value="${c.img}" placeholder="右側展示配圖網址">
+                </div>`;
+        });
+
+        renderAdminStudents();
+    }
+
+    function updateAdminVideoList(container) {
+        container.innerHTML = '';
+        appData.videos.forEach((v, idx) => {
+            container.innerHTML += `
+                <div class="admin-item-row" data-type="video" data-id="${idx}">
+                    <input type="text" class="v-title" value="${v.title}" placeholder="自訂影片名稱">
+                    <input type="text" class="v-url" value="${v.url}" placeholder="🎬 貼上 YouTube 影片網址或手機分享短網址">
+                    <div class="admin-inline-group" style="justify-content:space-between;">
+                        <div class="admin-inline-group">
+                            <input type="date" class="v-date" value="${v.date}" style="width:140px;">
+                            <button class="admin-btn-small" onclick="moveVideo(${idx}, -1)">🔼</button>
+                            <button class="admin-btn-small" onclick="moveVideo(${idx}, 1)">🔽</button>
+                        </div>
+                        <button class="admin-btn-small admin-btn-danger" onclick="removeAdminVid(${idx})">❌ 刪除影片</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    function moveVideo(idx, direction) {
+        syncAdminDataToObject(); let target = idx + direction;
+        if (target >= 0 && target < appData.videos.length) {
+            let temp = appData.videos[idx]; appData.videos[idx] = appData.videos[target]; appData.videos[target] = temp;
+            updateAdminVideoList(document.getElementById('adminVideosList'));
+        }
+    }
+    function removeAdminVid(idx) { syncAdminDataToObject(); appData.videos.splice(idx, 1); updateAdminVideoList(document.getElementById('adminVideosList')); }
+
+    function renderAdminStudents() {
+        const sBody = document.getElementById('adminStudentList'); sBody.innerHTML = '';
+        appData.students.forEach(s => {
+            sBody.innerHTML += `
+                <tr data-type="student" data-id="${s.id}">
+                    <td><input type="text" class="st-name" id="input-name-${s.id}" value="${s.name}" style="background:white; font-weight:bold;"></td>
+                    <td>
+                        <div class="ctrl-btn-group">
+                            <button class="ctrl-btn btn-plus" onclick="adjustAdminScore(${s.id}, 1)">+1</button>
+                            <span style="font-family:'Impact'; font-size:1.05rem; min-width:25px;" id="score-label-${s.id}">${s.score}</span>
+                            <button class="ctrl-btn btn-minus" onclick="adjustAdminScore(${s.id}, -1)">-1</button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ctrl-btn-group">
+                            <button class="admin-btn-small admin-btn-confirm" onclick="confirmSingleStudent(${s.id})">💾 確認</button>
+                            <button class="admin-btn-small admin-btn-danger" onclick="removeAdminStudent(${s.id})">❌</button>
+                        </div>
+                    </td>
+                </tr>`;
+        });
+    }
+
+    function confirmSingleStudent(id) {
+        const nameInput = document.getElementById(`input-name-${id}`);
+        let currentScore = parseInt(document.getElementById(`score-label-${id}`).innerText);
+        let student = appData.students.find(st => st.id === id);
+        if(student) { student.name = nameInput.value.trim() || "新車手"; student.score = currentScore; alert(`【${student.name}】選手數據成功保存！`); }
+    }
+    function adjustAdminScore(id, amt) { saveCurrentNamesState(); let s = appData.students.find(st => st.id === id); if(s) { s.score = Math.max(0, s.score + amt); document.getElementById(`score-label-${id}`).innerText = s.score; } }
+    function removeAdminStudent(id) { saveCurrentNamesState(); if(confirm("確定刪除？")) { appData.students = appData.students.filter(st => st.id !== id); renderAdminStudents(); } }
+    function addAdminStudent() { saveCurrentNamesState(); let newId = Date.now(); appData.students.push({ id: newId, name: '', score: 0 }); renderAdminStudents(); }
+    function saveCurrentNamesState() {
+        document.querySelectorAll('[data-type="student"]').forEach(row => {
+            let sId = parseInt(row.getAttribute('data-id')); let sName = row.querySelector('.st-name').value;
+            let s = appData.students.find(st => st.id === sId); if(s) s.name = sName;
+        });
+    }
+
+    function addAdminCarousel() {
+        const div = document.createElement('div'); div.className = 'admin-item-row'; div.setAttribute('data-type', 'carousel');
+        div.innerHTML = `<input type="text" class="c-img" placeholder="圖片網址"><input type="text" class="c-text" placeholder="文字文案"><input type="text" class="c-link" placeholder="超連結跳轉網址"><button class="admin-btn-small admin-btn-danger" style="align-self:flex-end;" onclick="this.parentElement.remove()">❌ 刪除</button>`;
+        document.getElementById('adminCarouselList').appendChild(div);
+    }
+    function addAdminMoment() {
+        const div = document.createElement('div'); div.className = 'admin-item-row'; div.setAttribute('data-type', 'moment');
+        div.innerHTML = `<input type="text" class="m-title" placeholder="相簿活動標題名稱"><div class="admin-inline-group"><input type="date" class="m-date" value="2026-07-06"><button class="admin-btn-small admin-btn-danger" onclick="this.parentElement.parentElement.remove()">❌ 刪除</button></div><input type="text" class="m-coverImg" placeholder="🖼️ 自訂封面圖片網址"><input type="text" class="m-albumUrl" placeholder="🔗 Google 相簿分享共享連結"><textarea class="m-desc" placeholder="本日活動文字敘述介紹..."></textarea><textarea class="m-photos" placeholder="內頁精選速覽照片：貼上多張網址（請用半形逗號 , 隔開）"></textarea>`;
+        document.getElementById('adminMomentsList').appendChild(div);
+    }
+    function addAdminVideo() { syncAdminDataToObject(); appData.videos.push({ id: Date.now(), title: '', date: '2026-07-06', cover: '', url: '' }); updateAdminVideoList(document.getElementById('adminVideosList')); }
+
+    function syncAdminDataToObject() {
+        appData.aboutText = document.getElementById('cfgAboutText').value.trim();
+        appData.contactPhone = document.getElementById('cfgContactPhone').value.trim();
+        appData.contactLine = document.getElementById('cfgContactLine').value.trim();
+        appData.contactFb = document.getElementById('cfgContactFb').value.trim();
+
+        let carList = [];
+        document.querySelectorAll('[data-type="carousel"]').forEach(row => {
+            let imgVal = row.querySelector('.c-img').value;
+            if(imgVal) carList.push({ img: imgVal, text: row.querySelector('.c-text').value, link: row.querySelector('.c-link').value });
+        });
+        if(carList.length > 0) appData.carousel = carList;
+
+        let momList = [];
+        document.querySelectorAll('[data-type="moment"]').forEach((row, i) => {
+            let pStr = row.querySelector('.m-photos').value;
+            let pArr = pStr ? pStr.split(',') : [];
+            momList.push({ 
+                id: i+1, 
+                title: row.querySelector('.m-title').value, 
+                date: row.querySelector('.m-date').value, 
+                coverImg: row.querySelector('.m-coverImg').value,
+                albumUrl: row.querySelector('.m-albumUrl').value,
+                desc: row.querySelector('.m-desc').value,
+                photos: pArr
+            });
+        });
+        appData.moments = momList;
+
+        let vidList = [];
+        document.querySelectorAll('[data-type="video"]').forEach((row, i) => {
+            let vUrl = row.querySelector('.v-url').value;
+            vidList.push({ id: i+1, title: row.querySelector('.v-title').value, cover: getYoutubeCover(vUrl), url: vUrl, date: row.querySelector('.v-date').value });
+        });
+        appData.videos = vidList;
+
+        let lunList = [];
+        document.querySelectorAll('[data-type="lunch"]').forEach(row => {
+            lunList.push({ day: row.querySelector('.l-day').innerText, time: row.querySelector('.l-time').value, menu: row.querySelector('.l-menu').value, img: row.querySelector('.l-img').value });
+        });
+        appData.lunch = lunList;
+
+        let couList = [];
+        document.querySelectorAll('[data-type="course"]').forEach(row => {
+            couList.push({ time: row.querySelector('.co-time').value, desc: row.querySelector('.co-desc').value, img: row.querySelector('.co-img').value });
+        });
+        appData.courses = couList;
+
+        saveCurrentNamesState();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => { renderFrontEnd(); });
+</script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
