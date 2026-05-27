@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>崇安中醫美容養生堂</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>崇安中醫美容養生堂 - 體質檢測系統</title>
+    <!-- 引入高質感東方明體字型與圖標 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- 燕雲十六聲：亂世武俠美學變數 --- */
+        :root {
+            --yanyun-bg: #0B0B0D;          /* 玄鐵深黑 */
+            --yanyun-iron: #1C1C22;        /* 鐵甲暗灰 */
+            --yanyun-gold: #C5A880;        /* 枯木殘陽金（淬火低調金） */
+            --yanyun-glow: rgba(197, 168, 128, 0.35); /* 內斂發光特效 */
+            --yanyun-red: #8B1E1E;         /* 燕雲血染紅 (加深增加對比) */
+            --text-premium: #D1CFC9;       /* 粗麻古紙白 */
+        }
+
+        /* 全域字體優化 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Serif TC', "LiSong Pro", "Apple LiMin", "Songti TC", serif;
+            letter-spacing: 0.05em;
+        }
+
+        body {
+            background-color: var(--yanyun-bg);
+            color: var(--text-premium);
+            line-height: 1.8;
+            padding: 20px 10px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 動態水墨煙霧粒子背景效果 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 30% 20%, rgba(30, 30, 35, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(102, 27, 27, 0.08) 0%, transparent 40%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 頂部橫梁花紋 */
+        .royal-beam {
+            height: 12px;
+            background: linear-gradient(90deg, 
+                #111 0%, var(--yanyun-gold) 15%, 
+                #1c1c22 30%, var(--yanyun-red) 50%, 
+                #1c1c22 70%, var(--yanyun-gold) 85%, #111 100%
+            );
+            border-bottom: 1px solid var(--yanyun-gold);
+            opacity: 0.8;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: rgba(22, 22, 26, 0.95);
+            border: 1px solid rgba(197, 168, 128, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 
+                        inset 0 0 30px rgba(197, 168, 128, 0.05);
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- 頂部 Header 樣式區 --- */
+        header {
+            background: linear-gradient(180deg, rgba(35, 15, 15, 0.6) 0%, rgba(22, 22, 26, 0) 100%);
+            text-align: center;
+            padding: 40px 20px;
+            border-bottom: 1px solid rgba(197, 168, 128, 0.1);
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo-img {
+            max-width: 140px;
+            height: auto;
+            border-radius: 50%;
+            border: 2px solid var(--yanyun-gold);
+            box-shadow: 0 0 20px var(--yanyun-glow);
+        }
+
+        /* 修正點 1：標題分行設計，防止窄屏擠壓 */
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            letter-spacing: 6px;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.6), 2px 2px 4px rgba(0,0,0,0.9);
+        }
+        header h1 span {
+            display: block; /* 強制分行 */
+        }
+
+        .slogan {
+            font-size: 1.2rem;
+            color: #EFBF04;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            font-weight: 700; /* 加粗 */
+        }
+
+        /* 醫官堂主檔案介面 (僅在第一頁顯示) */
+        .doctor-profile {
+            background: rgba(11, 11, 13, 0.8);
+            border: 1px solid rgba(197, 168, 128, 0.15);
+            padding: 22px;
+            max-width: 650px;
+            margin: 0 auto;
+            text-align: left;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
+        }
+
+        .doctor-profile h2 {
+            font-size: 1.4rem;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--yanyun-gold);
+            padding-left: 12px;
+            font-weight: 700;
+            text-shadow: 0 0 8px var(--yanyun-glow);
+        }
+
+        .doctor-profile p {
+            font-size: 1.1rem; /* 字體加大 */
+            color: #B5B2AA;
+            margin-bottom: 6px;
+            font-weight: 700;  /* 字體加粗 */
+        }
+
+        /* --- 修正點 4：第二頁專用流線型 Header (Logo 與標題同行、小字、無醫師資歷) --- */
+        .compact-header {
+            display: none; /* 預設隱藏 */
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(22, 22, 26, 0.8);
+            border-bottom: 1px solid rgba(197, 168, 128, 0.15);
+        }
+        .compact-header .logo-img {
+            max-width: 65px; /* 縮小 Logo */
+            margin: 0;
+        }
+        .compact-header h1 {
+            font-size: 1.5rem; /* 縮小標題字體 */
+            margin: 0;
+            text-align: left;
+            letter-spacing: 2px;
+        }
+        .compact-header h1 span {
+            display: inline; /* 同行顯示 */
+        }
+
+        /* --- 區塊切換核心 --- */
+        .section {
+            padding: 45px 25px;
+            display: none; 
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #FFFFFF;
+            font-size: 1.8rem;
+            margin-bottom: 35px;
+            letter-spacing: 4px;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+        }
+
+        /* --- 修正點 2：第一頁基本填寫資料加大加粗 --- */
+        .form-group {
+            margin-bottom: 35px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700; /* 加粗 */
+            margin-bottom: 14px;
+            color: var(--yanyun-gold);
+            font-size: 1.25rem; /* 加大 1.05 -> 1.25 */
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 18px; /* 加大輸入框空間 */
+            border: 1px solid #333238;
+            border-radius: 4px;
+            font-size: 1.15rem; /* 加大 1rem -> 1.15rem */
+            font-weight: 700;   /* 加粗 */
+            background: #111114;
+            color: #FFFFFF;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--yanyun-gold);
+            box-shadow: 0 0 12px var(--yanyun-glow);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 50px;
+        }
+
+        .radio-group label {
+            cursor: pointer;
+            color: #FFF;
+            font-size: 1.25rem; /* 加大 */
+            font-weight: 700;   /* 加粗 */
+        }
+
+        .radio-group input {
+            transform: scale(1.3); /* 放大單選鈕 */
+            accent-color: var(--yanyun-gold);
+            margin-right: 12px;
+        }
+
+        /* --- 修正點 2：第二頁問卷題目加大加粗 --- */
+        .quiz-item {
+            background: #15151A;
+            border: 1px solid rgba(195, 168, 128, 0.08);
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .quiz-question {
+            font-weight: 700; /* 加粗 */
+            font-size: 1.35rem; /* 加大 1.15 -> 1.35 */
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #FFFFFF;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding-bottom: 12px;
+        }
+
+        .options-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+
+        .option-label {
+            display: block;
+            background: #1D1D24;
+            border: 1px solid #2D2D35;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 1.15rem; /* 加大 0.95 -> 1.15 */
+            font-weight: 700;   /* 加粗 */
+            transition: all 0.3s ease;
+            color: #B5B2AA;
+        }
+
+        .options-group input[type="radio"] {
+            display: none;
+        }
+
+        .options-group input[type="radio"]:checked + .option-label {
+            background-color: var(--yanyun-red);
+            border-color: var(--yanyun-gold);
+            color: #FFFFFF;
+            box-shadow: 0 0 15px rgba(139, 30, 30, 0.6), inset 0 0 8px rgba(195, 168, 128, 0.3);
+        }
+
+        /* --- 大俠功能鈕 --- */
+        .btn-container {
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .btn-gold {
+            background: #1C1C22;
+            color: var(--yanyun-gold);
+            border: 1px solid var(--yanyun-gold);
+            padding: 18px 45px;
+            font-size: 1.25rem; /* 加大 */
+            font-weight: 700;    /* 加粗 */
+            cursor: pointer;
+            letter-spacing: 4px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: all 0.4s ease;
+        }
+
+        .btn-gold:hover {
+            color: #FFF;
+            background: var(--yanyun-red);
+            box-shadow: 0 0 25px var(--yanyun-glow), 0 0 15px rgba(139, 30, 30, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .btn-dark {
+            background: #0B0B0D;
+            color: #888888;
+            border: 1px solid #333333;
+            padding: 14px 35px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-dark:hover {
+            color: var(--text-premium);
+            border-color: #666;
+            background: #15151A;
+        }
+
+        /* --- 古風聖旨卷軸式結構 --- */
+        .scroll-wrapper {
+            position: relative;
+            padding: 20px 0;
+            overflow: hidden;
+        }
+
+        .scroll-roller {
+            height: 24px;
+            background: linear-gradient(90deg, #3a2d1a 0%, #A39076 20%, #4A3E31 50%, #A39076 80%, #3a2d1a 100%);
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+            position: relative;
+            z-index: 5;
+        }
+
+        .scroll-content-box {
+            max-height: 0; 
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 2s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.5s ease;
+            background: #FAF6EE; 
+            color: #1A1A1A;
+            border-left: 8px solid #E6DBC4;
+            border-right: 8px solid #E6DBC4;
+        }
+
+        .scroll-wrapper.expanded .scroll-content-box {
+            max-height: 2500px; 
+            opacity: 1;
+        }
+
+        /* --- 修正點 2：第三頁報告書內文全面加大加粗 --- */
+        .report-card {
+            padding: 40px 25px;
+        }
+
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid var(--yanyun-red);
+            padding-bottom: 18px;
+            margin-bottom: 30px;
+        }
+
+        .report-header h3 {
+            color: var(--yanyun-red);
+            font-size: 2.2rem; /* 加大 */
+            letter-spacing: 4px;
+            font-weight: 900;
+        }
+
+        /* 自適應防爆版網格：手機自動安全切換換行 */
+        .report-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            background: #EFE9DC;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #D1C4B0;
+        }
+
+        .meta-item {
+            font-size: 1.2rem;   /* 加大 1rem -> 1.2rem */
+            font-weight: 700;    /* 加粗 */
+            white-space: normal; 
+            word-break: break-all;
+        }
+
+        /* 修正點 5：BMI 異常時顯示紅色的樣式類 */
+        .text-danger-red {
+            color: var(--yanyun-red) !important;
+            font-weight: 900 !important;
+            text-shadow: 0 0 2px rgba(139, 30, 30, 0.2);
+        }
+
+        .meta-item strong {
+            color: var(--yanyun-red);
+        }
+
+        .report-result-box {
+            text-align: center;
+            margin: 35px 0;
+            padding: 30px 15px;
+            background: rgba(139, 30, 30, 0.04);
+            border: 2px dashed var(--yanyun-red);
+        }
+
+        .result-title {
+            font-size: 1.3rem; /* 加大 */
+            font-weight: 700;   /* 加粗 */
+            margin-bottom: 12px;
+            color: #222;
+        }
+
+        .result-value {
+            font-size: 2.5rem; /* 加大 2rem -> 2.5rem */
+            color: var(--yanyun-red);
+            font-weight: 900;   /* 極粗 */
+            letter-spacing: 2px;
+            word-wrap: break-word; 
+            line-height: 1.4;
+        }
+
+        .report-card p.remarks {
+            font-size: 1.1rem; /* 加大 */
+            color: #333;
+            text-align: justify;
+            line-height: 1.8;
+            font-weight: 700;  /* 加粗 */
+        }
+
+        .report-date {
+            text-align: right;
+            font-style: italic;
+            color: #444;
+            margin-top: 35px;
+            font-size: 1.1rem; /* 加大 */
+            font-weight: 700;  /* 加粗 */
+            border-top: 1px dashed #BBB;
+            padding-top: 15px;
+        }
+
+        /* 提示與 LINE 預約 */
+        .screenshot-tip {
+            text-align: center;
+            color: var(--yanyun-gold);
+            font-weight: 700;
+            margin-bottom: 25px;
+            font-size: 1.25rem; /* 加大 */
+            text-shadow: 0 0 10px var(--yanyun-glow);
+            animation: smokeGlow 2.5s infinite;
+        }
+
+        @keyframes smokeGlow {
+            0% { opacity: 0.7; text-shadow: 0 0 5px var(--yanyun-glow); }
+            50% { opacity: 1; text-shadow: 0 0 20px var(--yanyun-gold); }
+            100% { opacity: 0.7; text-shadow: 0 0 5px var(--yanyun-glow); }
+        }
+
+        .line-consult-btn {
+            display: block;
+            max-width: 340px;
+            margin: 0 auto 15px auto;
+            background-color: #06C755; 
+            color: white;
+            text-align: center;
+            padding: 16px;
+            font-size: 1.3rem; /* 加大 */
+            font-weight: 700;   /* 加粗 */
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(6, 199, 85, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .line-consult-btn:hover {
+            background-color: #05b34c;
+            transform: translateY(-2px);
+        }
+
+        .line-consult-btn i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 頂部工藝橫梁 -->
+    <div class="royal-beam"></div>
+
+    <!-- 修正點 4：第二頁專用流線型輕量 Header（預設隱藏，切換時由 JS 控制顯隱） -->
+    <div id="quiz-header-compact" class="compact-header">
+        <img src="https://cdn.phototourl.com/free/2026-05-27-a488801d-df70-4665-859c-83e77197ad57.jpg" alt="Logo" class="logo-img">
+        <h1>崇安中醫美容<span>養生堂</span></h1>
+    </div>
+
+    <!-- 原始大 Header & 醫官介紹 (僅在首頁顯示) -->
+    <div id="main-header-block">
+        <header>
+            <div class="logo-container">
+                <img src="https://cdn.phototourl.com/free/2026-05-27-a488801d-df70-4665-859c-83e77197ad57.jpg" alt="崇安中醫美容養生堂 Logo" class="logo-img">
+            </div>
+            <!-- 修正點 1：分行排列，防止擠壓 -->
+            <h1>崇安中醫美容<span>養生堂</span></h1>
+            <div class="slogan">崇本源辨證論治，安身心標本兼調</div>
+            
+            <div class="doctor-profile">
+                <h2>主持中醫師簡介</h2>
+                <p>• <strong>李崇安 註冊中醫師</strong></p>
+                <p>• 學歷：<br>
+                &nbsp&nbsp&nbsp&nbsp。香港浸會大學中醫研究所碩士<br>&nbsp&nbsp&nbsp&nbsp。廣州暨南大學中醫學士</p>
+                <p>• 經歷：
+                <br>&nbsp&nbsp&nbsp&nbsp。雷生春堂
+                <br>&nbsp&nbsp&nbsp&nbsp。魏克強中醫專科診所
+                <p>• 資格：香港註冊中醫師</p>
+            </div>
+        </header>
+    </div>
+
+    <!-- 頁面一：基本資料輸入 -->
+    <div id="section-info" class="section active">
+        <div class="section-title">登記大名與御體資料</div>
+        
+        <div class="form-group">
+            <label for="username">姓名 / 稱呼</label>
+            <input type="text" id="username" class="form-control" placeholder="請輸入您的姓名或稱呼">
+        </div>
+
+        <div class="form-group">
+            <label>性別</label>
+            <div class="radio-group">
+                <label><input type="radio" name="gender" value="男" checked> 乾（男）</label>
+                <label><input type="radio" name="gender" value="女"> 坤（女）</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="age">年齡 (歲)</label>
+            <input type="number" id="age" class="form-control" placeholder="請輸入年齡" min="1" max="120">
+        </div>
+
+        <div class="form-group">
+            <label for="height">身高 (cm)</label>
+            <input type="number" id="height" class="form-control" placeholder="請輸入身高" min="50" max="250">
+        </div>
+
+        <div class="form-group">
+            <label for="weight">體重 (kg)</label>
+            <input type="number" id="weight" class="form-control" placeholder="請輸入體重" min="10" max="200">
+        </div>
+
+        <div class="btn-container">
+            <!-- 修正點 3：拿掉宮門動畫，直接觸發頁面直切 -->
+            <button class="btn-gold" onclick="goToQuizDirect()">開始體質檢測 <i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <!-- 頁面二：體質問卷題目 (題目已加大) -->
+    <div id="section-quiz" class="section">
+        <div class="section-title">中醫體質<br>御測問答</div>
+        <div id="quiz-container">
+            <!-- 由 JS 自動渲染生成 -->
+        </div>
+        <div class="btn-container">
+            <button class="btn-gold" onclick="calculateResult()">判定體質開始 <i class="fa-solid fa-feather-pointed"></i></button>
+        </div>
+    </div>
+
+    <!-- 頁面三：檢測報告單 (卷軸加大加粗版) -->
+    <div id="section-report" class="section">
+        <div class="section-title">辨體調養報告單</div>
+        
+        <div class="scroll-wrapper" id="scrollWrapper">
+            <!-- 上天軸 -->
+            <div class="scroll-roller"></div>
+            
+            <!-- 展開式宣紙內容體 -->
+            <div class="scroll-content-box">
+                <div class="report-card">
+                    <div class="report-header">
+                        <h3>崇安中醫<br>美容養生堂</h3>
+                    </div>
+                    
+                    <div class="report-meta">
+                        <div class="meta-item"><strong>姓名：</strong> <span id="rep-name"></span></div>
+                        <div class="meta-item"><strong>性別：</strong> <span id="rep-gender"></span></div>
+                        <div class="meta-item"><strong>年齡：</strong> <span id="rep-age"></span> 歲</div>
+                        <div class="meta-item"><strong>身高：</strong> <span id="rep-height"></span> cm</div>
+                        <div class="meta-item"><strong>體重：</strong> <span id="rep-weight"></span> kg</div>
+                        <!-- 修正點 5：BMI 及其狀態數值槽 -->
+                        <div class="meta-item"><strong>BMI 值：</strong> <span id="rep-bmi-val"></span></div>
+                        <div class="meta-item"><strong>體重狀態：</strong> <span id="rep-bmi-status"></span></div>
+                    </div>
+
+                    <div class="report-result-box">
+                        <div class="result-title">經辨證論治，您的體質歸屬為：</div>
+                        <div class="result-value" id="rep-constitution">辨識中...</div>
+                    </div>
+
+                    <p class="remarks">
+                        *備註：本報告由香港浸會大學中醫研究所李崇安註冊中醫師指導之演算法初步判定。人體體質多有兼夾錯雜，且會隨季節更迭。如需精準美顏調和藥膳與針灸，請點擊下方諮詢。
+                    </p>
+
+                    <div class="report-date">
+                        診斷日期：<span id="rep-date"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 下地軸 -->
+            <div class="scroll-roller"></div>
+        </div>
+
+        <!-- 提示與諮詢按鈕 -->
+        <div class="screenshot-tip">
+            <i class="fa-solid fa-camera-retro"></i> 診斷完畢！請自行「螢幕截圖」保存此份卷軸報告
+        </div>
+
+        <a href="https://line.me/R/ti/p/@YOUR_LINE_ID" target="_blank" class="line-consult-btn">
+            <i class="fa-brands fa-line"></i> 預約李崇安中醫師諮詢
+        </a>
+
+        <!-- 回首頁重置鈕 -->
+        <div class="btn-container">
+            <button class="btn-dark" onclick="backToHome()"><i class="fa-solid fa-arrow-rotate-left"></i> 重測體質（回首頁）</button>
+        </div>
+    </div>
+    
+    <!-- 底部橫梁 -->
+    <div class="royal-beam" style="border-top: 1px solid var(--yanyun-gold); border-bottom: none; height: 8px;"></div>
+</div>
+
+<script>
+    // --- 9大體質指標數據 ---
+    const questions = [
+        { id: 'qi_1', type: '氣虛質', q: '您是否容易覺得疲倦、四肢無力？' },
+        { id: 'qi_2', type: '氣虛質', q: '您是否說話聲音低沉，或稍微活動就容易喘和流汗？' },
+        { id: 'yang_1', type: '陽虛質', q: '您是否比一般人怕冷，一年四季手腳都容易冰冷？' },
+        { id: 'yang_2', type: '陽虛質', q: '您是否肚子或背部怕冷，且大便容易稀軟？' },
+        { id: 'yin_1', type: '陰虛質', q: '您是否經常覺得口乾舌燥、皮膚乾燥，且喜歡喝冷飲？' },
+        { id: 'yin_2', type: '陰虛質', q: '您是否手心、腳心、胸口常常莫名發熱（五心煩熱）？' },
+        { id: 'tan_1', type: '痰濕質', q: '您是否覺得身體或頭部很沉重，常有不清爽的感覺？' },
+        { id: 'tan_2', type: '痰濕質', q: '您是否面部皮膚容易出油，嘴裡常有黏黏的感覺？' },
+        { id: 'shi_1', type: '濕熱質', q: '您是否極度容易長粉刺、或者是化膿性的痘痘？' },
+        { id: 'shi_2', type: '濕熱質', q: '您是否常覺得口苦口臭，或者大便容易黏馬桶？' },
+        { id: 'yu_1', type: '血瘀質', q: '您是否身上或皮下經常莫名出現青紫色的瘀斑？' },
+        { id: 'yu_2', type: '血瘀質', q: '您是否黑眼圈嚴重，或嘴唇顏色偏暗、偏紫？' },
+        { id: 'qi_yu_1', type: '氣鬱質', q: '您是否情緒經常低落、焦虑，常無意識地唉聲嘆氣？' },
+        { id: 'qi_yu_2', type: '氣鬱質', q: '您是否經常覺得胸口發悶，或肋骨兩側有脹痛感？' },
+        { id: 'te_1', type: '特稟質', q: '您是否極易對藥物、食物、氣味、花粉過敏？' },
+        { id: 'te_2', type: '特稟質', q: '您是否在非感冒期間也經常鼻塞、打噴嚏、流鼻水？' }
+    ];
+
+    // --- 初始化生成考題 ---
+    function initQuiz() {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+        questions.forEach((item, index) => {
+            html += `
+                <div class="quiz-item">
+                    <div class="quiz-question">${index + 1}. ${item.q}</div>
+                    <div class="options-group">
+                        <input type="radio" name="${item.id}" id="${item.id}_1" value="0" checked>
+                        <label class="option-label" for="${item.id}_1">沒有 / 極少</label>
+
+                        <input type="radio" name="${item.id}" id="${item.id}_2" value="1">
+                        <label class="option-label" for="${item.id}_2">偶爾有</label>
+
+                        <input type="radio" name="${item.id}" id="${item.id}_3" value="2">
+                        <label class="option-label" for="${item.id}_3">經常有</label>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // --- 修正點 3 & 4：跳過宮門直接切換頁面，且第二頁改用精簡版小標題 ---
+    function goToQuizDirect() {
+        const name = document.getElementById('username').value.trim();
+        const age = document.getElementById('age').value;
+        const height = document.getElementById('height').value;
+        const weight = document.getElementById('weight').value;
+
+        if(!name || !age || !height || !weight) {
+            alert('請完整登記資料，方能由醫家進行體質判定。');
+            return;
+        }
+
+        // 隱藏原始大 Header 與第一頁，切換至第二頁問卷
+        document.getElementById('main-header-block').style.display = 'none';
+        document.getElementById('section-info').classList.remove('active');
+        
+        // 展現流線精簡型 Header 與題目
+        document.getElementById('quiz-header-compact').style.display = 'flex';
+        const quizSection = document.getElementById('section-quiz');
+        quizSection.classList.add('active');
+        quizSection.classList.add('quiz-fade-in'); // 題目保留優雅漸顯
+        
+        window.scrollTo(0, 0);
+    }
+
+    // --- 判定體質與卷軸動態展開 ---
+    function calculateResult() {
+        let scores = {
+            '氣虛質': 0, '陽虛質': 0, '陰虛質': 0, '痰濕質': 0,
+            '濕熱質': 0, '血瘀質': 0, '氣鬱質': 0, '特稟質': 0
+        };
+
+        questions.forEach(item => {
+            const selected = document.querySelector(`input[name="${item.id}"]:checked`);
+            if(selected) {
+                scores[item.type] += parseInt(selected.value);
+            }
+        });
+
+        let detectedConstitutions = [];
+        for (let type in scores) {
+            if (scores[type] >= 2) {
+                detectedConstitutions.push(type);
+            }
+        }
+
+        let finalResult = "";
+        if (detectedConstitutions.length === 0) {
+            finalResult = "平和質 (陰陽平衡)";
+        } else if (detectedConstitutions.length === 1) {
+            finalResult = detectedConstitutions[0];
+        } else {
+            finalResult = "兼夾體質 (" + detectedConstitutions.join('、') + ")";
+        }
+
+        // --- 修正點 5：BMI 理論核心運算與智能染色邏輯 ---
+        const heightM = parseFloat(document.getElementById('height').value) / 100;
+        const weightKg = parseFloat(document.getElementById('weight').value);
+        const bmi = (weightKg / (heightM * heightM)).toFixed(1);
+
+        let bmiStatus = "體重適中";
+        let isDanger = false;
+
+        if (bmi < 18.5) {
+            bmiStatus = "體重過輕";
+            isDanger = true;
+        } else if (bmi >= 18.5 && bmi < 24) {
+            bmiStatus = "體重適中";
+            isDanger = false;
+        } else if (bmi >= 24 && bmi < 27) {
+            bmiStatus = "體重過重";
+            isDanger = true;
+        } else {
+            bmiStatus = "肥胖體態";
+            isDanger = true;
+        }
+
+        // 元素獲取
+        const bmiValEl = document.getElementById('rep-bmi-val');
+        const bmiStatusEl = document.getElementById('rep-bmi-status');
+
+        // 渲染基礎文字
+        bmiValEl.innerText = bmi;
+        bmiStatusEl.innerText = bmiStatus;
+
+        // 依據異常狀態注入紅色
+        if (isDanger) {
+            bmiValEl.classList.add('text-danger-red');
+            bmiStatusEl.classList.add('text-danger-red');
+        } else {
+            bmiValEl.classList.remove('text-danger-red');
+            bmiStatusEl.classList.remove('text-danger-red');
+        }
+
+        // 填入其餘宣紙常規資料
+        document.getElementById('rep-name').innerText = document.getElementById('username').value;
+        document.getElementById('rep-gender').innerText = document.querySelector('input[name="gender"]:checked').value;
+        document.getElementById('rep-age').innerText = document.getElementById('age').value;
+        document.getElementById('rep-height').innerText = document.getElementById('height').value;
+        document.getElementById('rep-weight').innerText = document.getElementById('weight').value;
+        document.getElementById('rep-constitution').innerText = finalResult;
+
+        const today = new Date();
+        document.getElementById('rep-date').innerText = today.getFullYear() + ' 年 ' + (today.getMonth() + 1) + ' 月 ' + today.getDate() + ' 日';
+
+        // 隱藏第二頁精簡 Header，切換至報告頁面
+        document.getElementById('quiz-header-compact').style.display = 'none';
+        document.getElementById('section-quiz').classList.remove('active');
+        
+        // 重新顯示大 Header（方便報告單有一致性的背景視覺）
+        document.getElementById('main-header-block').style.display = 'block';
+        const reportSection = document.getElementById('section-report');
+        reportSection.classList.add('active');
+        window.scrollTo(0, 0);
+
+        // 觸發聖旨卷軸緩緩上下打開動效
+        setTimeout(() => {
+            document.getElementById('scrollWrapper').classList.add('expanded');
+        }, 200);
+    }
+
+    // --- 回首頁狀態重置 ---
+    function backToHome() {
+        // 收起卷軸
+        document.getElementById('scrollWrapper').classList.remove('expanded');
+        
+        // 欄位清空與還原
+        document.getElementById('username').value = '';
+        document.getElementById('age').value = '';
+        document.getElementById('height').value = '';
+        document.getElementById('weight').value = '';
+        document.querySelector('input[name="gender"][value="男"]').checked = true;
+        
+        // 重設題目勾選到第一題
+        questions.forEach(item => {
+            const firstOpt = document.getElementById(`${item.id}_1`);
+            if(firstOpt) firstOpt.checked = true;
+        });
+
+        // 確保精簡 Header 隱藏、大 Header 顯示
+        document.getElementById('quiz-header-compact').style.display = 'none';
+        document.getElementById('main-header-block').style.display = 'block';
+
+        // 移除動畫類名並返回首頁
+        document.getElementById('section-quiz').classList.remove('quiz-fade-in');
+        document.getElementById('section-report').classList.remove('active');
+        document.getElementById('section-info').classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    window.onload = initQuiz;
+</script>
+
+</body>
+</html>
+    
+  </body>
+  
+</html>
