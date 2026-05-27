@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>離子聚合實驗室</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>國中理化：離子多選聚合實驗室 V5.1</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-weight: bold;
+        }
+
+        body {
+            background: radial-gradient(circle, #1a252f 0%, #0d131a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #ecf0f1;
+            padding: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* ================= 畫面控制 ================= */
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        .screen.active {
+            display: flex;
+        }
+
+        /* ================= 首頁樣式 ================= */
+        #menu-screen h1 {
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px #3498db, 2px 2px 5px rgba(0,0,0,0.9);
+            color: #e0f2fe;
+            letter-spacing: 2px;
+        }
+        /* 新增副標題樣式 */
+        .sub-title {
+            font-size: 1rem;
+            color: #d4af37;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 8px rgba(212, 175, 51, 0.5);
+            font-weight: normal;
+        }
+        .menu-btn {
+            width: 240px;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            margin: 10px 0;
+            border: 2px solid #d4af37;
+            border-radius: 30px;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-timer {
+            background: linear-gradient(135deg, #c0392b, #78281f);
+            color: #ffffff;
+        }
+        .btn-free {
+            background: linear-gradient(135deg, #2980b9, #1b4f72);
+            color: #ffffff;
+        }
+        .menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #d4af37;
+        }
+
+        /* ================= 遊戲畫面通用樣式 ================= */
+        /* 右上角返回/暫停按鍵 */
+        .back-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 5px 14px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .back-btn:hover { background: #d4af37; color: #000; }
+
+        h2.game-title {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px #3498db;
+        }
+
+        /* 任務面板 */
+        .mission-container {
+            background-color: #5c0d11; 
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1.4rem; 
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 10px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 3px solid #d4af37; 
+            width: 100%;
+            max-width: 380px;
+        }
+        .mission-hint {
+            font-size: 1.05rem; 
+            color: #ffffff;
+            margin-top: 6px;
+            line-height: 1.4;
+            border-top: 1px solid rgba(212, 175, 55, 0.4);
+            padding-top: 6px;
+            text-align: left;
+        }
+        .mission-hint b { color: #f39c12; font-size: 1.15rem; }
+        .knowledge-tag { color: #2ecc71; }
+
+        /* 計時器與分數欄 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 10px;
+        }
+        .score-container, .timer-container {
+            background: linear-gradient(135deg, #2c3e50, #111827);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            color: #f1c40f;
+            border: 1px solid #34495e;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .timer-container { color: #e74c3c; }
+
+        /* 3x3 棋盤 */
+        .game-container {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1 / 1;
+            background-color: #0d1115; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8), 0 0 15px rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 12px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 12px;
+            position: relative;
+        }
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 12px; left: 12px; right: 12px; bottom: 12px;
+            border-radius: 4px;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.15) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.15) 1px, transparent 1px);
+            background-size: calc((100% - 24px)/3 + 12px) calc((100% - 24px)/3 + 12px);
+        }
+
+        /* 離子方格 */
+        .tile {
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.4);
+            transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s; 
+            cursor: pointer;
+        }
+        .tile.selected {
+            transform: translateY(-10px) scale(1.05); 
+            box-shadow: 0 0 0 5px #f1c40f, 0 12px 20px rgba(0,0,0,0.6); 
+            z-index: 10;
+        }
+
+        /* 離子元素屬性呈色 */
+        .tile-caption-normal { background: linear-gradient(135deg, #1f78b4, #0f4c81); color: #ffffff; }  
+        .tile-anion-normal  { background: linear-gradient(135deg, #6a3d9a, #4a148c); color: #ffffff; }  
+        .tile-caption-cu     { background: linear-gradient(135deg, #33a02c, #1b5e20); color: #ffffff; border: 2px solid #52c41a; } 
+        .tile-caption-fe2    { background: linear-gradient(135deg, #a6cee3, #4ba3c7); color: #11161b; } 
+        .tile-caption-fe3    { background: linear-gradient(135deg, #b15928, #5c2d12); color: #ffffff; }   
+        .tile-anion-cro4    { background: linear-gradient(135deg, #ff7f00, #cc5200); color: #ffffff; }   
+        .tile-anion-cr2o7   { background: linear-gradient(135deg, #e31a1c, #b30000); color: #ffffff; }   
+
+        /* 化合物真實呈色面板 */
+        .color-white     { background-color: #ffffff; color: #000000; border: 2px solid #bdc3c7; } 
+        .color-clear     { background-color: #e0f7fa; color: #000000; border: 2px solid #00bcbc; } 
+        .color-yellow    { background-color: #fff176; color: #ff0000; border: 2px solid #f57f17; } 
+        
+        .color-blue-ppt  { background-color: #0288d1; color: #ffffff; } 
+        .color-orange    { background-color: #e67e22; color: #ffffff; } 
+        .color-green-sol { background-color: #a5d6a7; color: #1b5e20; } 
+        .color-brown-sol { background-color: #8d6e63; color: #ffffff; } 
+
+        /* 結合聚合模組 */
+        .fusion-center-box {
+            position: absolute;
+            top: 12px; left: 12px; right: 12px; bottom: 12px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            box-shadow: 0 0 40px 15px #ffffff, inset 0 0 30px rgba(255,255,255,0.9); 
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        .fusion-symbol {
+            font-size: 3.5rem; 
+            margin-bottom: 8px;
+        }
+        .fusion-symbol sub { font-size: 1.6rem; vertical-align: sub; }
+        .fusion-symbol sup { font-size: 1.6rem; vertical-align: super; }
+        
+        .fusion-name {
+            font-size: 2.2rem; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            margin-bottom: 5px;
+        }
+
+        @keyframes fusionAndFly {
+            0% { transform: scale(0.5); opacity: 0; }
+            15% { transform: scale(1.03); opacity: 1; }
+            20% { transform: scale(1.0); opacity: 1; }
+            80% { transform: scale(1.0) translateY(0); opacity: 1; }
+            100% { transform: scale(0.5) translateY(-300px); opacity: 0; }
+        }
+        .animate-fusion {
+            animation: fusionAndFly 2.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+
+        .tile-symbol {
+            font-size: 1.5rem; 
+            line-height: 1.1;
+            text-align: center;
+            pointer-events: none;
+        }
+        .tile-symbol sup, .tile-symbol sub { font-size: 0.85rem; }
+        .tile-name { 
+            font-size: 0.85rem; 
+            margin-top: 6px; 
+            opacity: 0.95; 
+            pointer-events: none; 
+        }
+
+        .instructions {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 380px;
+        }
+
+        /* ================= 彈出畫面共用樣式 (結算 & 暫停) ================= */
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(13, 19, 26, 0.95);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .overlay.active { display: flex; }
+        
+        .pop-box {
+            background: #2c3e50;
+            border: 3px solid #d4af37;
+            border-radius: 12px;
+            padding: 30px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 0 25px rgba(0,0,0,0.8);
+        }
+        .pop-box h3 {
+            font-size: 2rem;
+            color: #e74c3c;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(231,76,60,0.5);
+        }
+        .pop-box h3.pause-title {
+            color: #3498db;
+            text-shadow: 0 0 10px rgba(52,152,219,0.5);
+        }
+        .result-score {
+            font-size: 2.5rem;
+            color: #f1c40f;
+            margin-bottom: 25px;
+        }
+        .pop-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            margin: 8px 0;
+            border-radius: 20px;
+            border: 1px solid #d4af37;
+            cursor: pointer;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .btn-resume {
+            background: linear-gradient(135deg, #27ae60, #1e8449);
+        }
+        .btn-quit {
+            background: linear-gradient(135deg, #7f8c8d, #34495e);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="menu-screen" class="screen active">
+        <h1>元大國中理化教室<br>離子聚合實驗室</h1>
+        <div class="sub-title">YUAN TA EDU ORG</div>
+        
+        <div class="menu-btn btn-timer" onclick="startGame('timer')">計時挑戰模式</div>
+        <div class="menu-btn btn-free" onclick="startGame('free')">自由練習模式</div>
+    </div>
+
+    <div id="game-screen" class="screen">
+        <button class="back-btn" id="global-back-btn" onclick="handleHeaderBtnClick()">返回首頁</button>
+        <h2 class="game-title" id="game-mode-title">模式</h2>
+        
+        <div class="mission-container">
+            任務目標：<span id="target-mission-name">載入中...</span>
+            <div class="mission-hint" id="target-mission-hint">提示載入中...</div>
+        </div>
+
+        <div class="status-bar">
+            <div class="timer-container" id="timer-box" style="visibility: hidden;">TIME: <span id="time-left">90</span>s</div>
+            <div class="score-container">SCORE: <span id="score">0</span></div>
+        </div>
+
+        <div class="game-container" id="game-board">
+            <div id="fusion-box" class="fusion-center-box"></div>
+        </div>
+
+        <div class="instructions">
+            💎 點擊方塊進行多選，湊齊上方所需元素即可引爆中央聚合大方塊！
+        </div>
+    </div>
+
+    <div id="pause-overlay" class="overlay">
+        <div class="pop-box">
+            <h3 class="pause-title">遊戲暫停中</h3>
+            <p style="font-size: 1rem; color: #bdc3c7; margin-bottom: 20px;">實驗已暫時凍結</p>
+            <button class="pop-btn btn-resume" onclick="resumeGame()">繼續挑戰</button>
+            <button class="pop-btn btn-quit" onclick="backToMenuFromOverlay()">回到首頁</button>
+        </div>
+    </div>
+
+    <div id="result-overlay" class="overlay">
+        <div class="pop-box" style="background: #5c0d11;">
+            <h3>挑戰結束</h3>
+            <p style="font-size: 1rem; color: #bdc3c7;">最終獲得積分</p>
+            <div class="result-score" id="final-score">0</div>
+            <button class="pop-btn btn-timer" onclick="restartTimerGame()">繼續挑戰</button>
+            <button class="pop-btn" style="background:#2c3e50; color:#fff;" onclick="backToMenuFromOverlay()">返回首頁</button>
+        </div>
+    </div>
+
+    <script>
+        const ION_DB = {
+            'H+':    { symbol: 'H<sup>+</sup>', name: '氫離子', type: 'caption-normal' },
+            'Na+':   { symbol: 'Na<sup>+</sup>', name: '鈉離子', type: 'caption-normal' },
+            'K+':    { symbol: 'K<sup>+</sup>', name: '鉀離子', type: 'caption-normal' },
+            'Ag+':   { symbol: 'Ag<sup>+</sup>', name: '銀離子', type: 'caption-normal' },
+            'NH4+':  { symbol: 'NH<sub>4</sub><sup>+</sup>', name: '銨根離子', type: 'caption-normal' },
+            'Mg+2':  { symbol: 'Mg<sup>2+</sup>', name: '鎂離子', type: 'caption-normal' },
+            'Ca+2':  { symbol: 'Ca<sup>2+</sup>', name: '鈣離子', type: 'caption-normal' },
+            'Ba+2':  { symbol: 'Ba<sup>2+</sup>', name: '鋇離子', type: 'caption-normal' },
+            'Zn+2':  { symbol: 'Zn<sup>2+</sup>', name: '鋅離子', type: 'caption-normal' },
+            'Pb+2':  { symbol: 'Pb<sup>2+</sup>', name: '鉛離子', type: 'caption-normal' },
+            'Cu+2':  { symbol: 'Cu<sup>2+</sup>', name: '銅離子', type: 'caption-cu' },     
+            'Fe+2':  { symbol: 'Fe<sup>2+</sup>', name: '亞鐵離子', type: 'caption-fe2' }, 
+            'Al+3':  { symbol: 'Al<sup>3+</sup>', name: '鋁離子', type: 'caption-normal' },
+            'Fe+3':  { symbol: 'Fe<sup>3+</sup>', name: '鐵離子', type: 'caption-fe3' },   
+
+            'OH-':    { symbol: 'OH<sup>-</sup>', name: '氫氧根', type: 'anion-normal' },
+            'Cl-':    { symbol: 'Cl<sup>-</sup>', name: '氯離子', type: 'anion-normal' },
+            'F-':     { symbol: 'F<sup>-</sup>', name: '氟離子', type: 'anion-normal' },
+            'NO3-':   { symbol: 'NO<sub>3</sub><sup>-</sup>', name: '硝酸根', type: 'anion-normal' },
+            'HCO3-':  { symbol: 'HCO<sub>3</sub><sup>-</sup>', name: '碳酸氫根', type: 'anion-normal' },
+            'CH3COO-':{ symbol: 'CH<sub>3</sub>COO<sup>-</sup>', name: '醋酸根', type: 'anion-normal' }, 
+            'O-2':    { symbol: 'O<sup>2-</sup>', name: '氧離子', type: 'anion-normal' },
+            'S-2':    { symbol: 'S<sup>2-</sup>', name: '硫離子', type: 'anion-normal' },
+            'SO4-2':  { symbol: 'SO<sub>4</sub><sup>2-</sup>', name: '硫酸根', type: 'anion-normal' },
+            'CO3-2':  { symbol: 'CO<sub>3</sub><sup>2-</sup>', name: '碳酸根', type: 'anion-normal' },
+            'CrO4-2': { symbol: 'CrO<sub>4</sub><sup>2-</sup>', name: '鉻酸根', type: 'anion-cro4' },   
+            'Cr2O7-2':{ symbol: 'Cr<sub>2</sub>O<sub>7</sub><sup>2-</sup>', name: '二鉻酸根', type: 'anion-cr2o7' } 
+        };
+
+        const PRODUCT_DB = {
+            'HCl':       { name: '鹽酸', formula: 'HCl', colorClass: 'color-clear', info: '強酸，無色具刺激性臭味', req: ['H+', 'Cl-'] },
+            'HNO3':      { name: '硝酸', formula: 'HNO<sub>3</sub>', colorClass: 'color-clear', info: '強酸，照光易分解出褐色氣體', req: ['H+', 'NO3-'] },
+            'CH3COOH':   { name: '醋酸', formula: 'CH<sub>3</sub>COOH', colorClass: 'color-clear', info: '弱酸，醋酸根習慣寫在最前面', req: ['H+', 'CH3COO-'] },
+            'H2CO3':     { name: '碳酸', formula: 'H<sub>2</sub>CO<sub>3</sub>', colorClass: 'color-clear', info: '汽水主成分，解離出兩個氫離子', req: ['H+', 'H+', 'CO3-2'] },
+            'H2O':       { name: '水', formula: 'H<sub>2</sub>O', colorClass: 'color-clear', info: '酸鹼中和的最核心產物', req: ['H+', 'OH-'] },
+            'NaCl':      { name: '氯化鈉', formula: 'NaCl', colorClass: 'color-white', info: '食鹽結晶，中性無色鹽類', req: ['Na+', 'Cl-'] },
+            'KCl':       { name: '氯化鉀', formula: 'KCl', colorClass: 'color-white', info: '常見的白色鹽類晶體', req: ['K+', 'Cl-'] },
+            'AgCl':      { name: '氯化銀', formula: 'AgCl', colorClass: 'color-white', info: '難溶於水的白色沉澱，照光變黑', req: ['Ag+', 'Cl-'] },
+            'NH4Cl':     { name: '氯化銨', formula: 'NH<sub>4</sub>Cl', colorClass: 'color-white', info: '唯一的非金屬正離子團組合', req: ['NH4+', 'Cl-'] },
+            'CH3COONa':  { name: '醋酸鈉', formula: 'CH<sub>3</sub>COONa', colorClass: 'color-white', info: '醋酸根寫在最前方，白色結晶', req: ['Na+', 'CH3COO-'] },
+            'NaHCO3':    { name: '碳酸氫鈉', formula: 'NaHCO<sub>3</sub>', colorClass: 'color-white', info: '小蘇打粉，弱鹼性，遇酸冒泡', req: ['Na+', 'HCO3-'] },
+            'CaCO3':     { name: '碳酸鈣', formula: 'CaCO<sub>3</sub>', colorClass: 'color-white', info: '大理石白沉澱，遇酸會釋放二氧化碳', req: ['Ca+2', 'CO3-2'] },
+            'BaSO4':     { name: '硫酸鋇', formula: 'BaSO<sub>4</sub>', colorClass: 'color-white', info: '白色沉澱，不溶於稀酸，X光顯影劑', req: ['Ba+2', 'SO4-2'] },
+            'MgO':       { name: '氧化鎂', formula: 'MgO', colorClass: 'color-white', info: '鎂帶燃燒後的白色粉末產物', req: ['Mg+2', 'O-2'] },
+            'Zn(OH)2':   { name: '氫氧化鋅', formula: 'Zn(OH)<sub>2</sub>', colorClass: 'color-white', info: '兩性金屬氫氧化物，白色沉澱', req: ['Zn+2', 'OH-', 'OH-'] },
+            'Cu(OH)2':   { name: '氫氧化銅', formula: 'Cu(OH)<sub>2</sub>', colorClass: 'color-blue-ppt', info: '經典的藍色絮狀沉澱物', req: ['Cu+2', 'OH-', 'OH-'] },
+            'CuSO4':     { name: '硫酸銅', formula: 'CuSO<sub>4</sub>', colorClass: 'color-blue-ppt', info: '無水時為白色，溶於水呈藍色溶液', req: ['Cu+2', 'SO4-2'] },
+            'Fe(OH)2':   { name: '氫氧化亞鐵', formula: 'Fe(OH)<sub>2</sub>', colorClass: 'color-green-sol', info: '亞鐵離子形成的淺綠色沉澱', req: ['Fe+2', 'OH-', 'OH-'] },
+            'Fe(OH)3':   { name: '氫氧化鐵', formula: 'Fe(OH)<sub>3</sub>', colorClass: 'color-brown-sol', info: '鐵離子形成的黃褐色/紅褐色沉澱（鐵鏽）', req: ['Fe+3', 'OH-', 'OH-', 'OH-'] },
+            'Al(OH)3':   { name: '氫氧化鋁', formula: 'Al(OH)<sub>3</sub>', colorClass: 'color-white', info: '鋁離子形成的膠狀白色沉澱', req: ['Al+3', 'OH-', 'OH-', 'OH-'] },
+            'K2CrO4':    { name: '鉻酸鉀', formula: 'K<sub>2</sub>Cr<sub>4</sub>', colorClass: 'color-yellow', info: '鉻酸根使溶液呈現經典的黃色', req: ['K+', 'K+', 'CrO4-2'] },
+            'K2Cr2O7':   { name: '二鉻酸鉀', formula: 'K<sub>2</sub>Cr<sub>2</sub>O<sub>7</sub>', colorClass: 'color-orange', info: '二鉻酸根使溶液呈現經典的橘色', req: ['K+', 'K+', 'Cr2O7-2'] }
+        };
+
+        const BOARD_SIZE = 3; 
+        let board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(''));
+        let selectedTiles = []; 
+        let currentMissionKey = ''; 
+        let score = 0;
+        let gameMode = 'free'; 
+        let timerInterval = null;
+        let timeLeft = 90;
+        let isPaused = false;
+
+        const boardElement = document.getElementById('game-board');
+        const scoreElement = document.getElementById('score');
+        const fusionBox = document.getElementById('fusion-box');
+        const missionNameEl = document.getElementById('target-mission-name');
+        const missionHintEl = document.getElementById('target-mission-hint');
+        const timerBox = document.getElementById('timer-box');
+        const timeLeftEl = document.getElementById('time-left');
+        const headerBtn = document.getElementById('global-back-btn');
+
+        function getRandomIon() {
+            const keys = Object.keys(ION_DB);
+            return keys[Math.floor(Math.random() * keys.length)];
+        }
+
+        function generateNextMission() {
+            const keys = Object.keys(PRODUCT_DB);
+            currentMissionKey = keys[Math.floor(Math.random() * keys.length)];
+            const mission = PRODUCT_DB[currentMissionKey];
+            
+            missionNameEl.innerHTML = `${mission.name} ${mission.formula}`;
+            
+            const itemsSummary = mission.req.map(ion => ION_DB[ion].name).join(' + ');
+            missionHintEl.innerHTML = `🔬 需收集：<b>${itemsSummary}</b><br><span class="knowledge-tag">💡 知識點：</span>${mission.info}`;
+        }
+
+        function startGame(mode) {
+            gameMode = mode;
+            isPaused = false;
+            document.getElementById('menu-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            document.getElementById('result-overlay').classList.remove('active');
+            document.getElementById('pause-overlay').classList.remove('active');
+            
+            if (mode === 'timer') {
+                document.getElementById('game-mode-title').innerText = '⏳ 計時挑戰模式';
+                timerBox.style.visibility = 'visible';
+                headerBtn.innerText = '⏸️ 暫停'; // 計時模式右上角變為暫停鈕
+                timeLeft = 90;
+                timeLeftEl.innerText = timeLeft;
+                startCountdown();
+            } else {
+                document.getElementById('game-mode-title').innerText = '🔮 自由練習模式';
+                timerBox.style.visibility = 'hidden';
+                headerBtn.innerText = '返回首頁'; // 自由模式維持返回鈕
+                if(timerInterval) clearInterval(timerInterval);
+            }
+
+            score = 0;
+            scoreElement.innerText = score;
+            generateNextMission();
+            fillBoardWithMissionGuarantee();
+        }
+
+        // 右上角按鈕點擊分流
+        function handleHeaderBtnClick() {
+            if (gameMode === 'timer') {
+                pauseGame();
+            } else {
+                backToMenu();
+            }
+        }
+
+        // 修正點 3：暫停邏輯
+        function pauseGame() {
+            if (gameMode !== 'timer' || isPaused) return;
+            isPaused = true;
+            clearInterval(timerInterval); // 暫停時間
+            document.getElementById('pause-overlay').classList.add('active'); // 顯示彈出視窗
+        }
+
+        function resumeGame() {
+            isPaused = false;
+            document.getElementById('pause-overlay').classList.remove('active');
+            startCountdown(); // 恢復時間
+        }
+
+        function startCountdown() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if(!isPaused) {
+                    timeLeft--;
+                    timeLeftEl.innerText = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        endGame();
+                    }
+                }
+            }, 1000);
+        }
+
+        function endGame() {
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('result-overlay').classList.add('active');
+        }
+
+        function restartTimerGame() {
+            startGame('timer');
+        }
+
+        function backToMenu() {
+            if(timerInterval) clearInterval(timerInterval);
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('menu-screen').classList.add('active');
+        }
+
+        function backToMenuFromOverlay() {
+            document.getElementById('pause-overlay').classList.remove('active');
+            document.getElementById('result-overlay').classList.remove('active');
+            backToMenu();
+        }
+
+        function fillBoardWithMissionGuarantee() {
+            const reqs = [...PRODUCT_DB[currentMissionKey].req]; 
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    board[r][c] = getRandomIon();
+                }
+            }
+            const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8].sort(() => Math.random() - 0.5);
+            reqs.forEach(requiredIon => {
+                const targetIdx = indices.pop();
+                const r = Math.floor(targetIdx / BOARD_SIZE);
+                const c = targetIdx % BOARD_SIZE;
+                board[r][c] = requiredIon;
+            });
+            renderBoard();
+        }
+
+        function renderBoard() {
+            boardElement.innerHTML = '';
+            boardElement.appendChild(fusionBox);
+            selectedTiles = [];
+
+            for (let r = 0; r < BOARD_SIZE; r++) {
+                for (let c = 0; c < BOARD_SIZE; c++) {
+                    const tileDiv = document.createElement('div');
+                    tileDiv.classList.add('tile');
+                    tileDiv.dataset.row = r;
+                    tileDiv.dataset.col = c;
+                    
+                    let val = board[r][c];
+                    tileDiv.classList.add(`tile-${ION_DB[val].type}`);
+                    tileDiv.innerHTML = `
+                        <span class="tile-symbol">${ION_DB[val].symbol}</span>
+                        <span class="tile-name">${ION_DB[val].name}</span>
+                    `;
+
+                    tileDiv.addEventListener('click', handleTileClick);
+                    boardElement.appendChild(tileDiv);
+                }
+            }
+        }
+
+        function handleTileClick() {
+            if (isPaused) return; // 暫停時禁止點擊卡牌
+            const r = parseInt(this.dataset.row);
+            const c = parseInt(this.dataset.col);
+
+            const existIdx = selectedTiles.findIndex(t => t.r === r && t.c === c);
+            if (existIdx > -1) {
+                this.classList.remove('selected');
+                selectedTiles.splice(existIdx, 1);
+                return;
+            }
+
+            this.classList.add('selected');
+            selectedTiles.push({ r, c, el: this });
+
+            checkCombinationSuccess();
+        }
+
+        function checkCombinationSuccess() {
+            const currentSelectedIons = selectedTiles.map(t => board[t.r][t.c]).sort();
+            const requiredIons = [...PRODUCT_DB[currentMissionKey].req].sort();
+
+            if (JSON.stringify(currentSelectedIons) === JSON.stringify(requiredIons)) {
+                triggerCenterFusion();
+            }
+        }
+
+        function triggerCenterFusion() {
+            const boardRect = boardElement.getBoundingClientRect();
+            const centerX = boardRect.width / 2;
+            const centerY = boardRect.height / 2;
+
+            selectedTiles.forEach(tileObj => {
+                const el = tileObj.el;
+                const rect = el.getBoundingClientRect();
+                const tileCenterX = rect.left + rect.width / 2 - boardRect.left;
+                const tileCenterY = rect.top + rect.height / 2 - boardRect.top;
+
+                const moveX = centerX - tileCenterX;
+                const moveY = centerY - tileCenterY;
+
+                el.style.zIndex = "99";
+                el.style.transition = "transform 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045)";
+                el.style.transform = `translate(${moveX}px, ${moveY}px) scale(0.1)`;
+                el.style.opacity = "0";
+            });
+
+            setTimeout(() => {
+                const product = PRODUCT_DB[currentMissionKey];
+                
+                fusionBox.className = `fusion-center-box ${product.colorClass} animate-fusion`;
+                fusionBox.innerHTML = `
+                    <div class="fusion-symbol">${product.formula}</div>
+                    <div class="fusion-name">${product.name}</div>
+                    <div style="font-size:1.3rem; margin-top:8px; font-weight:bold;">結合成功！</div>
+                `;
+
+                score += 200;
+                scoreElement.innerText = score;
+
+                selectedTiles.forEach(tileObj => {
+                    board[tileObj.r][tileObj.c] = '';
+                });
+
+                setTimeout(() => {
+                    fusionBox.className = 'fusion-center-box'; 
+                    generateNextMission();
+                    fillBoardWithMissionGuarantee(); 
+                }, 2500);
+
+            }, 400);
+        }
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
