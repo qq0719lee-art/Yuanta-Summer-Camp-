@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>賓果遊戲</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動抽籤翻牌遊戲</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --bg-color: #f5f7fa;
+            --card-front: #2c3e50;
+            --card-back: #27ae60;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* 頁面切換控制 */
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* === 第一頁：主畫面 (數字面板) === */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(5, 15fr);
+            gap: 12px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .num-box {
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 8px;
+            padding: 20px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* 已抽過的數字樣式 */
+        .num-box.drawn {
+            background-color: #e0e0e0;
+            border-color: #b0b0b0;
+            color: #888;
+            box-shadow: none;
+            text-decoration: line-through;
+        }
+
+        .btn-draw {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3rem;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4);
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+
+        .btn-draw:hover { background-color: #357abd; }
+
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 40px;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .btn-reset:hover { opacity: 1; }
+
+        /* === 第二頁：抽籤與翻牌畫面 === */
+        /* 3D 翻牌容器 */
+        .card-container {
+            width: 320px;
+            height: 400px;
+            perspective: 1000px;
+            margin: 40px 0;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-radius: 15px;
+        }
+
+        /* 觸發翻面 */
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 正面：顯示數字 */
+        .card-front {
+            background-color: var(--card-front);
+            color: white;
+        }
+        .card-front .drawn-number {
+            font-size: 7rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+        .card-front .countdown-text {
+            font-size: 1rem;
+            margin-top: 10px;
+            color: #bdc3c7;
+        }
+
+        /* 背面：顯示題目 */
+        .card-back {
+            background-color: var(--card-back);
+            color: white;
+            transform: rotateY(180deg);
+        }
+        .card-back .question-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            padding-bottom: 5px;
+            color: #ffeaa7;
+        }
+        .card-back .question-text {
+            font-size: 1.6rem;
+            line-height: 1.5;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn-back {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-page" class="page active">
+        <h1>回憶賓果抽籤</h1>
+        <div class="grid-container" id="grid"></div>
+        <button class="btn-draw" onclick="startDraw()">開始抽籤</button>
+        <button class="btn-reset" onclick="resetGame()">重製所有紀錄</button>
+    </div>
+
+    <div id="result-page" class="page">
+        <h1>抽籤結果</h1>
+        <div class="card-container">
+            <div class="card" id="card">
+                <div class="card-face card-front">
+                    <div class="drawn-number" id="display-num">0</div>
+                    <div class="countdown-text" id="countdown-hint">準備翻面...</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="question-title" id="q-title">題目 XX</div>
+                    <div class="question-text" id="q-text">題目內容加載中...</div>
+                </div>
+            </div>
+        </div>
+        <button class="btn-back" onclick="goBack()">返回抽籤頁面</button>
+    </div>
+
+    <script>
+        // 題目資料庫 (1-25)
+        const questions = {
+            1: "以前最常搭乘的交通工具？搭乘它去幹嘛？",
+            2: "印象最深刻的一次旅行或出遠門的經驗？跟誰去？",
+            3: "最喜歡、最想念的食物是什麼？",
+            4: "小時候印象深刻玩具或遊戲是什麼？",
+            5: "有沒有哪一個時刻，讓您由衷覺得「能做這個行業真的太棒了」？",
+            6: "哪一段打拼的日子雖然辛苦，但現在回想起來卻讓您覺得最充實、最值得？",
+            7: "最喜歡的一首歌是什麼？",
+            8: "小時候最喜歡或期待哪個節日？為什麼？",
+            9: "您這輩子做的第一份工作是什麼？賺到第一筆薪水時怎麼慶祝的？",
+            10: "小時候停電或點蠟燭時，全家人都在做什麼？",
+            11: "小時候最喜歡吃的一種零食或糖果是什麼？",
+            12: "如果可以去一個曾經去過的地方（旅行去過的、住過的），想去哪？",
+            13: "小時候遠足或學生時期畢業旅行去了哪裡？",
+            14: "這輩子住過最久、最喜歡的地方是哪裡？喜歡或長住的原因？",
+            15: "如果現在可以立刻去到一個地方，最想去哪裡？",
+            16: "年輕讀書或工作時，最好的朋友是誰？你們都一起做什麼？",
+            17: "每當卸下工作或忙碌，您最享受、最能讓自己感到幸福的休閒娛樂是什麼？",
+            18: "年輕時最流行的休閒娛樂是什麼？",
+            19: "生命中對您影響最大、最想感謝的一個人是誰？",
+            20: "您和伴侶或好朋友第一次見面或約會的地點在哪裡？",
+            21: "這輩子您做過最勇敢、最讓自己佩服的一件事是什麼？",
+            22: "您最擅長的一項厲害手藝或特長是什麼？",
+            23: "不論是工作還是照顧家庭，您覺得自己最棒、最有成就感的是哪個時期？",
+            24: "如果可以用一個詞或一句話來形容自己，您會怎麼說？",
+            25: "如果要把一句話當作人生智慧送給年輕人，您會想說什麼？"
+        };
+
+        // 儲存已抽過的數字
+        let drawnNumbers = JSON.parse(localStorage.getItem('drawnNumbers')) || [];
+        let flipTimer = null;
+
+        // 初始化建立 1-25 的數字面板
+        function initGrid() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 25; i++) {
+                const box = document.createElement('div');
+                box.className = 'num-box';
+                box.id = `num-${i}`;
+                box.innerText = i;
+                
+                // 如果已經被抽過，加上已抽過的樣式
+                if (drawnNumbers.includes(i)) {
+                    box.classList.add('drawn');
+                }
+                grid.appendChild(box);
+            }
+        }
+
+        // 開始抽籤按鍵
+        function startDraw() {
+            // 篩選出還沒被抽過的數字
+            const remaining = [];
+            for (let i = 1; i <= 25; i++) {
+                if (!drawnNumbers.includes(i)) {
+                    remaining.push(i);
+                }
+            }
+
+            // 檢查是否全部抽完了
+            if (remaining.length === 0) {
+                alert("所有的數字都已經抽過囉！請點擊下方重製按鍵重新開始。");
+                return;
+            }
+
+            // 隨機抽取一個
+            const randomIndex = Math.floor(Math.random() * remaining.length);
+            const luckyNumber = remaining[randomIndex];
+
+            // 紀錄並存入歷史紀錄
+            drawnNumbers.push(luckyNumber);
+            localStorage.setItem('drawnNumbers', JSON.stringify(drawnNumbers));
+
+            // 設定第二頁內容
+            document.getElementById('display-num').innerText = luckyNumber;
+            document.getElementById('q-title').innerText = `第 ${luckyNumber} 題`;
+            document.getElementById('q-text').innerText = questions[luckyNumber];
+            
+            // 確保卡片重設為正面
+            const card = document.getElementById('card');
+            card.classList.remove('flipped');
+            document.getElementById('countdown-hint').innerText = "2 秒後自動翻面...";
+
+            // 切換到結果頁面
+            switchPage('result-page');
+
+            // 核心功能：2 秒後自動翻面
+            flipTimer = setTimeout(() => {
+                card.classList.add('flipped');
+                document.getElementById('countdown-hint').innerText = "已翻面";
+            }, 2000);
+        }
+
+        // 返回按鍵
+        function goBack() {
+            // 清除可能還在跑的定時器
+            if(flipTimer) clearTimeout(flipTimer);
+            // 重新整理主頁面板狀態
+            initGrid();
+            switchPage('main-page');
+        }
+
+        // 重製按鍵
+        function resetGame() {
+            if(confirm("確定要清除所有抽籤紀錄，重新開始嗎？")) {
+                drawnNumbers = [];
+                localStorage.removeItem('drawnNumbers');
+                initGrid();
+            }
+        }
+
+        // 頁面切換輔助函式
+        function switchPage(pageId) {
+            document.getElementById('main-page').classList.remove('active');
+            document.getElementById('result-page').classList.remove('active');
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // 網頁載入時初始化
+        initGrid();
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
