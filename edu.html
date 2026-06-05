@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Untitled</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>元大補習班 200人級極緻自動化系統 v6.3</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .page { display: none; }
+        .page.active { display: block; }
+        .stud-subpage { display: none; }
+        .stud-subpage.active { display: block; }
+        body { 
+            -webkit-tap-highlight-color: transparent; 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Microsoft JhengHei", sans-serif;
+        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex text-slate-800 antialiased">
+
+    <aside class="w-80 bg-slate-900 text-white flex flex-col h-screen sticky top-0 border-r border-slate-800 shadow-xl shrink-0 overflow-y-auto">
+        <div class="p-5 border-b border-slate-800 flex items-center space-x-3">
+            <img src="https://cdn.phototourl.com/free/2026-06-05-146ff372-b180-4164-9251-ed5c4a944118.png" alt="Logo" class="w-11 h-11 rounded-full object-cover shadow-lg border-2 border-indigo-500/50">
+            <div>
+                <h1 class="text-base font-extrabold tracking-wide text-slate-100">元大文理補習班</h1>
+                <p class="text-[10px] text-indigo-400 font-semibold tracking-wider uppercase">Smart Desktop Version</p>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-1 flex-1">
+            <button onclick="switchPage(1)" id="nav-btn-1" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>📊</span><span>統計帳務中心</span></button>
+            <button onclick="switchPage(2)" id="nav-btn-2" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>📝</span><span>學生資料中心</span></button>
+            <button onclick="switchPage(3)" id="nav-btn-3" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>⚙️</span><span>學費開立中心</span></button>
+            <button onclick="switchPage(4)" id="nav-btn-4" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>💵</span><span>櫃檯點收紀錄</span></button>
+            <button onclick="switchPage(7)" id="nav-btn-7" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>📅</span><span>當日收費日帳</span></button>
+            <button onclick="switchPage(5)" id="nav-btn-5" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>🧱</span><span>班級網格管理</span></button>
+            <button onclick="switchPage(6)" id="nav-btn-6" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold text-slate-400 hover:bg-slate-800 hover:text-white transition-all cursor-pointer"><span>👩‍🏫</span><span>師資管理看板</span></button>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800 bg-slate-950/60 text-xs space-y-4">
+            <div class="bg-slate-900 rounded-xl p-3 border border-slate-800/80 shadow-inner">
+                <div class="flex items-center justify-between mb-2 gap-1">
+                    <select id="cal-year-select" onchange="onCalendarSelectorChange()" class="bg-slate-800 text-slate-200 border border-slate-700 rounded px-1 py-0.5 text-[11px] font-bold focus:outline-hidden"></select>
+                    <select id="cal-month-select" onchange="onCalendarSelectorChange()" class="bg-slate-800 text-slate-200 border border-slate-700 rounded px-1 py-0.5 text-[11px] font-bold focus:outline-hidden">
+                        <option value="0">1月</option><option value="1">2月</option><option value="2">3月</option><option value="3">4月</option>
+                        <option value="4">5月</option><option value="5">6月</option><option value="6">7月</option><option value="7">8月</option>
+                        <option value="8">9月</option><option value="9">10月</option><option value="10">11月</option><option value="11">12月</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-slate-500 border-b border-slate-800 pb-1 mb-1">
+                    <div class="text-rose-500">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-sky-500">六</div>
+                </div>
+                <div id="calendar-days-grid" class="grid grid-cols-7 gap-1 text-center text-[11px] row-gap-2">
+                    </div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="flex justify-between items-center text-slate-300 font-bold border-b border-slate-800 pb-1.5">
+                    <span class="flex items-center gap-1">📌 重要日程看板</span>
+                    <button onclick="toggleScheduleForm()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] px-2 py-0.5 rounded-md transition-colors font-medium shadow-sm">+ 添加</button>
+                </div>
+
+                <div id="schedule-form" class="hidden bg-slate-900 p-2.5 rounded-xl border border-slate-800 space-y-2 mb-2">
+                    <input type="text" id="sched-title" placeholder="事情名稱" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded text-[11px] text-white focus:outline-hidden focus:border-indigo-500">
+                    <input type="date" id="sched-date" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded text-[11px] text-white font-mono focus:outline-hidden focus:border-indigo-500">
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-slate-400 font-bold block">選擇顯示色彩外框：</label>
+                        <select id="sched-color" class="w-full bg-slate-800 border border-slate-700 p-1.5 rounded text-[11px] text-slate-200 focus:outline-hidden">
+                            <option value="red">🔴 精緻紅框 (緊急)</option>
+                            <option value="green">🟢 質感綠框 (一般)</option>
+                            <option value="yellow">🟡 耀眼黃框 (注意)</option>
+                            <option value="white">⚪ 簡約白框 (例行)</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-1.5 pt-1">
+                        <button onclick="toggleScheduleForm()" class="w-1/2 bg-slate-700 text-slate-300 py-1 rounded text-[10px] font-bold">取消</button>
+                        <button onclick="addScheduleItem()" class="w-1/2 bg-indigo-600 text-white py-1 rounded text-[10px] font-bold">確定添加</button>
+                    </div>
+                </div>
+
+                <div id="schedule-list" class="space-y-2 max-h-40 overflow-y-auto pr-0.5">
+                    </div>
+            </div>
+            
+            <div class="text-[10px] text-slate-500 font-mono text-center pt-1 border-t border-slate-900">
+                v6.3.2026 &copy; 元大管理系統
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full space-y-6">
+        
+        <section id="page1" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-6">
+            <div class="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                <span class="text-xl">📊</span>
+                <h2 class="text-lg font-bold text-slate-900">統計帳務中心</h2>
+            </div>
+            
+            <div class="border border-rose-100 bg-rose-50/60 p-4 rounded-xl space-y-2.5 shadow-2xs">
+                <p class="text-xs font-bold text-rose-800 flex justify-between items-center">
+                    <span class="flex items-center gap-1.5">🚨 警示：本月已報名但「未開立學費」名單</span>
+                    <span id="alert-unbilled-count" class="bg-rose-600 text-white px-2 py-0.5 rounded-full text-[10px] font-mono font-bold">0 人</span>
+                </p>
+                <div id="alert-unbilled-list" class="text-xs text-rose-600/90 max-h-24 overflow-y-auto space-y-1 font-medium bg-white/50 p-2 rounded-lg border border-rose-100/50"></div>
+            </div>
+
+            <div class="bg-radial from-slate-800 to-slate-900 text-white p-5 rounded-xl shadow-md border border-slate-700 relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-5 text-7xl font-bold">💵</div>
+                <p class="text-[11px] font-bold text-slate-400 tracking-wider">2026 全年累計實收總額</p>
+                <p id="stat-year-total" class="text-3xl font-black font-mono tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-400 mt-1">$0</p>
+            </div>
+
+            <div class="flex items-center gap-2.5 text-xs bg-slate-50 p-2.5 rounded-xl border border-slate-200/60 w-fit">
+                <span class="font-bold text-slate-600">分析月份：</span>
+                <select id="stat-month-filter" onchange="updateDashboard()" class="border border-slate-300 p-1.5 px-3 rounded-lg font-mono bg-white font-bold text-slate-700 focus:outline-indigo-500 shadow-2xs">
+                    <option>2026-05</option><option>2026-06</option><option>2026-07</option>
+                    <option>2026-08</option><option>2026-09</option><option>2026-10</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs">
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 shadow-2xs">
+                    <p class="text-[10px] text-slate-500 font-medium mb-1">當月應收 / 實收金額</p>
+                    <p id="stat-month-revenue" class="font-bold text-slate-800 font-mono text-base">$0 / $0</p>
+                </div>
+                <div class="bg-rose-50/40 p-4 rounded-xl border border-rose-100 shadow-2xs">
+                    <p class="text-[10px] text-rose-500 font-bold mb-1">當月總欠繳金額</p>
+                    <p id="stat-month-unpaid-amt" class="font-black text-rose-600 font-mono text-base">$0</p>
+                </div>
+            </div>
+
+            <div class="border border-sky-100 rounded-xl p-4 bg-sky-50/30 space-y-2.5 text-xs">
+                <p class="font-bold text-sky-900 border-b border-sky-100 pb-2 flex justify-between items-center">
+                    <span class="flex items-center gap-1.5">🏫 在班學生就讀學校人數統計</span>
+                </p>
+                <div id="stat-schools-list" class="grid grid-cols-2 gap-3"></div>
+            </div>
+
+            <div class="border border-slate-200/60 rounded-xl p-4 bg-slate-50/50 space-y-3 text-xs">
+                <p class="font-bold text-slate-700 border-b border-slate-200 pb-1.5">👥 當月人數普查細目</p>
+                <div class="grid grid-cols-3 gap-3 bg-white p-3 rounded-xl border border-slate-200/60 text-center font-bold shadow-2xs">
+                    <div class="text-emerald-600 border-r border-slate-100"><p class="text-[10px] text-slate-400 font-medium mb-0.5">當月在班</p><span id="stat-count-active" class="font-mono text-lg">0</span> <span class="text-[10px] font-normal">人</span></div>
+                    <div class="text-amber-600 border-r border-slate-100"><p class="text-[10px] text-slate-400 font-medium mb-0.5">當月離班</p><span id="stat-count-left" class="font-mono text-lg">0</span> <span class="text-[10px] font-normal">人</span></div>
+                    <div class="text-indigo-600"><p class="text-[10px] text-slate-400 font-medium mb-0.5">系統總數</p><span id="stat-count-total" class="font-mono text-lg">0</span> <span class="text-[10px] font-normal">人</span></div>
+                </div>
+                <div id="stat-grade-counts-box" class="grid grid-cols-4 gap-2 pt-1 text-[11px] text-slate-500 font-medium px-1"></div>
+            </div>
+
+            <div class="border border-slate-200/60 rounded-xl p-4 bg-slate-50/50 space-y-2 text-xs">
+                <p class="font-bold text-slate-700 border-b border-slate-200 pb-1.5">👩‍🏫 師資當月授課統計</p>
+                <div id="stat-teachers-list" class="grid grid-cols-2 gap-3 bg-white p-3 rounded-xl border border-slate-200/60 shadow-2xs"></div>
+            </div>
+
+            <div class="border border-rose-200 rounded-xl p-4 bg-rose-50/20 space-y-2.5 text-xs">
+                <p class="font-bold text-rose-800 border-b border-rose-100 pb-2 flex justify-between items-center">
+                    <span class="flex items-center gap-1.5">🚨 當月欠繳黑名單</span>
+                    <span id="stat-unpaid-count" class="bg-rose-600 text-white px-2 py-0.5 font-mono font-bold rounded-full text-[10px]">0 人</span>
+                </p>
+                <div id="stat-unpaid-container" class="grid grid-cols-3 gap-3 max-h-60 overflow-y-auto"></div>
+            </div>
+        </section>
+
+        <section id="page2" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-5">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div class="flex items-center space-x-2 shrink-0">
+                    <span class="text-xl">📝</span>
+                    <h2 class="text-lg font-bold text-slate-900">學生資料中心</h2>
+                </div>
+                <div class="flex bg-slate-100 p-1 rounded-xl border border-slate-200/60 font-bold text-xs gap-1">
+                    <button onclick="switchStudSubpage('active')" id="stud-tab-active" class="px-4 py-2 rounded-lg cursor-pointer transition-all">在班名冊</button>
+                    <button onclick="switchStudSubpage('left')" id="stud-tab-left" class="px-4 py-2 rounded-lg cursor-pointer transition-all">離班名冊</button>
+                    <button onclick="switchStudSubpage('register')" id="stud-tab-register" class="px-4 py-2 rounded-lg cursor-pointer transition-all">新生報名</button>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 text-slate-100 p-4 rounded-xl border border-slate-800 space-y-2.5 shadow-md">
+                <label class="block text-xs font-bold text-slate-300 tracking-wide">🔍 快速搜尋學生（支援輸入姓名、6碼學號）：</label>
+                <div class="flex gap-2">
+                    <input type="text" id="student-search-input" oninput="handleStudentSearch()" placeholder="請輸入姓名或學號..." class="w-full border border-slate-700 p-2 text-xs rounded-lg bg-slate-800 font-medium text-white placeholder-slate-500 focus:outline-hidden font-mono">
+                    <button onclick="clearStudentSearch()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 rounded-lg text-xs font-medium transition-colors">清除</button>
+                </div>
+                <div id="student-search-results" class="hidden bg-white text-slate-800 border border-slate-200 rounded-xl p-1.5 space-y-1 max-h-48 overflow-y-auto shadow-xl z-10"></div>
+            </div>
+
+            <div id="stud-subpage-active" class="stud-subpage space-y-4">
+                <p class="text-xs font-bold text-slate-500">📌 請選擇要查看的「在班」年級：</p>
+                <div class="grid grid-cols-6 gap-2 text-xs text-center font-bold">
+                    <button onclick="setStudActiveGrade(1)" id="stud-gbtn-1" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 1年級</button>
+                    <button onclick="setStudActiveGrade(2)" id="stud-gbtn-2" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 2年級</button>
+                    <button onclick="setStudActiveGrade(3)" id="stud-gbtn-3" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 3年級</button>
+                    <button onclick="setStudActiveGrade(4)" id="stud-gbtn-4" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 4年級</button>
+                    <button onclick="setStudActiveGrade(5)" id="stud-gbtn-5" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 5年級</button>
+                    <button onclick="setStudActiveGrade(6)" id="stud-gbtn-6" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 6年級</button>
+                    <button onclick="setStudActiveGrade(7)" id="stud-gbtn-7" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國中 7年級</button>
+                    <button onclick="setStudActiveGrade(8)" id="stud-gbtn-8" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國中 8年級</button>
+                    <button onclick="setStudActiveGrade(9)" id="stud-gbtn-9" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國中 9年級</button>
+                    <button onclick="setStudActiveGrade(10)" id="stud-gbtn-10" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">高中 高一</button>
+                    <button onclick="setStudActiveGrade(11)" id="stud-gbtn-11" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">高中 高二</button>
+                    <button onclick="setStudActiveGrade(12)" id="stud-gbtn-12" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">高中 高三</button>
+                </div>
+                <div id="stud-active-list-container" class="grid grid-cols-2 gap-3 pt-2"></div>
+            </div>
+
+            <div id="stud-subpage-left" class="stud-subpage space-y-3">
+                <h3 class="text-xs font-black text-amber-700 flex items-center gap-1">🟠 歷史離班學生檔案名冊：</h3>
+                <div id="stud-left-list-container" class="grid grid-cols-2 gap-3"></div>
+            </div>
+
+            <div id="stud-subpage-register" class="stud-subpage">
+                <form onsubmit="saveStudent(event)" class="space-y-3 bg-slate-50 p-5 rounded-xl border border-slate-200 shadow-inner text-xs">
+                    <div class="grid grid-cols-2 gap-3 bg-amber-50/60 p-3 rounded-xl border border-amber-200/60">
+                        <div>
+                            <label class="block text-[11px] font-black text-amber-800">1. 先選：預計入學年級</label>
+                            <select id="s-grade-select" onchange="autoGenerateUid()" class="w-full border border-amber-300 p-1.5 rounded-lg bg-white mt-1 text-slate-700 font-bold">
+                                <option value="">--請選擇--</option>
+                                <option value="1">國小 1年級</option><option value="2">國小 2年級</option><option value="3">國小 3年級</option><option value="4">國小 4年級</option><option value="5">國小 5年級</option><option value="6">國小 6年級</option>
+                                <option value="7">國中 7年級</option><option value="8">國中 8年級</option><option value="9">國中 9年級</option>
+                                <option value="10">高中 高一</option><option value="11">高中 高二</option><option value="12">高中 高三</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-black text-amber-800">2. 自動推算元大學號</label>
+                            <input type="number" id="s-uid" required placeholder="選年級後自動生成" class="w-full border border-amber-300 p-1.5 rounded-lg font-mono bg-amber-50/50 mt-1 font-extrabold text-indigo-700 focus:outline-hidden" readonly>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-600 font-bold">學生姓名</label>
+                            <input type="text" id="s-name" required class="w-full border border-slate-300 p-1.5 rounded-lg bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-600 font-bold">性別</label>
+                            <select id="s-gender" class="w-full border border-slate-300 p-1.5 rounded-lg bg-white"><option>男</option><option>女</option></select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-600 font-bold">出生年月日</label>
+                            <input type="date" id="s-birthday" required class="w-full border border-slate-300 p-1.5 rounded-lg bg-white font-mono">
+                        </div>
+                        <div>
+                            <label class="block text-slate-600 font-bold">身分證號</label>
+                            <input type="text" id="s-idcard" required placeholder="A123456789" class="w-full border border-slate-300 p-1.5 rounded-lg uppercase font-mono bg-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-600 font-bold">就讀學校</label>
+                            <input type="text" id="s-school" required placeholder="例如:永康國小" class="w-full border border-slate-300 p-1.5 rounded-lg bg-white">
+                        </div>
+                        <div>
+                            <label class="block text-slate-600 font-bold">介紹人</label>
+                            <input type="text" id="s-referrer" class="w-full border border-slate-300 p-1.5 rounded-lg bg-white">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-slate-600 font-bold">家用電話</label>
+                            <input type="tel" id="s-homephone" placeholder="06-2345678" class="w-full border border-slate-300 p-1.5 rounded-lg bg-white font-mono">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-slate-600 font-bold">住家地址</label>
+                        <input type="text" id="s-address" required class="w-full border border-slate-300 p-1.5 rounded-lg bg-white">
+                    </div>
+                    
+                    <div class="border border-slate-200 p-3 rounded-xl bg-indigo-50/40 space-y-2">
+                        <p class="font-bold text-indigo-900 text-[11px] flex items-center gap-1">👪 聯絡家長資料組</p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="s-p1-name" placeholder="姓名" required class="border border-slate-300 p-1.5 rounded-lg bg-white">
+                            <input type="text" id="s-p1-title" placeholder="關係" required class="border border-slate-300 p-1.5 rounded-lg bg-white">
+                            <input type="tel" id="s-p1-phone" placeholder="電話" required class="border border-slate-300 p-1.5 rounded-lg bg-white font-mono">
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <input type="text" id="s-p2-name" placeholder="姓名" class="border border-slate-300 p-1.5 rounded-lg bg-white">
+                            <input type="text" id="s-p2-title" placeholder="關係" class="border border-slate-300 p-1.5 rounded-lg bg-white">
+                            <input type="tel" id="s-p2-phone" placeholder="電話" class="border border-slate-300 p-1.5 rounded-lg bg-white font-mono">
+                        </div>
+                    </div>
+
+                    <div class="border border-emerald-200 p-3 rounded-xl bg-emerald-50/40 space-y-2">
+                        <label class="block text-emerald-900 font-extrabold">🔄 學費收費週期設定</label>
+                        <select id="s-cycle" onchange="toggleCycleMonthSelector()" class="w-full border border-emerald-300 p-2 rounded-lg bg-white font-bold text-emerald-800">
+                            <option value="monthly">按月繳費</option>
+                            <option value="quarterly">按季繳費 (可指定月份)</option>
+                            <option value="yearly">按年繳費 (可指定月份)</option>
+                        </select>
+                        <div id="cycle-months-box" class="hidden bg-white p-2.5 rounded-xl border border-emerald-200">
+                            <div class="grid grid-cols-6 gap-2 text-center text-[11px]">
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="01" class="mr-1"> 1月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="02" class="mr-1"> 2月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="03" class="mr-1"> 3月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="04" class="mr-1"> 4月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="05" class="mr-1"> 5月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="06" class="mr-1"> 6月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="07" class="mr-1"> 7月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="08" class="mr-1"> 8月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="09" class="mr-1"> 9月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="10" class="mr-1"> 10月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="11" class="mr-1"> 11月</label>
+                                <label class="flex items-center justify-center border p-1 rounded-md cursor-pointer hover:bg-slate-50"><input type="checkbox" name="s-custom-months" value="12" class="mr-1"> 12月</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 p-3 rounded-xl bg-white">
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1.5">📌 選擇當時報名初始班級：</label>
+                        <div id="student-form-class-list" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-2.5 rounded-xl font-bold shadow-md transition-colors">儲存並建立檔案</button>
+                </form>
+            </div>
+
+            <div id="detail-modal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+                <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-slate-200">
+                    <div class="flex justify-between items-center bg-slate-900 text-white p-4 px-6 shrink-0">
+                        <h3 class="font-extrabold text-sm flex items-center gap-1.5">📋 學生完整檔案與變更中心 (橫向寬面板)</h3>
+                        <button onclick="closeModal()" class="text-slate-400 hover:text-white text-2xl font-bold transition-colors">&times;</button>
+                    </div>
+                    
+                    <div class="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                        <div class="space-y-4">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2.5" id="modal-profile-content">
+                                </div>
+                            
+                            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex justify-between items-center">
+                                <span class="font-bold text-slate-700">營運狀態變更：</span>
+                                <div id="modal-status-toggle-zone"></div>
+                            </div>
+
+                            <div class="border border-indigo-200 p-4 rounded-xl bg-indigo-50/20 space-y-2.5">
+                                <p class="font-bold text-indigo-900 flex justify-between items-center">
+                                    <span>🔄 修改目前上課班級（連動當月計費）</span>
+                                </p>
+                                <div id="modal-current-classes-modifier" class="flex flex-wrap gap-2"></div>
+                                <button id="modal-update-class-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl font-bold text-[11px] shadow-sm transition-colors">確認異動目前上課班級</button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col h-full space-y-2">
+                            <p class="text-xs font-extrabold text-slate-800 flex items-center gap-1">📊 歷年完整收費與欠繳明細帳目：</p>
+                            <div id="modal-billing-history-table" class="flex-1 overflow-y-auto pr-1 space-y-3 max-h-[50vh] border border-slate-100 p-2 rounded-xl bg-slate-50/50">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-4 px-6 border-t border-slate-200 flex gap-3 justify-end shrink-0">
+                        <button id="modal-delete-btn" class="bg-rose-50 hover:bg-rose-100 text-rose-600 px-4 py-2 rounded-xl font-bold border border-rose-200 text-xs transition-colors">移除學生</button>
+                        <button onclick="closeModal()" class="bg-slate-900 hover:bg-slate-800 px-6 py-2 rounded-xl font-bold text-white text-xs transition-colors shadow-md">關閉視窗</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page3" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">⚙️</span>
+                    <h2 class="text-lg font-bold text-slate-900">學費開立中心</h2>
+                </div>
+                <select id="billing-month" onchange="renderBillingSetup()" class="border border-slate-300 p-1.5 px-3 rounded-lg font-mono text-xs bg-slate-50 text-slate-700 font-bold focus:outline-indigo-500">
+                    <option>2026-05</option><option>2026-06</option><option>2026-07</option>
+                    <option>2026-08</option><option>2026-09</option><option>2026-10</option>
+                </select>
+            </div>
+            
+            <p class="text-xs font-bold text-slate-500">📌 請選擇開單作業對應年級：</p>
+            <div class="grid grid-cols-6 gap-2 text-xs text-center font-bold">
+                <button onclick="setBillingActiveGrade(1)" id="bill-gbtn-1" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 1年級</button>
+                <button onclick="setBillingActiveGrade(2)" id="bill-gbtn-2" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 2年級</button>
+                <button onclick="setBillingActiveGrade(3)" id="bill-gbtn-3" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 3年級</button>
+                <button onclick="setBillingActiveGrade(4)" id="bill-gbtn-4" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 4年級</button>
+                <button onclick="setBillingActiveGrade(5)" id="bill-gbtn-5" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 5年級</button>
+                <button onclick="setBillingActiveGrade(6)" id="bill-gbtn-6" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國小 6年級</button>
+                <button onclick="setBillingActiveGrade(7)" id="bill-gbtn-7" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國中 7年級</button>
+                <button onclick="setBillingActiveGrade(8)" id="bill-gbtn-8" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國中 8年級</button>
+                <button onclick="setBillingActiveGrade(9)" id="bill-gbtn-9" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">國中 9年級</button>
+                <button onclick="setBillingActiveGrade(10)" id="bill-gbtn-10" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">高中 高一</button>
+                <button onclick="setBillingActiveGrade(11)" id="bill-gbtn-11" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">高中 高二</button>
+                <button onclick="setBillingActiveGrade(12)" id="bill-gbtn-12" class="bg-slate-100 border p-2.5 rounded-xl hover:bg-indigo-50 cursor-pointer">高中 高三</button>
+            </div>
+
+            <div id="billing-active-view-container" class="space-y-4 pt-2"></div>
+        </section>
+
+        <section id="page4" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-4">
+            <div class="flex items-center space-x-2 border-b border-slate-100 pb-3">
+                <span class="text-xl">💵</span>
+                <h2 class="text-lg font-bold text-slate-900">櫃檯學號/姓名點收紀錄</h2>
+            </div>
+            
+            <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200/60 space-y-2.5 shadow-2xs">
+                <label class="block text-xs font-bold text-amber-900">🔍 請輸入「學生姓名」或「6位數學號」快速點收：</label>
+                <input type="text" id="counter-search-input" oninput="handleCounterSearch()" placeholder="輸入例如：王小明 或 114001..." class="w-full border border-amber-300 p-2.5 rounded-lg text-xs font-bold bg-white text-slate-800 placeholder-slate-400 font-mono">
+                <div id="counter-fuzzy-results" class="hidden bg-white border border-slate-200 rounded-xl max-h-48 overflow-y-auto divide-y divide-slate-100 text-xs shadow-xl"></div>
+            </div>
+
+            <div id="counter-result-zone" class="border border-dashed border-slate-300 p-8 rounded-xl bg-slate-50 text-xs text-slate-400 font-medium min-h-32 flex items-center justify-center text-center px-8">
+                輸入並選擇對象後，此處將自動帶入該生應繳學費月份、自動計算目前時間，並開啟精美收費確認單。
+            </div>
+        </section>
+
+        <section id="page5" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">🧱</span>
+                    <h2 class="text-lg font-bold text-slate-900">班級網格管理看板</h2>
+                </div>
+                <button onclick="openAddClassPrompt()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-sm transition-colors">+ 新增班級</button>
+            </div>
+            <div class="space-y-3">
+                <h3 class="text-xs font-black text-emerald-800 flex justify-between items-center px-1">
+                    <span>🟢 正在開班區域</span>
+                    <span id="count-open-classes" class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-mono font-bold text-[10px]">0 班</span>
+                </h3>
+                <div id="class-grid-open" class="grid grid-cols-3 gap-4"></div>
+            </div>
+            <hr class="border-slate-100 my-4">
+            <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50 shadow-2xs">
+                <button onclick="toggleCardUi('global-closed-class-box', 'P5')" class="w-full bg-slate-200 hover:bg-slate-300/80 p-3 text-xs font-bold text-slate-700 flex justify-between items-center transition-colors">
+                    <span>🔴 已關閉班級歷史封存區 (<span id="count-closed-classes" class="font-mono">0</span> 班)</span>
+                    <span class="text-[10px] bg-white px-2 py-0.5 rounded-full text-slate-500 font-medium shadow-2xs">點擊展開/隱藏</span>
+                </button>
+                <div id="global-closed-class-box" class="hidden p-4 space-y-2 bg-slate-100/50">
+                    <div id="class-grid-closed" class="grid grid-cols-3 gap-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page6" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">👩‍🏫</span>
+                    <h2 class="text-lg font-bold text-slate-900">師資列表與班級選配</h2>
+                </div>
+                <button onclick="openAddTeacherPrompt()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2 rounded-xl text-xs font-bold border border-indigo-200 shadow-2xs transition-colors">+ 新增老師</button>
+            </div>
+            <div id="teacher-main-list" class="grid grid-cols-2 gap-4"></div>
+
+            <div id="teacher-modal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
+                <div class="bg-white rounded-2xl w-full max-w-sm p-5 space-y-3.5 shadow-2xl border border-slate-100 text-xs">
+                    <h3 id="t-modal-title" class="font-extrabold text-sm text-slate-950"></h3>
+                    <p class="text-slate-400 font-medium">勾選負責班級（只列出目前正開班的選項）：</p>
+                    <div id="t-modal-classes-box" class="flex flex-col gap-1.5 max-h-52 overflow-y-auto p-2.5 bg-slate-50 rounded-xl border border-slate-200/60 shadow-inner"></div>
+                    <button onclick="closeTeacherModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition-colors">完成指派並關閉</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page7" class="page bg-white p-6 rounded-2xl shadow-xs border border-slate-100 space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">📅</span>
+                    <h2 class="text-lg font-bold text-slate-900">當日收費流水帳</h2>
+                </div>
+            </div>
+
+            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 flex items-center justify-between gap-2 text-xs shadow-2xs w-fit">
+                <span class="font-bold text-slate-700">請選取稽核日期：</span>
+                <input type="date" id="daily-audit-date" onchange="renderDailyAuditList()" class="border border-slate-300 p-1.5 px-2.5 rounded-lg font-mono bg-white font-bold text-indigo-700 focus:outline-indigo-500 shadow-2xs">
+            </div>
+
+            <div class="bg-radial from-emerald-600 to-emerald-700 text-white p-5 rounded-xl flex justify-between items-center shadow-md border border-emerald-500/30">
+                <span class="text-xs font-bold tracking-wide">✨ 該日實收總金額</span>
+                <span id="daily-audit-sum" class="text-3xl font-black font-mono tracking-tight">$0</span>
+            </div>
+
+            <div class="space-y-2">
+                <p class="text-xs font-black text-slate-700 px-0.5">📋 當日繳費明細（點擊實收金額可查看費用細項）：</p>
+                <div class="overflow-x-auto border border-slate-200 rounded-xl shadow-2xs">
+                    <table class="w-full text-xs border-collapse bg-white">
+                        <thead>
+                            <tr class="bg-slate-800 text-slate-200 text-left font-bold text-[11px] border-b border-slate-900">
+                                <th class="p-3">年級</th>
+                                <th class="p-3">姓名/學號</th>
+                                <th class="p-3">學費月份</th>
+                                <th class="p-3">收費老師</th>
+                                <th class="p-3 text-right">實收金額</th>
+                            </tr>
+                        </thead>
+                        <tbody id="daily-audit-tbody" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- 核心資料庫 ---
+        let classes = [
+            { cid: "2026-MATH-M1A-SUMMER", cname: "國一數學A班", status: "open" },
+            { cid: "2026-ENG-E1-KIDS", cname: "兒童美語班", status: "open" },
+            { cid: "2026-SCI-S1-NEW", cname: "國一理化新開班", status: "open" },
+            { cid: "2025-OLD-EXPIRED-CLASS", cname: "已停開舊歷史班", status: "closed" }
+        ];
+        
+        let students = [
+            { uid: "114001", name: "王小明", gender: "男", birthday: "2014-05-12", idcard: "A123456789", school: "永康國小", referrer: "無", homephone: "06-2556677", address: "台南市永康區成功路1號", p1_name: "王大山", p1_title: "父", p1_phone: "0911-222333", p2_name: "", p2_title: "", p2_phone: "", cycle: "monthly", customMonths: [], regClasses: ["2026-MATH-M1A-SUMMER"], currentClasses: ["2026-MATH-M1A-SUMMER", "2026-SCI-S1-NEW"], status: "active" },
+            { uid: "114002", name: "李鐵蛋", gender: "男", birthday: "2014-08-20", idcard: "D198765432", school: "大橋國小", referrer: "無", homephone: "06-2334455", address: "台南市永康區中山路50號", p1_name: "李大龍", p1_title: "父", p1_phone: "0933-444555", p2_name: "", p2_title: "", p2_phone: "", cycle: "monthly", customMonths: [], regClasses: ["2026-MATH-M1A-SUMMER"], currentClasses: ["2026-MATH-M1A-SUMMER"], status: "active" },
+            { uid: "108001", name: "張大衛", gender: "男", birthday: "2011-02-02", idcard: "E122333444", school: "永康國中", referrer: "無", homephone: "06-2112233", address: "台南市東區中華路2號", p1_name: "張本立", p1_title: "父", p1_phone: "0955-666777", p2_name: "", p2_title: "", p2_phone: "", cycle: "monthly", customMonths: [], regClasses: ["2026-MATH-M1A-SUMMER"], currentClasses: ["2026-MATH-M1A-SUMMER"], status: "active" }
+        ];
+        
+        let teachers = [
+            { tid: "T1", name: "張維(數學)", teacherClasses: ["2026-MATH-M1A-SUMMER"] },
+            { tid: "T2", name: "Emily(英文)", teacherClasses: ["2026-ENG-E1-KIDS"] }
+        ];
+        
+        const extraFeeItems = ["退費", "餐費", "影印費", "書費"];
+        let monthlyBills = [
+            { billId: "2026-05-114001", month: "2026-05", uid: "114001", name: "王小明", grade: 1, total: 4500, details: { "國一數學A班": 4000, "書費": 500 }, status: "已繳", payDate: "2026-05-21", payTime: "14:30", collector: "張維(數學)" },
+            { billId: "2026-05-114002", month: "2026-05", uid: "114002", name: "李鐵蛋", grade: 1, total: 4000, details: { "國一數學A班": 4000 }, status: "未繳", payDate: "", payTime: "", collector: "" }
+        ]; 
+
+        let uiExpandedState = {}; 
+        let currentStudSubpage = 'active'; 
+        let currentStudActiveGrade = 1; 
+        let currentBillingActiveGrade = 1; 
+
+        // 重要日程核心庫 (顏色自設款)
+        let scheduleItems = [
+            { id: 1, title: "補習班端午節放假公告", date: "2026-06-19", color: "green" },
+            { id: 2, title: "國三會考落點分析講座", date: "2026-06-10", color: "red" },
+            { id: 3, title: "發放5月份營業報表", date: "2026-06-05", color: "yellow" }
+        ];
+
+        function getCurrentSchoolYearBase() {
+            const today = new Date(); const year = today.getFullYear(); const month = today.getMonth() + 1;
+            if (year === 2025 && month >= 7) return 114;
+            if (year === 2026 && month <= 6) return 114;
+            if (year === 2026 && month >= 7) return 115;
+            let base = year - 1911; if (month <= 6) base--; return base;
+        }
+
+        function getGradeByUid(uid) {
+            const prefix = parseInt(uid.substring(0, 3)); const currentBase = getCurrentSchoolYearBase();
+            let diff = currentBase - prefix; let currentGrade = 1 + diff;
+            if (currentGrade < 1) return "未入學"; if (currentGrade > 12) return "已畢業"; return currentGrade;
+        }
+
+        function getGradeLabel(g) {
+            if(g === "已畢業") return "🎓 已畢業校友"; if(g === "未入學") return "👶 尚未入學";
+            if(g <= 6) return `國小 ${g}年級`; if(g <= 9) return `國中 ${g-6}年級`; return `高中 高${g-9}`;
+        }
+
+        function autoGenerateUid() {
+            const gradeSelect = document.getElementById('s-grade-select').value; if(!gradeSelect) { document.getElementById('s-uid').value = ""; return; }
+            const targetGrade = parseInt(gradeSelect); const currentBase = getCurrentSchoolYearBase();
+            let targetPrefix = currentBase - (targetGrade - 1); let prefixStr = targetPrefix.toString();
+            let maxSerial = 0;
+            students.forEach(s => {
+                if(s.uid.startsWith(prefixStr)) {
+                    let serial = parseInt(s.uid.substring(3)) || 0; if(serial > maxSerial) maxSerial = serial;
+                }
+            });
+            document.getElementById('s-uid').value = prefixStr + (maxSerial + 1).toString().padStart(3, '0');
+        }
+
+        function safeDelete(msg, callback) {
+            if (confirm(`【⚠️ 安全警告】\n您確定要刪除 ${msg} 嗎？`)) {
+                if (confirm(`【🚨 終極確認】\n這會連帶刪除所有歷史，確定要執行嗎？`)) callback();
+            }
+        }
+
+        function switchPage(idx) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page${idx}`).classList.add('active');
+            
+            for(let i=1; i<=7; i++){
+                let btn = document.getElementById(`nav-btn-${i}`);
+                if(btn) { btn.classList.remove('bg-indigo-600', 'text-white'); btn.classList.add('text-slate-400'); }
+            }
+            let activeBtn = document.getElementById(`nav-btn-${idx}`);
+            if(activeBtn) { activeBtn.classList.remove('text-slate-400'); activeBtn.classList.add('bg-indigo-600', 'text-white'); }
+
+            if(idx === 1) updateDashboard();
+            if(idx === 2) { switchStudSubpage(currentStudSubpage); renderStudentFormClasses(); clearStudentSearch(); }
+            if(idx === 3) renderBillingSetup();
+            if(idx === 4) clearCounterSearch();
+            if(idx === 5) renderClassManagement();
+            if(idx === 6) renderTeacherMainList();
+            if(idx === 7) { initDailyAuditDate(); renderDailyAuditList(); }
+        }
+
+        // ================= 學生資料中心子分頁處理 =================
+        function switchStudSubpage(type) {
+            currentStudSubpage = type;
+            document.querySelectorAll('.stud-subpage').forEach(el => el.classList.remove('active'));
+            document.getElementById(`stud-subpage-${type}`).classList.add('active');
+
+            ['active', 'left', 'register'].forEach(t => {
+                let btn = document.getElementById(`stud-tab-${t}`);
+                btn.classList.remove('bg-white', 'text-slate-900', 'shadow-xs');
+                btn.classList.add('text-slate-500');
+            });
+            let actBtn = document.getElementById(`stud-tab-${type}`);
+            actBtn.classList.add('bg-white', 'text-slate-900', 'shadow-xs');
+            actBtn.classList.remove('text-slate-500');
+
+            if(type === 'active') setStudActiveGrade(currentStudActiveGrade);
+            if(type === 'left') renderLeftStudentsList();
+        }
+
+        function setStudActiveGrade(g) {
+            currentStudActiveGrade = g;
+            for(let i=1; i<=12; i++) {
+                let btn = document.getElementById(`stud-gbtn-${i}`);
+                if(btn) { btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600'); btn.classList.add('bg-slate-100'); }
+            }
+            let actBtn = document.getElementById(`stud-gbtn-${g}`);
+            if(actBtn) { actBtn.classList.remove('bg-slate-100'); actBtn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600'); }
+
+            const container = document.getElementById('stud-active-list-container');
+            container.innerHTML = "";
+            let match = students.filter(s => s.status === 'active' && getGradeByUid(s.uid) === g);
+
+            if(match.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 italic col-span-2 py-4 text-center font-medium">該年級目前在班尚無任何學生資料</p>`;
+                return;
+            }
+            match.forEach(s => {
+                container.innerHTML += `
+                    <div class="bg-white border border-slate-200 p-3 rounded-xl text-xs flex justify-between items-center shadow-2xs hover:border-indigo-400 transition-all">
+                        <span>👤 <b class="text-slate-900 text-sm">${s.name}</b> <span class="font-mono text-slate-400 ml-1">(${s.uid})</span> <span class="text-slate-400 text-[11px] ml-1">| ${s.school}</span></span>
+                        <button onclick="viewStudentProfile('${s.uid}')" class="bg-slate-900 text-white font-bold px-3 py-1 rounded-lg transition-transform active:scale-95">調閱檔案</button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderLeftStudentsList() {
+            const container = document.getElementById('stud-left-list-container');
+            container.innerHTML = "";
+            let match = students.filter(s => s.status === 'left');
+            if(match.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 italic col-span-2 py-4 text-center font-medium">目前無離班學生紀錄</p>`;
+                return;
+            }
+            match.forEach(s => {
+                container.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs flex justify-between items-center shadow-2xs">
+                        <span>🍂 <b class="text-slate-700 text-sm">${s.name}</b> <span class="font-mono text-slate-400 ml-1">(${s.uid})</span> <span class="text-slate-400 text-[11px] ml-1">[${getGradeLabel(getGradeByUid(s.uid)).split(' ')[1]}]</span></span>
+                        <button onclick="viewStudentProfile('${s.uid}')" class="bg-slate-600 text-white font-bold px-3 py-1 rounded-lg">查看歷史</button>
+                    </div>
+                `;
+            });
+        }
+
+        // ================= 學費開立中心分頁處理 =================
+        function setBillingActiveGrade(g) {
+            currentBillingActiveGrade = g;
+            for(let i=1; i<=12; i++) {
+                let btn = document.getElementById(`bill-gbtn-${i}`);
+                if(btn) { btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600'); btn.classList.add('bg-slate-100'); }
+            }
+            let actBtn = document.getElementById(`bill-gbtn-${g}`);
+            if(actBtn) { actBtn.classList.remove('bg-slate-100'); actBtn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600'); }
+            renderBillingSetup();
+        }
+
+        function toggleCycleMonthSelector() {
+            const cycle = document.getElementById('s-cycle').value;
+            document.getElementById('cycle-months-box').classList.toggle('hidden', cycle === 'monthly');
+        }
+
+        function handleStudentSearch() {
+            const keyword = document.getElementById('student-search-input').value.trim().toLowerCase();
+            const resBox = document.getElementById('student-search-results');
+            if(!keyword) { resBox.classList.add('hidden'); resBox.innerHTML = ""; return; }
+
+            let match = students.filter(s => s.name.toLowerCase().includes(keyword) || s.uid.includes(keyword));
+            if(match.length === 0) {
+                resBox.innerHTML = `<p class="text-slate-400 italic text-center p-2 font-medium">無符合對象</p>`;
+                resBox.classList.remove('hidden'); return;
+            }
+
+            resBox.innerHTML = match.map(s => `
+                <div onclick="viewStudentProfile('${s.uid}')" class="p-2.5 border-b border-slate-100 last:border-0 hover:bg-slate-50 cursor-pointer flex justify-between items-center text-xs transition-colors">
+                    <span class="text-slate-700">🔍 <b>${s.name}</b> <span class="font-mono text-slate-400">(${s.uid})</span></span>
+                    <span class="text-[10px] ${s.status === 'active' ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50'} font-bold border px-2 py-0.5 rounded-full">${s.status === 'active' ? '在班' : '離班'}</span>
+                </div>
+            `).join('');
+            resBox.classList.remove('hidden');
+        }
+
+        document.addEventListener('click', function(e) {
+            const searchBox = document.getElementById('student-search-results');
+            if(searchBox && !searchBox.contains(e.target) && e.target.id !== 'student-search-input') searchBox.classList.add('hidden');
+        });
+
+        function clearStudentSearch() {
+            document.getElementById('student-search-input').value = "";
+            document.getElementById('student-search-results').innerHTML = "";
+            document.getElementById('student-search-results').classList.add('hidden');
+        }
+
+        function handleCounterSearch() {
+            const val = document.getElementById('counter-search-input').value.trim().toLowerCase();
+            const box = document.getElementById('counter-fuzzy-results');
+            if(!val) { box.classList.add('hidden'); box.innerHTML = ""; return; }
+
+            let match = students.filter(s => s.name.toLowerCase().includes(val) || s.uid.includes(val));
+            if(match.length === 0) {
+                box.innerHTML = `<div class="p-3 text-slate-400 italic text-center font-medium">查無此學生</div>`;
+                box.classList.remove('hidden'); return;
+            }
+
+            box.innerHTML = match.map(s => `
+                <div onclick="selectCounterStudent('${s.uid}', '${s.name}')" class="p-3 hover:bg-amber-50/80 cursor-pointer flex justify-between items-center font-bold text-slate-700 transition-colors border-b border-slate-100 last:border-0">
+                    <span>👤 ${s.name} <span class="text-slate-400 font-mono text-xs font-normal">(${s.uid})</span></span>
+                    <span class="text-slate-400 font-normal text-xs">${s.school}</span>
+                </div>
+            `).join('');
+            box.classList.remove('hidden');
+        }
+
+        function selectCounterStudent(uid, name) {
+            document.getElementById('counter-search-input').value = `${name} (${uid})`;
+            document.getElementById('counter-fuzzy-results').classList.add('hidden');
+            let bills = monthlyBills.filter(b => b.uid === uid);
+            const zone = document.getElementById('counter-result-zone');
+
+            if(bills.length === 0) {
+                zone.innerHTML = `<div class="w-full text-center p-5 text-rose-600 font-bold bg-rose-50 rounded-xl border border-rose-200">❌ 該生目前在系統中完全沒有任何開單紀錄。</div>`;
+                return;
+            }
+
+            let targetBill = bills.find(b => b.status === "未繳") || bills[bills.length - 1];
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().substring(0, 5);
+
+            if(targetBill.status === "已繳") {
+                zone.innerHTML = `
+                    <div class="w-full space-y-3 bg-white p-4 rounded-xl border border-slate-200 text-left shadow-2xs">
+                        <div class="flex items-center space-x-2 text-emerald-700 border-b border-slate-100 pb-2"><span>🟢</span><p class="font-bold">該對象最新單據已繳清</p></div>
+                        <div class="text-xs text-slate-600 space-y-1">
+                            <p><b>學費所屬月份：</b><span class="font-mono font-bold text-slate-800">${targetBill.month}</span></p>
+                            <p class="text-slate-400">收費時間：${targetBill.payDate} ${targetBill.payTime} | 經手人：${targetBill.collector}</p>
+                        </div>
+                        <p class="font-extrabold text-indigo-600 border-t border-slate-100 pt-2 text-sm flex justify-between"><span>實收總金額：</span><span class="font-mono">$${targetBill.total.toLocaleString()}</span></p>
+                    </div>
+                `;
+                return;
+            }
+
+            let detailLines = Object.keys(targetBill.details).map(k => `
+                <div class="flex justify-between py-1 border-b border-slate-100 last:border-0 text-slate-600">
+                    <span>• ${k}</span><span class="font-mono text-slate-700 font-bold">$${targetBill.details[k].toLocaleString()}</span>
+                </div>
+            `).join('');
+            
+            zone.innerHTML = `
+                <div class="w-full space-y-4 bg-white p-5 rounded-xl border border-slate-200 text-slate-700 text-left shadow-md">
+                    <p class="font-black text-slate-900 text-sm flex justify-between items-center border-b border-slate-100 pb-2"><span>💵 元大櫃檯現場收費單</span></p>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-xs space-y-1.5">
+                        <p><b>學生姓名：</b><span class="text-slate-800 font-bold">${targetBill.name}</span> (${targetBill.uid})</p>
+                        <p><b>學費所屬月份：</b><span class="text-indigo-600 font-mono font-bold">${targetBill.month}</span></p>
+                        <div class="bg-white p-2 rounded-lg border border-slate-200/60 mt-2">${detailLines}</div>
+                    </div>
+                    <div class="text-lg font-black text-rose-600 py-1 flex justify-between items-center border-b border-dashed border-slate-200">
+                        <span class="text-xs text-slate-500 font-bold">應收總金額：</span><span class="font-mono">$${targetBill.total.toLocaleString()}</span>
+                    </div>
+                    <div class="space-y-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="date" id="collect-date" value="${todayStr}" class="border border-slate-300 p-1.5 rounded-lg bg-white font-mono">
+                            <input type="time" id="collect-time" value="${timeStr}" class="border border-slate-300 p-1.5 rounded-lg bg-white font-mono">
+                        </div>
+                        <select id="collect-teacher" class="w-full border border-slate-300 p-2 rounded-lg bg-white text-xs font-bold">
+                            ${teachers.map(t => `<option value="${t.name}">${t.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <button onclick="executePayment_v6('${targetBill.billId}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-3 rounded-xl text-xs transition-colors">確認款項正確，執行沖銷</button>
+                </div>
+            `;
+        }
+
+        function executePayment_v6(billId) {
+            const b = monthlyBills.find(x => x.billId === billId);
+            if(b) {
+                b.status = "已繳";
+                b.payDate = document.getElementById('collect-date').value;
+                b.payTime = document.getElementById('collect-time').value;
+                b.collector = document.getElementById('collect-teacher').value;
+                alert(`【成功】${b.name} ${b.month} 學費已順利完成沖銷！`);
+                clearCounterSearch();
+                updateDashboard();
+            }
+        }
+
+        function clearCounterSearch() {
+            document.getElementById('counter-search-input').value = "";
+            const rb = document.getElementById('counter-fuzzy-results');
+            if(rb) { rb.innerHTML = ""; rb.classList.add('hidden'); }
+            document.getElementById('counter-result-zone').innerHTML = `輸入並選擇對象後，此處將自動帶入該生應繳學費月份、自動計算目前時間，並開啟精美收費確認單。`;
+        }
+
+        function initDailyAuditDate() {
+            if(!document.getElementById('daily-audit-date').value) document.getElementById('daily-audit-date').value = new Date().toISOString().split('T')[0];
+        }
+
+        function renderDailyAuditList() {
+            const targetDate = document.getElementById('daily-audit-date').value;
+            const tbody = document.getElementById('daily-audit-tbody');
+            const sumEl = document.getElementById('daily-audit-sum');
+            tbody.innerHTML = ""; if(!targetDate) { sumEl.innerText = "$0"; return; }
+
+            let dailyBills = monthlyBills.filter(b => b.status === "已繳" && b.payDate === targetDate);
+            let totalSum = dailyBills.reduce((sum, b) => sum + b.total, 0);
+            sumEl.innerText = `$${totalSum.toLocaleString()}`;
+
+            if(dailyBills.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-400 italic bg-slate-50/50">該日尚無臨櫃收費紀錄</td></tr>`;
+                return;
+            }
+            dailyBills.forEach(b => {
+                let gradeText = getGradeLabel(getGradeByUid(b.uid));
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 border-b border-slate-100 align-middle text-xs">
+                        <td class="p-3 font-bold text-slate-500">${gradeText.replace("國小 ", "小").replace("國中 ", "中").replace("高中 ", "高")}</td>
+                        <td class="p-3"><b>${b.name}</b><div class="text-[9px] text-slate-400">${b.uid}</div></td>
+                        <td class="p-3 font-mono">${b.month}</td>
+                        <td class="p-3">${b.collector.split('(')[0]}</td>
+                        <td class="p-3 text-right"><button onclick="audit穿透明細('${b.billId}')" class="bg-indigo-50 text-indigo-700 px-2 py-1 rounded-md border border-indigo-100">$${b.total.toLocaleString()} 🔍</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function audit穿透明細(billId) {
+            const b = monthlyBills.find(x => x.billId === billId); if(!b) return;
+            let detailStr = Object.keys(b.details).map(k => `• ${k} : $${b.details[k].toLocaleString()}`).join('\n');
+            alert(`【${b.name}】費用最細項稽核：\n-------------------------\n${detailStr}\n-------------------------\n實收總額：$${b.total.toLocaleString()}`);
+        }
+
+        // ================= 網格化班級管理 (完整班號、二次防呆確認) =================
+        function renderClassManagement() {
+            const openGrid = document.getElementById('class-grid-open'); const closedGrid = document.getElementById('class-grid-closed');
+            openGrid.innerHTML = ""; closedGrid.innerHTML = "";
+            let openCount = 0; let closedCount = 0;
+
+            classes.forEach(c => {
+                let inCount = students.filter(s => s.status === 'active' && s.currentClasses.includes(c.cid) && getGradeByUid(s.uid) !== "已畢業").length;
+                let tNames = teachers.filter(t => t.teacherClasses.includes(c.cid)).map(t => t.name.split('(')[0]).join(',') || "無老師";
+
+                let cardHtml = `
+                    <div class="bg-white rounded-xl border-2 ${c.status==='open'?'border-slate-200 hover:border-indigo-500':'border-rose-200 bg-rose-50/20'} flex flex-col justify-between text-xs overflow-hidden shadow-2xs transition-all">
+                        <div class="bg-slate-800 text-slate-100 font-mono text-[10px] p-2 px-3 font-bold break-all border-b border-slate-700">
+                            🆔 班號: ${c.cid}
+                        </div>
+                        <div class="p-3 flex-1 space-y-1">
+                            <p class="font-extrabold text-slate-900 text-xs truncate">${c.cname}</p>
+                            <p class="text-[10px] text-slate-400 font-medium truncate">👩‍🏫 授課：${tNames}</p>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-slate-50 border-t border-slate-100 text-[11px]">
+                            <span class="font-extrabold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full text-[10px] font-mono">${inCount} 人在籍</span>
+                            <div class="flex gap-1">
+                                <button onclick="editClassName('${c.cid}')" class="bg-white border text-slate-700 px-1.5 py-0.5 rounded font-bold text-[9px]">改名</button>
+                                <button onclick="toggleClassStatusConfirm('${c.cid}', '${c.status}')" class="text-white px-1.5 py-0.5 rounded font-bold text-[9px] ${c.status==='open'?'bg-rose-600 hover:bg-rose-700':'bg-emerald-600 hover:bg-emerald-700'}">${c.status==='open'?'關閉班級':'重開班級'}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                if(c.status === 'open') { openGrid.innerHTML += cardHtml; openCount++; }
+                else { closedGrid.innerHTML += cardHtml; closedCount++; }
+            });
+
+            document.getElementById('count-open-classes').innerText = `${openCount} 班`;
+            document.getElementById('count-closed-classes').innerText = closedCount;
+            document.getElementById('global-closed-class-box').classList.toggle('hidden', !uiExpandedState['global-closed-class-box']);
+        }
+
+        function toggleClassStatusConfirm(cid, currentStatus) {
+            let actionText = (currentStatus === 'open') ? "【⚠️ 關閉此班級】" : "【重新開啟此班級】";
+            if(confirm(`【變更操作確認】\n您確定要執行 ${actionText} 的作業嗎？`)) {
+                if(confirm(`【最終確認】\n請確認此變更會直接影響當月開單作業，確定執行？`)) {
+                    const c = classes.find(x => x.cid === cid);
+                    if(c) { c.status = (c.status === 'open') ? 'closed' : 'open'; renderClassManagement(); }
+                }
+            }
+        }
+
+        function editClassName(cid) {
+            const c = classes.find(x => x.cid === cid);
+            let newName = prompt(`請輸入新名稱：`, c.cname);
+            if(newName && newName.trim() !== "") { c.cname = newName.trim(); renderClassManagement(); }
+        }
+
+        function openAddClassPrompt() {
+            let cid = prompt("唯一【班號】(不可重疊且建議完整)："); if(!cid) return;
+            if(classes.some(c=>c.cid === cid)) { alert("此班號已存在！"); return; }
+            let cname = prompt("【班級名稱】："); if(!cname) return;
+            classes.push({ cid, cname, status: "open" }); renderClassManagement();
+        }
+
+        function toggleCardUi(key, pageTarget) {
+            uiExpandedState[key] = !uiExpandedState[key];
+            if(pageTarget === 'P5') renderClassManagement();
+            if(pageTarget === 'P3') renderBillingSetup();
+        }
+
+        function renderTeacherMainList() {
+            const box = document.getElementById('teacher-main-list'); box.innerHTML = "";
+            teachers.forEach(t => {
+                let activeTaught = classes.filter(c => t.teacherClasses.includes(c.cid) && c.status === 'open').map(c => c.cname).join('、 ') || "無運作中班級";
+                box.innerHTML += `
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200 text-xs flex justify-between items-center shadow-2xs">
+                        <div onclick="openTeacherModal('${t.tid}')" class="flex-1 cursor-pointer pr-4">
+                            <p class="font-extrabold text-slate-900 text-sm">👩‍🏫 ${t.name}</p>
+                            <p class="text-[11px] text-slate-400 mt-1">負責：${activeTaught}</p>
+                        </div>
+                        <button onclick="removeTeacher('${t.tid}')" class="bg-rose-50 text-rose-600 px-2.5 py-1.5 rounded-xl border border-rose-200">移除</button>
+                    </div>
+                `;
+            });
+        }
+
+        let activeTeacherId = null;
+        function openTeacherModal(tid) {
+            activeTeacherId = tid; const t = teachers.find(x => x.tid === tid);
+            document.getElementById('t-modal-title').innerText = `管理 ${t.name} 的負責班級`;
+            const box = document.getElementById('t-modal-classes-box');
+            box.innerHTML = classes.filter(c => c.status === 'open').map(c => `
+                <label class="inline-flex items-center gap-2 bg-white border p-2 rounded-lg text-xs w-full cursor-pointer hover:bg-slate-50">
+                    <input type="checkbox" value="${c.cid}" ${t.teacherClasses.includes(c.cid)?'checked':''} onchange="syncTeacherClass('${c.cid}', this.checked)" class="rounded text-indigo-600">
+                    <span class="font-mono text-slate-400 text-[10px] break-all max-w-[100px] truncate">${c.cid}</span>
+                    <span class="font-extrabold text-slate-700">${c.cname}</span>
+                </label>
+            `).join('');
+            document.getElementById('teacher-modal').classList.remove('hidden');
+        }
+        function syncTeacherClass(cid, isChecked) {
+            const t = teachers.find(x => x.tid === activeTeacherId);
+            if(isChecked) { if(!t.teacherClasses.includes(cid)) t.teacherClasses.push(cid); }
+            else { t.teacherClasses = t.teacherClasses.filter(id => id !== cid); }
+        }
+        function closeTeacherModal() { document.getElementById('teacher-modal').classList.add('hidden'); renderTeacherMainList(); }
+        function openAddTeacherPrompt() { let name = prompt("老師姓名："); if(name) { teachers.push({ tid: 'T'+Date.now()%1000, name, teacherClasses: [] }); renderTeacherMainList(); } }
+        function removeTeacher(tid) { safeDelete("該老師", () => { teachers = teachers.filter(t => t.tid !== tid); renderTeacherMainList(); }); }
+
+        function renderStudentFormClasses() {
+            const box = document.getElementById('student-form-class-list');
+            box.innerHTML = classes.filter(c => c.status === 'open').map(c => `
+                <label class="inline-flex items-center gap-1.5 bg-slate-100 border text-slate-700 px-2.5 py-1 rounded-xl text-[11px] font-medium cursor-pointer">
+                    <input type="checkbox" name="s-classes" value="${c.cid}" class="rounded"> <span>${c.cname}</span>
+                </label>
+            `).join('');
+        }
+
+        function saveStudent(e) {
+            e.preventDefault(); const uid = document.getElementById('s-uid').value;
+            if(students.some(s => s.uid === uid)) { alert("學號已被佔用！"); return; }
+            
+            let chosenClasses = []; document.querySelectorAll('input[name="s-classes"]:checked').forEach(el => chosenClasses.push(el.value));
+            let chosenMonths = []; document.querySelectorAll('input[name="s-custom-months"]:checked').forEach(el => chosenMonths.push(el.value));
+
+            students.push({
+                uid, name: document.getElementById('s-name').value, gender: document.getElementById('s-gender').value,
+                birthday: document.getElementById('s-birthday').value, idcard: document.getElementById('s-idcard').value,
+                school: document.getElementById('s-school').value, referrer: document.getElementById('s-referrer').value,
+                homephone: document.getElementById('s-homephone').value, address: document.getElementById('s-address').value,
+                p1_name: document.getElementById('s-p1-name').value, p1_title: document.getElementById('s-p1-title').value, p1_phone: document.getElementById('s-p1-phone').value,
+                p2_name: document.getElementById('s-p2-name').value, p2_title: document.getElementById('s-p2-title').value, p2_phone: document.getElementById('s-p2-phone').value,
+                cycle: document.getElementById('s-cycle').value, customMonths: chosenMonths, 
+                regClasses: [...chosenClasses], currentClasses: [...chosenClasses], status: "active" 
+            });
+            alert("建檔成功！"); switchStudSubpage('active');
+        }
+
+        // ================= 橫向大視窗：學生個資完整檔案 center =================
+        function viewStudentProfile(uid) {
+            const s = students.find(x => x.uid === uid); if(!s) return;
+            let regNames = classes.filter(c => s.regClasses.includes(c.cid)).map(c => c.cname).join(', ') || '無選班';
+            let cycleText = s.cycle === 'monthly' ? '按月繳費' : `彈性月份開單 (${s.customMonths.join(',')}月)`;
+
+            // 填入左半側基本資訊
+            document.getElementById('modal-profile-content').innerHTML = `
+                <div class="flex justify-between items-center border-b border-slate-200 pb-1.5 mb-1.5">
+                    <span class="text-slate-400 font-bold">學籍號碼</span>
+                    <span class="font-mono bg-indigo-50 text-indigo-700 px-2.5 py-0.5 font-extrabold rounded-md text-xs">${s.uid}</span>
+                </div>
+                <p><b>學生姓名：</b><span class="text-slate-900 font-extrabold text-sm">${s.name}</span> (${s.gender})</p>
+                <p><b>推算年級：</b><span class="text-indigo-600 font-bold">${getGradeLabel(getGradeByUid(s.uid))}</span></p>
+                <p><b>就讀學校：</b>${s.school} | <b>身份證：</b><span class="font-mono">${s.idcard}</span></p>
+                <p><b>繳費週期：</b><span class="text-emerald-700 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm">${cycleText}</span></p>
+                <p class="text-[11px] text-slate-400 pt-1 border-t mt-1"><b>📝 初始報名：</b>${regNames}</p>
+                <p><b>電話：</b><span class="font-mono">${s.homephone}</span> | <b>地址：</b>${s.address}</p>
+                <div class="mt-2 bg-white border p-2 rounded-lg text-[11px]">
+                    <p class="font-bold text-slate-700">👪 聯絡家長資訊：</p>
+                    <p>1. ${s.p1_name}(${s.p1_title}) - ${s.p1_phone}</p>
+                    ${s.p2_name ? `<p>2. ${s.p2_name}(${s.p2_title}) - ${s.p2_phone}</p>` : ''}
+                </div>
+            `;
+
+            const toggleZone = document.getElementById('modal-status-toggle-zone');
+            if(s.status === 'active') {
+                toggleZone.innerHTML = `<button onclick="changeStudentStatus('${s.uid}', 'left')" class="bg-amber-600 text-white font-bold px-3 py-1.5 rounded-xl text-[11px]">⚠️ 變更為「離班」</button>`;
+            } else {
+                toggleZone.innerHTML = `<button onclick="changeStudentStatus('${s.uid}', 'active')" class="bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-xl text-[11px]">🟢 恢復為「在班」</button>`;
+            }
+
+            const modifierBox = document.getElementById('modal-current-classes-modifier');
+            modifierBox.innerHTML = classes.filter(c => c.status === 'open').map(c => `
+                <label class="inline-flex items-center gap-1 bg-white border px-2 py-1 rounded-lg text-[11px] font-bold text-slate-700 cursor-pointer">
+                    <input type="checkbox" name="modal-curr-cls-cb" value="${c.cid}" ${s.currentClasses.includes(c.cid)?'checked':''} class="rounded text-indigo-600">
+                    <span>${c.cname}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('modal-update-class-btn').onclick = () => {
+                let updated = [];
+                document.querySelectorAll('input[name="modal-curr-cls-cb"]:checked').forEach(el => updated.push(el.value));
+                s.currentClasses = updated;
+                alert(`【成功】已更新上課班級。`);
+                viewStudentProfile(uid);
+            };
+
+            // 填入右半側收費歷程表格
+            const s_bills = monthlyBills.filter(b => b.uid === uid);
+            const tableHistEl = document.getElementById('modal-billing-history-table');
+            
+            if(s_bills.length === 0) {
+                tableHistEl.innerHTML = `<p class="text-slate-400 italic text-center py-4 bg-white border rounded-xl">該生目前尚無單據紀錄。</p>`;
+            } else {
+                tableHistEl.innerHTML = s_bills.map(b => {
+                    let detailLines = Object.keys(b.details).map(k => `<div>• ${k} : $${b.details[k].toLocaleString()}</div>`).join('');
+                    let isPaid = b.status === "已繳";
+                    return `
+                        <div class="border rounded-xl p-3 bg-white space-y-1">
+                            <div class="flex justify-between items-center border-b pb-1">
+                                <span class="font-mono font-bold text-slate-700">📅 月份：${b.month}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-bold ${isPaid?'bg-emerald-600 text-white':'bg-rose-600 text-white'}">${isPaid?'已結清':'未繳費'}</span>
+                            </div>
+                            <div class="text-[11px] text-slate-500">${detailLines}</div>
+                            <div class="font-bold text-[11px] text-slate-700 pt-1 border-t flex justify-between">
+                                <span>應收: $${b.total.toLocaleString()}</span>
+                                ${isPaid ? `<span class="text-slate-400 font-normal">經手: ${b.collector}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('modal-delete-btn').onclick = () => {
+                closeModal(); safeDelete(`學生【${s.name}】`, () => { students = students.filter(x => x.uid !== uid); switchStudSubpage(currentStudSubpage); });
+            };
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function changeStudentStatus(uid, newStatus) {
+            const s = students.find(x => x.uid === uid);
+            if(s) {
+                s.status = newStatus;
+                alert(`學生狀態已成功切換。`);
+                closeModal();
+                switchStudSubpage(newStatus === 'active' ? 'active' : 'left');
+            }
+        }
+        function closeModal() { document.getElementById('detail-modal').classList.add('hidden'); }
+
+        // ================= 2x6 方格年級連動：智慧開費引擎 =================
+        function renderBillingSetup() {
+            const month = document.getElementById('billing-month').value; const currentMonthStr = month.split('-')[1];
+            const container = document.getElementById('billing-active-view-container'); container.innerHTML = "";
+            
+            const targetGrade = currentBillingActiveGrade;
+            const gradeStudents = students.filter(s => getGradeByUid(s.uid) === targetGrade);
+
+            container.innerHTML = `
+                <div class="bg-indigo-50 border border-indigo-200 text-indigo-900 font-bold p-3 rounded-xl text-xs flex justify-between items-center">
+                    <span>✨ 當前檢視：${getGradeLabel(targetGrade)} ｜ 共計 ${gradeStudents.length} 名在冊學生</span>
+                    <span class="bg-white/80 text-indigo-700 px-2 py-0.5 rounded font-mono">${month}</span>
+                </div>
+            `;
+
+            if(gradeStudents.length === 0) {
+                container.innerHTML += `<p class="text-slate-400 italic text-center py-8 font-medium bg-slate-50 border rounded-xl">此年級目前尚無任何在冊學生資料。</p>`;
+                return;
+            }
+
+            let pool = { unbilled: [], unpaid: [], paid: [] };
+            gradeStudents.forEach(s => {
+                let bill = monthlyBills.find(b => b.uid === s.uid && b.month === month);
+                if(s.status === 'left' && !bill) return;
+
+                if(!bill) {
+                    if((s.cycle === 'quarterly' || s.cycle === 'yearly') && !s.customMonths.includes(currentMonthStr)) return;
+                    pool.unbilled.push(s);
+                } else if (bill.status === "未繳") {
+                    pool.unpaid.push({student: s, bill: bill});
+                } else {
+                    pool.paid.push({student: s, bill: bill});
+                }
+            });
+
+            // 未開單區
+            pool.unbilled.forEach(s => {
+                let activeClasses = classes.filter(c => s.currentClasses.includes(c.cid) && c.status === 'open');
+                let classRows = activeClasses.map(c => `
+                    <div class="flex justify-between items-center py-1 border-b last:border-0">
+                        <span class="font-medium text-slate-700">🧱 ${c.cname}</span>
+                        <input type="number" id="amt-${s.uid}-${c.cid}" value="0" class="w-20 border p-1 text-right rounded-md font-mono bg-white">
+                    </div>
+                `).join('');
+                let extraRows = extraFeeItems.map(item => `
+                    <div class="flex justify-between items-center py-1 border-b last:border-0">
+                        <span class="text-slate-500">⚙️ ${item}</span>
+                        <input type="number" id="amt-${s.uid}-${item}" value="0" class="w-20 border p-1 text-right rounded-md font-mono bg-white">
+                    </div>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="border border-rose-200 rounded-xl p-4 bg-white space-y-2">
+                        <p class="font-extrabold text-rose-700 text-xs">🔴 尚未開單：<span class="text-sm font-black text-slate-900">${s.name}</span> (${s.uid})</p>
+                        <div class="bg-slate-50 p-3 rounded-xl border divide-y space-y-2 text-[11px]">
+                            <div>${classRows || '<p class="text-slate-400 italic">本月目前未配對有效開班科目</p>'}</div>
+                            <div class="pt-1">${extraRows}</div>
+                            <button onclick="saveIndividualBill('${s.uid}', false)" class="w-full bg-rose-600 text-white font-bold py-2 rounded-xl text-xs mt-2">💾 執行開立此單項目</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 已開未繳區
+            pool.unpaid.forEach(obj => {
+                let s = obj.student; let b = obj.bill;
+                let openClasses = classes.filter(c => c.status === 'open');
+                let classEditorRows = openClasses.map(c => {
+                    return `
+                        <div class="flex justify-between items-center py-1 border-b last:border-0">
+                            <span class="font-medium text-slate-700">🧱 ${c.cname}</span>
+                            <input type="number" id="amt-edit-${b.billId}-${c.cid}" value="${b.details[c.cname] || 0}" class="w-20 border p-1 text-right rounded-md font-mono bg-white">
+                        </div>
+                    `;
+                }).join('');
+                let extraEditorRows = extraFeeItems.map(item => {
+                    let currentVal = b.details[item] || 0; if(item === "退費" && currentVal < 0) currentVal = Math.abs(currentVal);
+                    return `
+                        <div class="flex justify-between items-center py-1 border-b last:border-0">
+                            <span class="text-amber-800 font-bold">⚙️ ${item}</span>
+                            <input type="number" id="amt-edit-${b.billId}-${item}" value="${currentVal}" class="w-20 border p-1 text-right rounded-md font-mono bg-white">
+                        </div>
+                    `;
+                }).join('');
+
+                container.innerHTML += `
+                    <div class="border border-amber-300 rounded-xl p-4 bg-amber-50/5 space-y-2">
+                        <p class="font-bold text-amber-950 text-xs">🟠 已開立未繳費：<b class="text-sm font-black text-slate-900">${s.name}</b> <span class="font-mono text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full ml-1">(應收總計:$${b.total.toLocaleString()})</span></p>
+                        <div class="bg-slate-50 p-3 rounded-xl border space-y-2 text-[11px]">
+                            <div class="divide-y">${classEditorRows} ${extraEditorRows}</div>
+                            <button onclick="updateExistingBill_v6('${b.billId}', '${s.uid}')" class="w-full bg-amber-600 text-white font-bold py-2 rounded-xl text-xs">💾 覆寫修正項目總金額</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 已繳完畢區
+            pool.paid.forEach(obj => {
+                let s = obj.student; let b = obj.bill;
+                container.innerHTML += `
+                    <div class="border border-emerald-200 rounded-xl p-3.5 bg-emerald-50/30 text-emerald-800 font-bold text-xs flex justify-between items-center shadow-2xs">
+                        <span>🟢 款項已結清：<b class="text-slate-900">${s.name}</b></span>
+                        <span class="font-mono text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200/50">$${b.total.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+        }
+
+        function saveIndividualBill(uid) {
+            const month = document.getElementById('billing-month').value; const s = students.find(x => x.uid === uid); let details = {};
+            let activeClasses = classes.filter(c => s.currentClasses.includes(c.cid) && c.status === 'open');
+            activeClasses.forEach(c => {
+                let val = parseInt(document.getElementById(`amt-${uid}-${c.cid}`).value) || 0; if(val !== 0) details[c.cname] = val;
+            });
+            extraFeeItems.forEach(item => {
+                let val = parseInt(document.getElementById(`amt-${uid}-${item}`).value) || 0; 
+                if(val !== 0) details[item] = (item === "退費") ? -Math.abs(val) : val;
+            });
+            let total = Object.values(details).reduce((a,b)=>a+b, 0);
+            monthlyBills.push({ billId: `${month}-${uid}`, month, uid, name: s.name, grade: getGradeByUid(s.uid), total, details, status: "未繳", payDate: "", payTime: "", collector: "" });
+            alert("開單存檔完成。"); renderBillingSetup();
+        }
+
+        function updateExistingBill_v6(billId, uid) {
+            let b = monthlyBills.find(x => x.billId === billId); if(!b) return;
+            let newDetails = {};
+            classes.filter(c => c.status === 'open').forEach(c => {
+                let inputEl = document.getElementById(`amt-edit-${billId}-${c.cid}`);
+                if(inputEl) { let val = parseInt(inputEl.value) || 0; if(val !== 0) newDetails[c.cname] = val; }
+            });
+            extraFeeItems.forEach(item => {
+                let inputEl = document.getElementById(`amt-edit-${billId}-${item}`);
+                if(inputEl) { let val = parseInt(inputEl.value) || 0; if(val !== 0) newDetails[item] = (item === "退費") ? -Math.abs(val) : val; }
+            });
+            b.details = newDetails; b.total = Object.values(newDetails).reduce((sum, current) => sum + current, 0);
+            alert(`帳單已成功修正更新！`); renderBillingSetup();
+        }
+
+        function updateDashboard() {
+            const month = document.getElementById('stat-month-filter').value; const currentMonthStr = month.split('-')[1];
+            const alertBox = document.getElementById('alert-unbilled-list'); alertBox.innerHTML = "";
+            let unbilledCount = 0;
+
+            let activeStuds = students.filter(s => s.status === 'active' && getGradeByUid(s.uid) !== "已畢業");
+            let leftStuds = students.filter(s => s.status === 'left');
+
+            document.getElementById('stat-count-active').innerText = activeStuds.length;
+            document.getElementById('stat-count-left').innerText = leftStuds.length;
+            document.getElementById('stat-count-total').innerText = students.length;
+
+            activeStuds.forEach(s => {
+                if((s.cycle === 'quarterly' || s.cycle === 'yearly') && !s.customMonths.includes(currentMonthStr)) return;
+                if (!monthlyBills.some(b => b.uid === s.uid && b.month === month)) {
+                    unbilledCount++; alertBox.innerHTML += `<div class="font-semibold py-0.5">⚠️ 學號 ${s.uid} 【${s.name}】尚未開立本月學費單據。</div>`;
+                }
+            });
+            document.getElementById('alert-unbilled-count').innerText = `${unbilledCount} 人`;
+            if(unbilledCount===0) alertBox.innerHTML = "✨ 營運範圍內在籍生皆已完成開單。";
+
+            let yearTotal = monthlyBills.filter(b => b.status === "已繳").reduce((sum,b)=>sum+b.total, 0);
+            document.getElementById('stat-year-total').innerText = `$${yearTotal.toLocaleString()}`;
+            
+            const mBills = monthlyBills.filter(b => b.month === month);
+            document.getElementById('stat-month-revenue').innerText = `$${mBills.reduce((sum,b)=>sum+b.total, 0).toLocaleString()} / $${mBills.filter(b=>b.status==="已繳").reduce((sum,b)=>sum+b.total, 0).toLocaleString()}`;
+            document.getElementById('stat-month-unpaid-amt').innerText = `$${mBills.filter(b=>b.status==="未繳").reduce((sum,b)=>sum+b.total, 0).toLocaleString()}`;
+
+            const gradeCountBox = document.getElementById('stat-grade-counts-box'); gradeCountBox.innerHTML = "";
+            for(let g=1; g<=12; g++) {
+                let count = students.filter(s => s.status === 'active' && getGradeByUid(s.uid) === g).length;
+                if(count > 0) gradeCountBox.innerHTML += `<div class="bg-white p-1.5 border rounded-md">${getGradeLabel(g).split(' ')[1]}: <b>${count}</b>人</div>`;
+            }
+
+            const schoolBox = document.getElementById('stat-schools-list'); schoolBox.innerHTML = "";
+            let schoolMap = {}; activeStuds.forEach(s => { let sch = s.school || "未填寫學校"; if(!schoolMap[sch]) schoolMap[sch] = []; schoolMap[sch].push(s); });
+            Object.keys(schoolMap).forEach(schName => {
+                let sList = schoolMap[schName];
+                schoolBox.innerHTML += `
+                    <div class="bg-white border p-2.5 rounded-xl flex justify-between items-center">
+                        <span>🏫 ${schName}</span><span class="bg-sky-600 text-white font-mono px-2 py-0.5 rounded-full text-[10px] font-bold">${sList.length} 人</span>
+                    </div>
+                `;
+            });
+
+            const unpaidBox = document.getElementById('stat-unpaid-container'); unpaidBox.innerHTML = "";
+            let unpaidBills = mBills.filter(b => b.status === "未繳");
+            document.getElementById('stat-unpaid-count').innerText = `${unpaidBills.length} 人`;
+            unpaidBills.forEach(b => {
+                unpaidBox.innerHTML += `
+                    <div class="bg-white p-2 border border-rose-200 text-xs flex justify-between items-center rounded-xl">
+                        <span><b>${b.name}</b></span><span class="text-rose-600 font-mono font-black bg-rose-50 px-2 rounded-md">$${b.total.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+
+            const tBox = document.getElementById('stat-teachers-list');
+            tBox.innerHTML = teachers.map(t => {
+                let count = students.filter(s => s.status === 'active' && s.currentClasses.some(cid => t.teacherClasses.includes(cid))).length;
+                return `<div class="flex justify-between items-center text-xs py-1 border-b last:border-0"><span>👩‍🏫 ${t.name.split('(')[0]} 老師</span><span>負責學生：<b class="text-indigo-600 font-mono">${count}</b> 人</span></div>`;
+            }).join('');
+        }
+
+        // ================= 智慧萬年曆控制中樞 (前後5年、色彩小圓點連動) =================
+        let calendarSelectedYear = 2026;
+        let calendarSelectedMonth = 5; // 0=1月, 5=6月
+
+        function initCalendarSelectors() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+
+            calendarSelectedYear = currentYear;
+            calendarSelectedMonth = currentMonth;
+
+            const ySelect = document.getElementById('cal-year-select');
+            ySelect.innerHTML = "";
+            // 前後 5 年下拉選單生長
+            for(let y = currentYear - 5; y <= currentYear + 5; y++) {
+                ySelect.innerHTML += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}年</option>`;
+            }
+            document.getElementById('cal-month-select').value = currentMonth;
+            renderCalendarComponent();
+        }
+
+        function onCalendarSelectorChange() {
+            calendarSelectedYear = parseInt(document.getElementById('cal-year-select').value);
+            calendarSelectedMonth = parseInt(document.getElementById('cal-month-select').value);
+            renderCalendarComponent();
+        }
+
+        function renderCalendarComponent() {
+            const grid = document.getElementById('calendar-days-grid');
+            grid.innerHTML = "";
+
+            // 建立所選年月第一天的日期物件
+            const firstDayObj = new Date(calendarSelectedYear, calendarSelectedMonth, 1);
+            const startDayOfWeek = firstDayObj.getDay(); // 0=日, 1=一...
+            const totalDays = new Date(calendarSelectedYear, calendarSelectedMonth + 1, 0).getDate();
+
+            const realToday = new Date();
+
+            // 補足開頭空白欄位
+            for (let i = 0; i < startDayOfWeek; i++) {
+                grid.innerHTML += `<div></div>`;
+            }
+
+            // 開始繪製日期方塊
+            for (let day = 1; day <= totalDays; day++) {
+                let isToday = (calendarSelectedYear === realToday.getFullYear() && calendarSelectedMonth === realToday.getMonth() && day === realToday.getDate());
+                
+                // 檢查該日期是否有註冊重要日程，若有則收集顏色
+                let dateStr = `${calendarSelectedYear}-${(calendarSelectedMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                let matchSchedules = scheduleItems.filter(x => x.date === dateStr);
+
+                let dotsHtml = "";
+                if(matchSchedules.length > 0) {
+                    dotsHtml = `<div class="flex justify-center gap-0.5 mt-0.5 max-w-full overflow-hidden">`;
+                    matchSchedules.forEach(sch => {
+                        let dotColorClass = "bg-slate-400";
+                        if(sch.color === 'red') dotColorClass = "bg-rose-500";
+                        if(sch.color === 'green') dotColorClass = "bg-emerald-500";
+                        if(sch.color === 'yellow') dotColorClass = "bg-amber-400";
+                        if(sch.color === 'white') dotColorClass = "bg-white border border-slate-600";
+                        dotsHtml += `<span class="w-1.5 h-1.5 rounded-full ${dotColorClass} shrink-0"></span>`;
+                    });
+                    dotsHtml += `</div>`;
+                }
+
+                let boxClass = isToday 
+                    ? "bg-indigo-600 text-white font-black rounded-lg ring-2 ring-indigo-400 p-0.5 shadow-sm" 
+                    : "text-slate-300 hover:bg-slate-800 p-0.5 rounded transition-colors";
+                
+                grid.innerHTML += `
+                    <div class="${boxClass} flex flex-col justify-between min-h-7">
+                        <span class="font-mono font-bold">${day}</span>
+                        ${dotsHtml}
+                    </div>
+                `;
+            }
+        }
+
+        function toggleScheduleForm() { document.getElementById('schedule-form').classList.toggle('hidden'); }
+
+        function renderScheduleList() {
+            const container = document.getElementById('schedule-list');
+            container.innerHTML = "";
+            const baseDate = new Date(); // 以當前真實時間做倒數計算基準
+            baseDate.setHours(0,0,0,0);
+
+            scheduleItems.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            scheduleItems.forEach(item => {
+                const targetDate = new Date(item.date);
+                targetDate.setHours(0,0,0,0);
+                const diffTime = targetDate - baseDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                let countdownText = "";
+                if(diffDays > 0) countdownText = `倒數 ${diffDays} 天`;
+                else if(diffDays === 0) countdownText = `💥 就在今天`;
+                else countdownText = `已過期`;
+
+                // 根據自選色彩指派對應色系外框與底色
+                let borderStyle = "border-slate-700 bg-slate-800/40 text-slate-300";
+                if(item.color === 'red') borderStyle = "border-rose-500/80 bg-rose-950/20 text-rose-200";
+                if(item.color === 'green') borderStyle = "border-emerald-500/80 bg-emerald-950/20 text-emerald-200";
+                if(item.color === 'yellow') borderStyle = "border-amber-400/80 bg-amber-950/20 text-amber-200";
+                if(item.color === 'white') borderStyle = "border-slate-100 bg-slate-800 text-white";
+
+                container.innerHTML += `
+                    <div class="p-2 rounded-lg border flex flex-col justify-between space-y-1 ${borderStyle}">
+                        <div class="flex justify-between items-start gap-1">
+                            <span class="font-bold tracking-wide truncate max-w-[140px]">${item.title}</span>
+                            <span class="text-[9px] font-mono shrink-0 bg-slate-900/60 px-1 rounded">${countdownText}</span>
+                        </div>
+                        <div class="flex justify-between items-center text-[10px] opacity-70 font-mono">
+                            <span>📅 ${item.date}</span>
+                            <button onclick="deleteScheduleItemConfirm(${item.id})" class="hover:text-rose-400 transition-colors text-[10px] font-bold px-1">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if(scheduleItems.length === 0) container.innerHTML = `<p class="text-slate-600 italic text-center py-2">目前暫無重要日程</p>`;
+        }
+
+        function addScheduleItem() {
+            const title = document.getElementById('sched-title').value.trim();
+            const date = document.getElementById('sched-date').value;
+            const color = document.getElementById('sched-color').value;
+
+            if(!title || !date) { alert("請填寫事情名稱與日期！"); return; }
+
+            scheduleItems.push({ id: Date.now(), title, date, color });
+            document.getElementById('sched-title').value = "";
+            document.getElementById('sched-date').value = "";
+            toggleScheduleForm();
+            
+            // 雙向連動更新
+            renderScheduleList();
+            renderCalendarComponent();
+        }
+
+        function deleteScheduleItemConfirm(id) {
+            if(confirm("【二次確認】您確定要刪除這項重要日程嗎？")) {
+                scheduleItems = scheduleItems.filter(x => x.id !== id);
+                renderScheduleList();
+                renderCalendarComponent();
+            }
+        }
+
+        window.onload = function() {
+            switchPage(1); 
+            initCalendarSelectors(); // 初始化智慧萬年曆選單
+            renderScheduleList();
+            setStudActiveGrade(1);
+            setBillingActiveGrade(1);
+        }
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
