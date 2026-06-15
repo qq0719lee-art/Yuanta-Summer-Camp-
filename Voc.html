@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Vocb</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>元大WordBank</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --text-dark: #1f2937;
+            --bg-light: #f8fafc;
+            --nav-height: 65px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 0 0 var(--nav-height) 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* 首次登入命名遮罩層 */
+        .login-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 9999;
+        }
+        .login-box {
+            background: white; padding: 30px; border-radius: 24px; width: 85%; max-width: 380px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center;
+        }
+        .login-box h2 { margin: 0 0 10px 0; color: var(--primary-color); font-weight: 800; }
+        .login-box p { color: #64748b; font-size: 14px; margin-bottom: 20px; }
+
+        /* 升級熱血動畫特效彈窗 */
+        .lvl-up-overlay {
+            position: fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8);
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10000;
+            animation: fadeIn 0.4s ease;
+        }
+        .lvl-up-box { text-align: center; color: #f59e0b; animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .lvl-up-badge { font-size: 80px; margin-bottom: 10px; filter: drop-shadow(0 0 20px #f59e0b); }
+        .lvl-up-title { font-size: 32px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* 大字版段位規則彈窗遮罩 */
+        .rules-modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7);
+            display: none; justify-content: center; align-items: center; z-index: 9999; backdrop-filter: blur(4px);
+        }
+        .rules-modal-box {
+            background: white; padding: 35px 25px; border-radius: 24px; width: 90%; max-width: 460px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: left; box-sizing: border-box;
+        }
+        .rules-modal-box h3 { margin: 0 0 15px 0; font-size: 24px; color: var(--primary-color); font-weight: 800; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;}
+        .rules-modal-content { font-size: 16px; color: #334155; line-height: 1.8; max-height: 350px; overflow-y: auto; }
+        .rules-modal-content b { color: #0f172a; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* 導覽列 */
+        .navbar {
+            background-color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100;
+        }
+        .navbar h1 { margin: 0; font-size: 22px; color: var(--primary-color); font-weight: 800; }
+        .user-profile { font-size: 13px; color: #6b7280; background: #f1f5f9; padding: 6px 12px; border-radius: 20px; font-weight: 500; }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* 底部固定導覽列 */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height);
+            background-color: white; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 12px; color: #94a3b8; cursor: pointer; width: 25%; height: 100%; text-decoration: none; font-weight: bold;
+        }
+        .nav-item.active { color: var(--primary-color); }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+
+        /* 主頁排版 */
+        .welcome-section { margin-bottom: 25px; text-align: center; }
+        .welcome-user { font-size: 16px; color: black; margin: 0 0 6px 0; }
+        .welcome-user span { color: #2563eb; font-weight: bold; }
+        .welcome-slogan { font-size: 28px; font-weight: 800; color: black; margin: 0; letter-spacing: 0.5px; }
+        
+        .dashboard { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; text-align: center; margin-bottom: 30px; }
+        .db-status-bar { font-size: 20px; font-weight: 800; color: #1e293b; margin-bottom: 20px; }
+        .db-status-bar span.num { color: #d97706; }
+        .db-status-bar span.gold { color: #eab308; }
+        
+        .db-stats-grid { display: flex; justify-content: space-around; align-items: center; border-top: 1px dashed #e2e8f0; padding-top: 20px; gap: 10px;}
+        .db-stat-item { flex: 1; background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #f1f5f9; }
+        .db-stat-title { font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 600; }
+        .db-stat-number { font-size: 24px; font-weight: 800; color: #0f172a; }
+        .db-stat-number span.fire { color: #ef4444; }
+
+        .open-rules-btn { background: #e0e7ff; color: #4338ca; border: none; padding: 10px 16px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 15px; transition: background 0.2s; }
+        .open-rules-btn:hover { background: #c7d2fe; }
+
+        /* 單字庫組件 */
+        .library-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 10px; }
+        .section-title { font-size: 20px; font-weight: 700; margin: 0; }
+        .header-btn-group { display: flex; gap: 8px; }
+        .add-lib-btn { background-color: #10b981; padding: 8px 14px; font-size: 14px; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold;}
+        .edit-toggle-btn { background-color: #ef4444; padding: 8px 14px; font-size: 14px; border: none; color: white; border-radius: 8px; cursor: pointer; font-weight: bold;}
+        .edit-toggle-btn.active { background-color: #64748b; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(1, 1fr); gap: 15px; margin-bottom: 20px; }
+        @media (min-width: 480px) { .grid-container { grid-template-columns: repeat(2, 1fr); } }
+        
+        .library-card {
+            background: white; border-radius: 14px; padding: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #e2e8f0;
+            display: flex; flex-direction: column; justify-content: space-between; height: 130px; position: relative; overflow: hidden; cursor: pointer;
+        }
+        .card-delete-btn {
+            position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; background-color: #ef4444; color: white;
+            border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: none; z-index: 10;
+        }
+        .library-card.editing .card-delete-btn { display: flex; }
+
+        /* 主題配色 */
+        .bg-default { background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
+        .bg-blue { background: linear-gradient(135deg, #f0f7ff 0%, #e0f2fe 100%); border-color: #bae6fd; }
+        .bg-green { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #bbf7d0; }
+        .bg-purple { background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%); border-color: #e9d5ff; }
+        .bg-red { background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%); border-color: #ffc9c9; }
+
+        .mode-selection-wrapper { display: flex; gap: 10px; margin-top: 10px; }
+        .mode-btn { flex: 1; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: bold; border: 1px solid #cbd5e1; background: white; cursor: pointer; text-align: center;}
+        .mode-btn.primary { background: #4f46e5; color: white; border-color: #4f46e5; }
+        .mode-btn.success { background: #10b981; color: white; border-color: #10b981; }
+
+        /* 單字明細 */
+        .word-detail-item { background: white; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .word-detail-eng { font-size: 18px; font-weight: 700; color: #1e293b; }
+        .word-detail-ch { font-size: 15px; color: #475569; }
+        .word-detail-remove { color: #ef4444; font-size: 13px; font-weight: 600; cursor: pointer; background: #fef2f2; padding: 4px 8px; border-radius: 6px; }
+
+        /* 表單 */
+        .form-section { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        input, select { padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; width: 100%; box-sizing: border-box; }
+        .word-input-row { background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; position: relative;}
+        .color-picker-group { display: flex; gap: 12px; margin-top: 5px; }
+        .color-option { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid #cbd5e1; }
+        .color-option.selected { transform: scale(1.15); border-color: #4f46e5; }
+        .action-submit-btn { background-color: #10b981; margin-top: 10px; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: bold; width: 100%; cursor: pointer; }
+        .add-more-row-btn { background-color: #3b82f6; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; margin-bottom: 15px;}
+        .back-btn { background-color: #64748b; margin-top: 10px; color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer;}
+
+        /* 圖卡背誦與填空 */
+        .study-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; margin-top: 10px; }
+        .card-slider-box { position: relative; width: 100%; max-width: 360px; height: 420px; perspective: 1000px; }
+        .flashcard-premium { width: 100%; height: 100%; background: white; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; display: flex; flex-direction: column; overflow: hidden; position: absolute; transition: transform 0.4s ease, opacity 0.4s ease; }
+        .card-image-area { width: 100%; height: 45%; background-color: #cbd5e1; background-size: cover; background-position: center; position: relative; }
+        .card-audio-trigger { position: absolute; bottom: 12px; right: 12px; width: 40px; height: 40px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); cursor: pointer; font-size: 18px; }
+        .card-info-area { width: 100%; height: 55%; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .card-eng { font-size: 32px; font-weight: 800; color: #1e293b; margin: 0 0 4px 0; }
+        .card-phonetic { font-size: 15px; color: #4f46e5; font-weight: 600; margin-bottom: 12px; background: #e0e7ff; padding: 2px 10px; border-radius: 20px; }
+        .card-part-of-speech { font-size: 13px; background: #f1f5f9; color: #475569; padding: 2px 8px; border-radius: 6px; font-weight: 600; margin-bottom: 8px; }
+        .card-ch { font-size: 22px; font-weight: 700; color: #0f172a; margin: 0; }
+        
+        .quiz-input-container { width: 100%; padding: 0 15px; box-sizing: border-box; margin-top: 8px; }
+        .quiz-input { text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 1px; border: 2px solid #cbd5e1; padding: 10px; border-radius: 10px; }
+        .feedback-badge { position: absolute; top: 15px; left: 15px; font-size: 28px; font-weight: bold; z-index: 12; display: none; padding: 4px 10px; border-radius: 10px;}
+
+        .study-btn-group { display: flex; gap: 15px; width: 100%; max-width: 360px; }
+        .btn-study-action { flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; color: white; }
+        .btn-forgot { background-color: #ef4444; }
+        .btn-remembered { background-color: #10b981; }
+
+        .quiz-result-container { background: white; padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; width: 100%; max-width: 360px; box-sizing: border-box; }
+        .result-score-title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 15px; color: #1e293b;}
+        .wrong-list-box { margin-top: 15px; text-align: left; max-height: 180px; overflow-y: auto; }
+        .wrong-word-row { display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; }
+
+        .tool-section { background: white; padding: 20px; border-radius: 166px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-top: 20px;}
+        .tool-input-group { display: flex; gap: 10px; margin-bottom: 15px;}
+        .tool-input-group input { flex: 2; } .tool-input-group button { flex: 1; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;}
+
+        /* 「我的」頁面精緻客製化排版樣式 */
+        .profile-card { display: flex; align-items: center; gap: 20px; background: white; padding: 25px; border-radius: 20px; border: 1px solid #e2e8f0; margin-bottom: 25px; }
+        .profile-avatar { width: 70px; height: 70px; background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25); text-transform: uppercase; }
+        .profile-info h3 { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #0f172a; }
+        .profile-info p { margin: 0; font-size: 13px; color: #64748b; font-weight: 500; }
+        
+        .log-section-title { font-size: 16px; font-weight: 800; color: #1e293b; margin: 25px 0 12px 0; display: flex; align-items: center; gap: 6px; }
+        .log-list { display: flex; flex-direction: column; gap: 10px; }
+        .log-item { background: white; padding: 14px 16px; border-radius: 12px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+        .log-date-label { font-weight: 700; color: #334155; }
+        .log-badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-align: right;}
+        .log-badge.card-type { background: #e0f2fe; color: #0369a1; }
+        .log-badge.quiz-type { background: #dcfce7; color: #15803d; }
+
+        /* 統計圖表視覺組件 */
+        .chart-card { background: white; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
+        .chart-row { margin-bottom: 14px; }
+        .chart-row:last-child { margin-bottom: 0; }
+        .chart-date-title { font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 4px; }
+        .chart-bar-container { display: flex; height: 16px; border-radius: 4px; overflow: hidden; background: #f1f5f9; }
+        .bar-fill { height: 100%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+
+    <div id="rulesModalOverlay" class="rules-modal-overlay">
+        <div class="rules-modal-box">
+            <h3>⚔️ 榮耀段位與金幣增益規則</h3>
+            <div class="rules-modal-content">
+                <p><b>1. 榮耀段位升級機制：</b><br>
+                本系統採取嚴格的「不重複英文單字查重系統」，無論你在多少個單字庫建立相同的英文單字，皆只會被算作一個單字里程。<br>
+                每成功累積建立 <b>50 個不重複單字</b> 即可晉升一個小階位。一路進階至 3,000 字的最高榮譽<b>「傳奇王者」</b>！</p>
+                
+                <p><b>2. 金幣獲取渠道：</b><br>
+                * 👁️ <b>圖片背誦模式</b>：屬於純粹瀏覽複習記憶，故不產生金幣增益。<br>
+                * ⌨️ <b>填空圖卡模式</b>：屬於實戰拼寫挑戰，每成功輸入正確拼寫並通過考驗一個單字，帳戶將即時賺取 <b>0.5 枚金幣</b>！</p>
+            </div>
+            <button class="action-submit-btn" style="background:var(--primary-color); margin-top:20px;" onclick="closeRulesModal()">我瞭解了</button>
+        </div>
+    </div>
+
+    <div id="lvlUpOverlay" class="lvl-up-overlay">
+        <div class="lvl-up-box">
+            <div class="lvl-up-badge">🌟</div>
+            <div class="lvl-up-title">段位晉升</div>
+            <div class="lvl-up-subtitle" id="lvlUpBannerText">恭喜升級</div>
+            <button class="action-submit-btn" style="background:#eab308; margin-top:25px; width:120px;" onclick="closeLvlUpAnimation()">收到</button>
+        </div>
+    </div>
+
+    <div id="loginOverlay" class="login-overlay" style="display: none;">
+        <div class="login-box">
+            <h2>建立個人 WordBank</h2>
+            <p>歡迎！請輸入你想使用的專屬帳號名稱：</p>
+            <input type="text" id="usernameInput" placeholder="你的名字 (例如: Spark)" style="margin-bottom: 20px; text-align: center;" />
+            <button class="action-submit-btn" style="margin-top: 0;" onclick="saveProfileName()">開始建立</button>
+        </div>
+    </div>
+
+    <div class="navbar">
+        <h1>元大-英文字庫通</h1>
+        <div class="user-profile" id="navUsername">Guest</div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="navigateTo('homePage', this)"><span class="nav-icon">🏠</span>主頁</div>
+        <div class="nav-item" onclick="navigateTo('libraryPage', this)"><span class="nav-icon">📚</span>單字庫</div>
+        <div class="nav-item" onclick="navigateTo('studyPage', this)"><span class="nav-icon">🎯</span>學習</div>
+        <div class="nav-item" onclick="navigateTo('profilePage', this)"><span class="nav-icon">👤</span>我的</div>
+    </div>
+
+    <div class="container">
+        
+        <div id="homePage" class="page active">
+            <div class="welcome-section">
+                <p class="welcome-user">Hi, <span id="welcomeUsername">User</span>！</p>
+                <p class="welcome-slogan">Your Words. Your Power.</p>
+            </div>
+
+            <div class="dashboard">
+                <div class="db-status-bar">
+                    段位：<span class="num" id="userLevel">倔強青銅 III</span> ｜ 金幣：<span class="gold" id="userGold">0</span>
+                </div>
+                
+                <div class="db-stats-grid">
+                    <div class="db-stat-item">
+                        <div class="db-stat-title">不重複單字總數</div>
+                        <div class="db-stat-number" id="statInput">0</div>
+                    </div>
+                    <div class="db-stat-item">
+                        <div class="db-stat-title">🔥 堅持學習</div>
+                        <div class="db-stat-number"><span id="streakDays">0</span> 天</div>
+                    </div>
+                </div>
+                
+                <button class="open-rules-btn" onclick="openRulesModal()">點擊查看段位與金幣規則 🔍</button>
+            </div>
+
+            <div class="tool-section">
+                <div class="section-title" style="margin-bottom: 12px; font-size:16px;">工具：單字發音</div>
+                <div class="tool-input-group">
+                    <input type="text" id="quickWordInput" placeholder="請輸入單字..." />
+                    <button onclick="speakCardWord(document.getElementById('quickWordInput').value)">🔊 發音</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="libraryPage" class="page">
+            <div class="library-header">
+                <div class="section-title">我的單字庫</div>
+                <div class="header-btn-group">
+                    <button class="edit-toggle-btn" id="libEditToggle" onclick="toggleLibraryDeleteMode()">⚙️ 編輯模式</button>
+                    <button class="add-lib-btn" onclick="openAddPage()">＋ 新增</button>
+                </div>
+            </div>
+            <div class="grid-container" id="libraryGrid"></div>
+        </div>
+
+        <div id="libDetailPage" class="page">
+            <div class="library-header">
+                <div>
+                    <h2 class="section-title" id="detailLibName">單字清單</h2>
+                    <div class="lib-date" id="detailLibDate" style="margin-top:4px;"></div>
+                </div>
+                <button class="add-lib-btn" style="background-color:#3b82f6;" id="detailAddWordBtn">＋ 增減單字</button>
+            </div>
+            <div id="detailWordListContainer" style="margin-bottom:20px;"></div>
+            <button class="back-btn" onclick="navigateTo('libraryPage')">返回單字庫列表</button>
+        </div>
+
+        <div id="addPage" class="page">
+            <h2 class="section-title" id="formPageTitle" style="margin-bottom: 20px; font-size: 22px;">建立全新單字庫</h2>
+            <div class="form-section">
+                <div class="form-group" id="formLibNameGroup">
+                    <label>單字庫名稱</label>
+                    <input type="text" id="newLibName" placeholder="例如：生活多益常用詞彙" />
+                </div>
+                
+                <label style="display:block; font-size:14px; font-weight:600; margin-bottom:8px; color:var(--primary-color);">單字表清單 (新加單字將自動查重)</label>
+                <div id="formWordsDynamicContainer"></div>
+                <button class="add-more-row-btn" onclick="addWordRowInput('', 'n.', '')">＋ 增加一個單字</button>
+
+                <div class="form-group" id="formColorGroup">
+                    <label>選擇方格卡片主題色</label>
+                    <div class="color-picker-group">
+                        <div class="color-option bg-default selected" onclick="selectColor(this, 'bg-default')"></div>
+                        <div class="color-option bg-blue" onclick="selectColor(this, 'bg-blue')"></div>
+                        <div class="color-option bg-green" onclick="selectColor(this, 'bg-green')"></div>
+                        <div class="color-option bg-purple" onclick="selectColor(this, 'bg-purple')"></div>
+                        <div class="color-option bg-red" onclick="selectColor(this, 'bg-red')"></div>
+                    </div>
+                </div>
+                <button class="action-submit-btn" id="formSubmitBtn" onclick="submitLibraryForm()">網路查詢並儲存庫</button>
+                <button class="back-btn" onclick="navigateTo('libraryPage')">取消返回</button>
+            </div>
+        </div>
+
+        <div id="studyPage" class="page">
+            <div class="section-title" style="margin-bottom: 20px;">選擇單字庫與複習模式</div>
+            <div class="grid-container" id="studyLibraryGrid"></div>
+        </div>
+
+        <div id="cardStudySessionPage" class="page">
+            <div class="library-header">
+                <div class="section-title" id="currentSessionTitle">正在學習</div>
+                <button class="add-lib-btn" style="background-color:#64748b;" onclick="navigateTo('studyPage')">返回</button>
+            </div>
+            
+            <div class="study-wrapper">
+                <div class="card-slider-box" id="cardSliderBox"></div>
+                
+                <div class="study-btn-group" id="studyBtnGroup">
+                    <button class="btn-study-action btn-forgot" onclick="handleCardAction(false)">❌ 不太會</button>
+                    <button class="btn-study-action btn-remembered" onclick="handleCardAction(true)">✅ 記住了</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="profilePage" class="page">
+            <div class="profile-card">
+                <div class="profile-avatar" id="profileLetterAvatar">U</div>
+                <div class="profile-info">
+                    <h3 id="profileUsername">User Account</h3>
+                    <p>元大精銳學員 ｜ 榮譽就緒</p>
+                </div>
+            </div>
+
+            <div class="log-section-title">📊 每日學習量統計表</div>
+            <div class="chart-card" id="studyVisualChartContainer">
+                <div style="text-align:center; color:#94a3b8; font-size:12px; padding:10px 0;">尚無學習圖表數據</div>
+            </div>
+
+            <div class="log-section-title">📜 歷史學習紀錄日誌</div>
+            <div class="log-list" id="studyLogHistoryContainer">
+                <div style="text-align:center; color:#94a3b8; font-size:12px; padding:15px 0;">開始背單字，寫下第一筆紀錄吧！</div>
+            </div>
+
+            <button class="back-btn" style="background-color: #ef4444; margin-top: 35px;" onclick="clearAllData()">登出並清除本機全部資料</button>
+        </div>
+
+    </div>
+
+    <script>
+        const honorRankTitles = [
+            { max: 49, title: "倔強青銅 III" }, { max: 99, title: "倔強青銅 II" }, { max: 149, title: "倔強青銅 I" },
+            { max: 199, title: "秩序白銀 III" }, { max: 249, title: "秩序白銀 II" }, { max: 299, title: "秩序白銀 I" },
+            { max: 349, title: "榮耀黃金 IV" }, { max: 399, title: "榮耀黃金 III" }, { max: 449, title: "榮耀黃金 II" }, { max: 499, title: "榮耀黃金 I" },
+            { max: 549, title: "尊貴白金 IV" }, { max: 599, title: "尊貴白金 III" }, { max: 649, title: "尊貴白金 II" }, { max: 699, title: "尊貴白金 I" },
+            { max: 749, title: "永恆鑽石 V" }, { max: 799, title: "永恆鑽石 IV" }, { max: 849, title: "永恆鑽石 III" }, { max: 899, title: "永恆鑽石 II" }, { max: 949, title: "永恆鑽石 I" },
+            { max: 999, title: "至尊星耀 V" }, { max: 1049, title: "至尊星耀 IV" }, { max: 1099, title: "至尊星耀 III" }, { max: 1149, title: "至尊星耀 II" }, { max: 1199, title: "至尊星耀 I" },
+            { max: 1999, title: "最強王者" }, { max: 2499, title: "無雙王者" }, { max: 2999, title: "榮耀王者" }, { max: Infinity, title: "傳奇王者" }
+        ];
+
+        const fallbackLibraries = [
+            { id: "lib1", name: "基礎核心字彙", date: "2026/06/15", color: "bg-blue", words: [
+                { eng: "apple", type: "n.", ch: "蘋果", phonetic: "/ˈæpl/", img: "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?w=400&q=80" },
+                { eng: "banana", type: "n.", ch: "香蕉", phonetic: "/bəˈnænə/", img: "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=400&q=80" }
+            ]}
+        ];
+
+        let selectedColorClass = 'bg-default';
+        let currentLearningQueue = [];
+        let currentLibId = null;
+        let isDeleteModeActive = false;
+        let editingLibId = null;
+        
+        let studyMode = 'card'; 
+        let quizCorrectCount = 0;
+        let quizWrongCount = 0;
+        let quizWrongWordsLog = [];
+
+        window.onload = function() {
+            checkUserAccount();
+        };
+
+        // 核心修正：嚴格以有無 wordBank_user 名字為唯一登入判定標準
+        function checkUserAccount() {
+            const savedName = localStorage.getItem('wordBank_user');
+            if (!savedName || savedName.trim() === "") {
+                document.getElementById('loginOverlay').style.display = 'flex';
+            } else {
+                document.getElementById('loginOverlay').style.display = 'none';
+                updateUsernameDOM(savedName);
+                
+                if (!localStorage.getItem('wordBankData')) {
+                    localStorage.setItem('wordBankData', JSON.stringify(fallbackLibraries));
+                }
+                if (!localStorage.getItem('wordBank_gold')) localStorage.setItem('wordBank_gold', '0');
+                if (!localStorage.getItem('wordBank_studyLogs')) {
+                    localStorage.setItem('wordBank_studyLogs', JSON.stringify({}));
+                }
+                renderApp();
+            }
+        }
+
+        function saveProfileName() {
+            const nameInput = document.getElementById('usernameInput').value.trim();
+            if (!nameInput) { alert('請輸入帳號名稱！'); return; }
+            
+            localStorage.setItem('wordBank_user', nameInput);
+            localStorage.setItem('wordBankData', JSON.stringify(fallbackLibraries));
+            localStorage.setItem('wordBank_gold', '0');
+            localStorage.setItem('wordBank_studyLogs', JSON.stringify({}));
+            
+            updateUsernameDOM(nameInput);
+            document.getElementById('loginOverlay').style.display = 'none';
+            renderApp();
+        }
+
+        function updateUsernameDOM(name) {
+            document.getElementById('navUsername').textContent = name;
+            document.getElementById('welcomeUsername').textContent = name;
+            document.getElementById('profileUsername').textContent = name;
+            if(name && name.length > 0) {
+                document.getElementById('profileLetterAvatar').textContent = name.charAt(0);
+            }
+        }
+
+        function openRulesModal() { document.getElementById('rulesModalOverlay').style.display = 'flex'; }
+        function closeRulesModal() { document.getElementById('rulesModalOverlay').style.display = 'none'; }
+
+        function getUniqueWordsCount() {
+            const data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            let uniqueSet = new Set();
+            data.forEach(lib => {
+                lib.words.forEach(w => {
+                    if(w.eng) uniqueSet.add(w.eng.trim().toLowerCase());
+                });
+            });
+            return uniqueSet.size;
+        }
+
+        function getRankTitle(count) {
+            for (let rank of honorRankTitles) {
+                if (count <= rank.max) return rank.title;
+            }
+            return "傳奇王者";
+        }
+
+        function writeStudyLog(type, value, detailObj) {
+            let logs = JSON.parse(localStorage.getItem('wordBank_studyLogs') || '{}');
+            const today = new Date();
+            const dateKey = `${today.getFullYear()}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
+            
+            if (!logs[dateKey]) {
+                logs[dateKey] = { cardCount: 0, quizCorrect: 0, quizWrong: 0 };
+            }
+            
+            if (type === 'card') {
+                logs[dateKey].cardCount += value;
+            } else if (type === 'quiz') {
+                logs[dateKey].quizCorrect += detailObj.correct;
+                logs[dateKey].quizWrong += detailObj.wrong;
+            }
+            localStorage.setItem('wordBank_studyLogs', JSON.stringify(logs));
+        }
+
+        function renderApp() {
+            const uniqueCount = getUniqueWordsCount();
+            document.getElementById('statInput').textContent = uniqueCount;
+            
+            const currentRank = getRankTitle(uniqueCount);
+            const oldRank = localStorage.getItem('wordBank_lastRank') || currentRank;
+            document.getElementById('userLevel').textContent = currentRank;
+            
+            if (oldRank !== currentRank) {
+                const ranksArray = honorRankTitles.map(r => r.title);
+                if (ranksArray.indexOf(currentRank) > ranksArray.indexOf(oldRank)) {
+                    triggerLevelUpAnimation(currentRank);
+                }
+                localStorage.setItem('wordBank_lastRank', currentRank);
+            } else {
+                localStorage.setItem('wordBank_lastRank', currentRank);
+            }
+
+            const currentGold = parseFloat(localStorage.getItem('wordBank_gold') || '0');
+            document.getElementById('userGold').textContent = currentGold.toFixed(1);
+
+            const logs = JSON.parse(localStorage.getItem('wordBank_studyLogs') || '{}');
+            let totalLearningDays = 0;
+            Object.keys(logs).forEach(dateKey => {
+                const dayData = logs[dateKey];
+                if (dayData.cardCount > 0 || dayData.quizCorrect > 0 || dayData.quizWrong > 0) {
+                    totalLearningDays++;
+                }
+            });
+            document.getElementById('streakDays').textContent = totalLearningDays;
+
+            const data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            const libraryGrid = document.getElementById('libraryGrid');
+            libraryGrid.innerHTML = '';
+            data.forEach(lib => {
+                const card = document.createElement('div');
+                card.className = `library-card ${lib.color} ${isDeleteModeActive ? 'editing' : ''}`;
+                card.onclick = function() { if(isDeleteModeActive) return; openLibraryDetail(lib.id); };
+                card.innerHTML = `
+                    <button class="card-delete-btn" onclick="deleteLibrary(event, '${lib.id}')">✕</button>
+                    <div>
+                        <div class="lib-date">${lib.date}</div>
+                        <div class="lib-name">${lib.name}</div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                        <div class="lib-count">${lib.words.length} 個單字</div>
+                        <span style="font-size:12px; background:#ffffff; border:1px solid #cbd5e1; padding:3px 8px; border-radius:6px; font-weight:600;" onclick="event.stopPropagation(); openEditLibraryForm('${lib.id}')">⚙️ 增減單字</span>
+                    </div>
+                `;
+                libraryGrid.appendChild(card);
+            });
+
+            const studyGrid = document.getElementById('studyLibraryGrid');
+            studyGrid.innerHTML = '';
+            data.forEach(lib => {
+                studyGrid.innerHTML += `
+                    <div class="library-card ${lib.color}" style="height:165px; cursor:default;">
+                        <div>
+                            <div class="lib-date">${lib.date}</div>
+                            <div class="lib-name">${lib.name}</div>
+                            <div class="lib-count">${lib.words.length} 個單字成員</div>
+                        </div>
+                        <div class="mode-selection-wrapper">
+                            <button class="mode-btn primary" onclick="prepareStudySession('${lib.id}', 'card')">👁️ 圖片背誦</button>
+                            <button class="mode-btn success" onclick="prepareStudySession('${lib.id}', 'quiz')">⌨️ 填空圖卡</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            renderProfileDataCenter(logs);
+        }
+
+        function renderProfileDataCenter(logs) {
+            const logContainer = document.getElementById('studyLogHistoryContainer');
+            const chartContainer = document.getElementById('studyVisualChartContainer');
+            const logKeys = Object.keys(logs).sort((a,b) => new Date(b) - new Date(a));
+            
+            if(logKeys.length === 0) {
+                logContainer.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px; padding:15px 0;">開始背單字，寫下第一筆紀錄吧！</div>`;
+                chartContainer.innerHTML = `<div style="text-align:center; color:#94a3b8; font-size:12px; padding:10px 0;">尚無學習圖表數據</div>`;
+                return;
+            }
+
+            logContainer.innerHTML = '';
+            chartContainer.innerHTML = '';
+
+            logKeys.forEach(dateKey => {
+                const day = logs[dateKey];
+                if (day.cardCount > 0) {
+                    logContainer.innerHTML += `
+                        <div class="log-item">
+                            <span class="log-date-label">📅 ${dateKey}</span>
+                            <span class="log-badge card-type">👁️ 圖卡背誦：已複習 ${day.cardCount} 張</span>
+                        </div>`;
+                }
+                if (day.quizCorrect > 0 || day.quizWrong > 0) {
+                    logContainer.innerHTML += `
+                        <div class="log-item">
+                            <span class="log-date-label">📅 ${dateKey}</span>
+                            <span class="log-badge quiz-type">⌨️ 填空背誦：正解 <b style="color:#16a34a">${day.quizCorrect}</b> ｜ 錯題 <b style="color:#dc2626">${day.quizWrong}</b></span>
+                        </div>`;
+                }
+
+                const totalActions = day.cardCount + day.quizCorrect + day.quizWrong;
+                const cardPercent = totalActions > 0 ? (day.cardCount / totalActions) * 100 : 0;
+                const correctPercent = totalActions > 0 ? (day.quizCorrect / totalActions) * 100 : 0;
+                const wrongPercent = totalActions > 0 ? (day.quizWrong / totalActions) * 100 : 0;
+
+                chartContainer.innerHTML += `
+                    <div class="chart-row">
+                        <div class="chart-date-title">${dateKey} (本日精進量: ${totalActions} 題次)</div>
+                        <div class="chart-bar-container">
+                            <div class="bar-fill" style="width: ${cardPercent}%; background: #3b82f6;" title="圖卡背誦"></div>
+                            <div class="bar-fill" style="width: ${correctPercent}%; background: #10b981;" title="填空正確"></div>
+                            <div class="bar-fill" style="width: ${wrongPercent}%; background: #ef4444;" title="填空答錯"></div>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function triggerLevelUpAnimation(newRankName) {
+            document.getElementById('lvlUpBannerText').textContent = `恭喜晉升至：${newRankName}`;
+            document.getElementById('lvlUpOverlay').style.display = 'flex';
+        }
+        function closeLvlUpAnimation() { document.getElementById('lvlUpOverlay').style.display = 'none'; }
+
+        function navigateTo(pageId, navElement) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if (navElement) {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                navElement.classList.add('active');
+            }
+            window.scrollTo(0, 0);
+        }
+
+        function toggleLibraryDeleteMode() {
+            isDeleteModeActive = !isDeleteModeActive;
+            const btn = document.getElementById('libEditToggle');
+            if(isDeleteModeActive) {
+                btn.textContent = '🔒 完成編輯';
+                btn.classList.add('active');
+            } else {
+                btn.textContent = '⚙️ 編輯模式';
+                btn.classList.remove('active');
+            }
+            renderApp();
+        }
+
+        function deleteLibrary(event, id) {
+            event.stopPropagation();
+            if(!confirm('確定要永久刪除這個單字庫嗎？')) return;
+            let data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            data = data.filter(l => l.id !== id);
+            localStorage.setItem('wordBankData', JSON.stringify(data));
+            renderApp();
+        }
+
+        function openLibraryDetail(id) {
+            const data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            const lib = data.find(l => l.id === id);
+            if(!lib) return;
+            
+            document.getElementById('detailLibName').textContent = lib.name;
+            document.getElementById('detailLibDate').textContent = `創建於：${lib.date}`;
+            document.getElementById('detailAddWordBtn').onclick = function() { openEditLibraryForm(id); };
+            
+            const listContainer = document.getElementById('detailWordListContainer');
+            listContainer.innerHTML = '';
+            
+            if(lib.words.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:30px 0;">目前庫內空空如也</div>';
+            } else {
+                lib.words.forEach((w, idx) => {
+                    listContainer.innerHTML += `
+                        <div class="word-detail-item">
+                            <div>
+                                <span class="word-detail-eng">${w.eng}</span>
+                                <span style="font-size:12px; color:#4f46e5; margin-left:6px;">${w.phonetic || ''}</span>
+                                <div class="word-detail-ch"><b style="color:#64748b">${w.type}</b> ${w.ch}</div>
+                            </div>
+                            <span class="word-detail-remove" onclick="removeSingleWordFromDetail('${lib.id}', ${idx})">移除</span>
+                        </div>
+                    `;
+                });
+            }
+            navigateTo('libDetailPage');
+        }
+
+        function removeSingleWordFromDetail(libId, index) {
+            if(!confirm('確定將此單字從庫中移除？')) return;
+            let data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            const libIndex = data.findIndex(l => l.id === libId);
+            if(libIndex !== -1) {
+                data[libIndex].words.splice(index, 1);
+                localStorage.setItem('wordBankData', JSON.stringify(data));
+                openLibraryDetail(libId);
+                renderApp();
+            }
+        }
+
+        function openAddPage() {
+            editingLibId = null;
+            document.getElementById('formPageTitle').textContent = '建立全新單字庫';
+            document.getElementById('formLibNameGroup').style.display = 'block';
+            document.getElementById('formColorGroup').style.display = 'block';
+            document.getElementById('newLibName').value = '';
+            document.getElementById('formWordsDynamicContainer').innerHTML = '';
+            
+            addWordRowInput('', 'n.', '');
+            navigateTo('addPage');
+        }
+
+        function openEditLibraryForm(id) {
+            editingLibId = id;
+            const data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            const lib = data.find(l => l.id === id);
+            if(!lib) return;
+
+            document.getElementById('formPageTitle').textContent = `增減單字：${lib.name}`;
+            document.getElementById('formLibNameGroup').style.display = 'none';
+            document.getElementById('formColorGroup').style.display = 'none';
+            
+            const container = document.getElementById('formWordsDynamicContainer');
+            container.innerHTML = '';
+            
+            if(lib.words.length === 0) {
+                addWordRowInput('', 'n.', '');
+            } else {
+                lib.words.forEach(w => {
+                    addWordRowInput(w.eng, w.type, w.ch);
+                });
+            }
+            navigateTo('addPage');
+        }
+
+        function addWordRowInput(engValue = '', typeValue = 'n.', chValue = '') {
+            const container = document.getElementById('formWordsDynamicContainer');
+            const row = document.createElement('div');
+            row.className = 'word-input-row';
+            row.innerHTML = `
+                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                    <input type="text" class="input-eng" placeholder="英文單字 (如: table)" value="${engValue}" style="flex:2;" />
+                    <select class="input-type" style="flex:1;">
+                        <option value="n." ${typeValue==='n.'?'selected':''}>n.</option>
+                        <option value="v." ${typeValue==='v.'?'selected':''}>v.</option>
+                        <option value="adj." ${typeValue==='adj.'?'selected':''}>adj.</option>
+                        <option value="adv." ${typeValue==='adv.'?'selected':''}>adv.</option>
+                        <option value="phr." ${typeValue==='phr.'?'selected':''}>phr.</option>
+                    </select>
+                </div>
+                <input type="text" class="input-ch" placeholder="中文註解 (選填，留空將自動由網路字典帶入)" value="${chValue}" />
+                <span style="position:absolute; top:4px; right:6px; color:#cbd5e1; font-size:11px; cursor:pointer;" onclick="this.parentElement.remove()">✕ 刪除列</span>
+            `;
+            container.appendChild(row);
+        }
+
+        function selectColor(element, className) {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedColorClass = className;
+        }
+
+        async function fetchDictionaryData(word) {
+            try {
+                const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.trim().toLowerCase()}`);
+                if(!res.ok) return null;
+                const data = await res.json();
+                if(!data || !data[0]) return null;
+                
+                const first = data[0];
+                const phonetic = first.phonetic || (first.phonetics && first.phonetics.find(p => p.text)?.text) || '';
+                
+                let definition = '';
+                if(first.meanings && first.meanings[0] && first.meanings[0].definitions[0]) {
+                    definition = first.meanings[0].definitions[0].definition || '';
+                }
+                return { phonetic, definition };
+            } catch(e) {
+                return null;
+            }
+        }
+
+        async function submitLibraryForm() {
+            const data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            const rows = document.querySelectorAll('.word-input-row');
+            
+            let parsedWords = [];
+            for (let row of rows) {
+                const eng = row.querySelector('.input-eng').value.trim();
+                const type = row.querySelector('.input-type').value;
+                let ch = row.querySelector('.input-ch').value.trim();
+                
+                if(!eng) continue;
+                
+                let phonetic = '';
+                const dict = await fetchDictionaryData(eng);
+                if(dict) {
+                    phonetic = dict.phonetic || '';
+                    if(!ch && dict.definition) {
+                        ch = `[英釋] ${dict.definition}`;
+                    }
+                }
+                if(!ch) ch = '點擊編輯補充中文';
+
+                const hash = Math.abs(eng.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0));
+                const mockImgIndex = (hash % 1000);
+                const img = `https://picsum.photos/id/${mockImgIndex}/400/250`;
+
+                parsedWords.push({ eng, type, ch, phonetic, img });
+            }
+
+            if(editingLibId !== null) {
+                const index = data.findIndex(l => l.id === editingLibId);
+                if(index !== -1) {
+                    data[index].words = parsedWords;
+                }
+            } else {
+                const name = document.getElementById('newLibName').value.trim() || '未命名單字庫';
+                const today = new Date();
+                const dateString = `${today.getFullYear()}/${String(today.getMonth()+1).padStart(2,'0')}/${String(today.getDate()).padStart(2,'0')}`;
+                
+                data.push({
+                    id: 'lib_' + Date.now(),
+                    name: name,
+                    date: dateString,
+                    color: selectedColorClass,
+                    words: parsedWords
+                });
+            }
+
+            localStorage.setItem('wordBankData', JSON.stringify(data));
+            renderApp();
+            navigateTo('libraryPage');
+        }
+
+        function prepareStudySession(libId, mode) {
+            const data = JSON.parse(localStorage.getItem('wordBankData')) || [];
+            const lib = data.find(l => l.id === libId);
+            if(!lib || lib.words.length === 0) { alert('該單字庫目前沒有任何單字可以複習！'); return; }
+            
+            currentLibId = libId;
+            studyMode = mode;
+            currentLearningQueue = [...lib.words].sort(() => Math.random() - 0.5);
+            
+            document.getElementById('currentSessionTitle').textContent = `${lib.name} (${mode==='card'?'圖片背誦':'填空拼寫'})`;
+            
+            if(studyMode === 'quiz') {
+                quizCorrectCount = 0;
+                quizWrongCount = 0;
+                quizWrongWordsLog = [];
+                document.getElementById('studyBtnGroup').style.display = 'none';
+            } else {
+                document.getElementById('studyBtnGroup').style.display = 'flex';
+            }
+
+            renderNextCardInSession();
+            navigateTo('cardStudySessionPage');
+        }
+
+        function renderNextCardInSession() {
+            const box = document.getElementById('cardSliderBox');
+            box.innerHTML = '';
+
+            if(currentLearningQueue.length === 0) {
+                if(studyMode === 'quiz') {
+                    writeStudyLog('quiz', null, { correct: quizCorrectCount, wrong: quizWrongCount });
+                    
+                    let wrongListHtml = '';
+                    if(quizWrongWordsLog.length > 0) {
+                        wrongListHtml = `<div class="wrong-list-box"><b>⚠️ 錯題集（建議加強）：</b>`;
+                        [...new Set(quizWrongWordsLog)].forEach(w => {
+                            wrongListHtml += `<div class="wrong-word-row"><span><b>${w.eng}</b></span><span>${w.ch}</span></div>`;
+                        });
+                        wrongListHtml += `</div>`;
+                    }
+
+                    box.innerHTML = `
+                        <div class="quiz-result-container">
+                            <div class="result-score-title">🎉 填空戰役結束！</div>
+                            <div style="font-size:15px; line-height:1.6; color:#475569; text-align:center;">
+                                本次答對：<b style="color:#10b981; font-size:18px;">${quizCorrectCount}</b> 題<br>
+                                本次答錯：<b style="color:#ef4444; font-size:18px;">${quizWrongCount}</b> 題
+                            </div>
+                            ${wrongListHtml}
+                            <button class="action-submit-btn" style="background:var(--primary-color); margin-top:20px;" onclick="navigateTo('studyPage')">確認儲存</button>
+                        </div>`;
+                    renderApp();
+                } else {
+                    box.innerHTML = `
+                        <div class="quiz-result-container" style="text-align:center;">
+                            <div class="result-score-title" style="color:#10b981;">✨ 完美複習完畢！</div>
+                            <p style="font-size:14px; color:#64748b;">本庫圖卡已全部瀏覽過一遍，記憶力持續大增！</p>
+                            <button class="action-submit-btn" style="background:var(--primary-color);" onclick="navigateTo('studyPage')">返回學習選單</button>
+                        </div>`;
+                    renderApp();
+                }
+                return;
+            }
+
+            const activeWord = currentLearningQueue[0];
+            const card = document.createElement('div');
+            card.className = 'flashcard-premium';
+            
+            if(studyMode === 'card') {
+                card.innerHTML = `
+                    <div class="card-image-area" style="background-image: url('${activeWord.img}')">
+                        <div class="card-audio-trigger" onclick="speakCardWord('${activeWord.eng}')">🔊</div>
+                    </div>
+                    <div class="card-info-area">
+                        <div class="card-eng">${activeWord.eng}</div>
+                        <div class="card-phonetic">${activeWord.phonetic || '/.../'}</div>
+                        <div class="card-part-of-speech">${activeWord.type}</div>
+                        <div class="card-ch">${activeWord.ch}</div>
+                    </div>
+                `;
+            } else {
+                card.innerHTML = `
+                    <div class="feedback-badge" id="quizFeedbackBadge"></div>
+                    <div class="card-image-area" style="background-image: url('${activeWord.img}')">
+                        <div class="card-audio-trigger" onclick="speakCardWord('${activeWord.eng}')">🔊</div>
+                    </div>
+                    <div class="card-info-area" style="justify-content: flex-start; padding-top:15px;">
+                        <div class="card-part-of-speech" style="margin-bottom:4px;">${activeWord.type} 提示：${activeWord.ch}</div>
+                        <div class="card-phonetic" style="margin-bottom:15px;">${activeWord.phonetic || '/.../'}</div>
+                        <div class="quiz-input-container">
+                            <input type="text" id="quizInputField" class="quiz-input" placeholder="請拼寫出該單字..." autofocus onkeydown="if(event.key==='Enter') validateQuizAnswer()" />
+                            <button class="action-submit-btn" style="margin-top:12px; background:#4f46e5;" onclick="validateQuizAnswer()">提交拼寫核對</button>
+                        </div>
+                    </div>
+                `;
+            }
+            box.appendChild(card);
+        }
+
+        function handleCardAction(remembered) {
+            if(currentLearningQueue.length === 0) return;
+            if(remembered) {
+                writeStudyLog('card', 1);
+                currentLearningQueue.shift();
+            } else {
+                const first = currentLearningQueue.shift();
+                currentLearningQueue.push(first);
+            }
+            renderNextCardInSession();
+        }
+
+        function validateQuizAnswer() {
+            const inputField = document.getElementById('quizInputField');
+            const badge = document.getElementById('quizFeedbackBadge');
+            if(!inputField || currentLearningQueue.length === 0) return;
+
+            const userAns = inputField.value.trim().toLowerCase();
+            const correctAns = currentLearningQueue[0].eng.trim().toLowerCase();
+
+            if(userAns === correctAns) {
+                quizCorrectCount++;
+                let gold = parseFloat(localStorage.getItem('wordBank_gold') || '0');
+                gold += 0.5;
+                localStorage.setItem('wordBank_gold', gold.toString());
+
+                badge.textContent = '✓ 正確 +0.5 Gold';
+                badge.style.background = '#dcfce7';
+                badge.style.color = '#15803d';
+                badge.style.display = 'block';
+
+                setTimeout(() => {
+                    currentLearningQueue.shift();
+                    renderNextCardInSession();
+                }, 800);
+            } else {
+                quizWrongCount++;
+                quizWrongWordsLog.push(currentLearningQueue[0]);
+
+                badge.textContent = `✕ 答案是: ${correctAns}`;
+                badge.style.background = '#fef2f2';
+                badge.style.color = '#b91c1c';
+                badge.style.display = 'block';
+
+                setTimeout(() => {
+                    const first = currentLearningQueue.shift();
+                    currentLearningQueue.push(first);
+                    renderNextCardInSession();
+                }, 1600);
+            }
+        }
+
+        function speakCardWord(text) {
+            if(!text) return;
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'en-US';
+            u.rate = 0.85;
+            window.speechSynthesis.speak(u);
+        }
+
+        function clearAllData() {
+            if(!confirm('🚨 警告：這將會永久刪除你在這台裝置上的所有帳號名稱、金幣、自訂單字庫與學習紀錄，確定要登出並初始化嗎？')) return;
+            localStorage.clear();
+            location.reload();
+        }
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
