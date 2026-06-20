@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>YKPA1</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺南市永康區體育會行政管理系統 (組織修正版)</title>
+    
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-straight/css/uicons-solid-straight.css'>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #003366;
+            --accent-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #e67e22; 
+            --danger-color: #e74c3c;  
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); display: flex; min-height: 100vh; }
+
+        .sidebar { width: 250px; background-color: var(--primary-color); color: white; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.1); }
+        .sidebar h2 { font-size: 1.1rem; margin-bottom: 30px; text-align: center; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px; line-height: 1.4; }
+        .sidebar nav a { display: flex; align-items: center; gap: 10px; color: #ecf0f1; text-decoration: none; padding: 12px 15px; margin-bottom: 10px; border-radius: 5px; cursor: pointer; }
+        .sidebar nav a.active { background-color: var(--accent-color); }
+        .sidebar nav a i { display: flex; align-items: center; font-size: 1.1rem; }
+
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: #fff569; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .today-date { font-size: 1.1rem; font-weight: bold; color: white; background: var(--primary-color); padding: 8px 15px; border-radius: 20px; }
+
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { margin-bottom: 20px; color: var(--primary-color); border-left: 4px solid var(--accent-color); padding-left: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
+        .form-row { display: flex; gap: 15px; margin-bottom: 10px; }
+        .form-row .form-group { flex: 1; margin-bottom: 0; }
+
+        .btn { background-color: var(--accent-color); color: white; border: 1px solid transparent; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9rem; line-height: 1.2; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn i { display: inline-flex; align-items: center; font-size: 0.85rem; }
+        .btn-success { background-color: var(--success-color); }
+        .btn-danger { background-color: var(--danger-color); }
+        .btn-secondary { background-color: #95a5a6; }
+        .btn-warning { background-color: var(--warning-color); }
+        .btn-sm { padding: 6px 10px; font-size: 0.8rem; margin-left: 5px; border: 1px solid transparent; gap: 4px; }
+        
+        .btn-link-style { background: transparent !important; color: #2980b9 !important; border: none !important; text-decoration: underline; padding: 2px 6px; font-weight: bold; cursor: pointer; font-size: 0.85rem; }
+        .btn-link-style:hover { color: #1a5276 !important; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f2f2f2; color: var(--primary-color); }
+
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: bold; color: white; display: inline-block; }
+        .status-create { background-color: var(--danger-color); }  
+        .status-approved { background-color: var(--success-color); } 
+        .status-close { background-color: #27ae60; }    
+        .status-blue-text { background-color: transparent !important; color: #2980b9 !important; padding: 0; font-size: 1rem; font-weight: bold; }
+
+        .badge-paid { background-color: var(--success-color); }
+        .badge-unpaid { background-color: var(--danger-color); }
+
+        .timeline { position: relative; padding-left: 30px; list-style: none; }
+        .timeline::before { content: ''; position: absolute; left: 5px; top: 0; bottom: 0; width: 2px; background: #ddd; }
+        .timeline-item { position: relative; margin-bottom: 35px; }
+        .timeline-item::before { content: ''; position: absolute; left: -29px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent-color); z-index: 2; }
+        .timeline-content { background: #f8f9fa; padding: 12px; border-radius: 5px; font-size: 0.95rem; }
+        
+        .days-gap { font-size: 0.8rem; color: #e67e22; font-weight: bold; background: #fff; border: 1px solid #f39c12; padding: 2px 8px; border-radius: 10px; position: absolute; left: -25px; bottom: -24px; z-index: 3; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        .page { display: none; }
+        .page.active { display: block; }
+        .filter-bar { display: flex; gap: 15px; align-items: center; margin-bottom: 15px; }
+        .detail-row { margin-bottom: 12px; font-size: 1.05rem; line-height: 1.6; border-bottom: 1px dashed #e2e8f0; padding-bottom: 8px; }
+        
+        .term-box { background: #fff3e0; border: 1px solid #ffe0b2; padding: 12px 20px; border-radius: 6px; font-weight: bold; color: #e65100; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .job-title-text { color: #003366; font-weight: bold; font-size: 1rem; }
+
+        .modify-alert-zone { background: #fff5f5; border: 1px solid #feb2b2; padding: 15px; border-radius: 6px; margin-top: 10px; display: none; }
+
+        /* PDF 匯出時專用的排除樣式類別 */
+        .pdf-exclude { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar pdf-exclude-global">
+        <h2>臺南市永康區體育會<br>- 行政管理系統 - </h2>
+        <nav>
+            <a id="nav-home" class="active" onclick="showPage('home')"><i class="fi fi-rr-home"></i> 競賽活動主頁</a>
+            <a id="nav-committee" onclick="showPage('committee')"><i class="fi fi-rr-users-alt"></i> 本會委員會名單</a>
+            <a id="nav-board" onclick="showPage('board')"><i class="fi fi-rr-users-alt"></i> 理監事成員名冊</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header-bar pdf-exclude-global">
+            <h2>臺南市永康區體育會行政管理系統</h2>
+            <div class="today-date" id="currentDate">載入中...</div>
+        </div>
+
+        <div id="page-home" class="page active">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>歷年競賽活動列表</h3>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <button class="btn" onclick="showPage('add-event')">+ 新增活動競賽</button>
+                        <button id="homeAdminBtn" class="btn btn-secondary" onclick="toggleHomeAdminMode()"></button>
+                    </div>
+                </div>
+                
+                <div class="filter-bar">
+                    <label style="font-weight: bold;">選擇年份 (民國)：</label>
+                    <select id="yearFilter" class="form-control" style="width: 150px;" onchange="renderEventList()">
+                    </select>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>競賽活動名稱</th>
+                            <th>主辦委員會</th>
+                            <th>活動日期 (起 ~ 迄)</th>
+                            <th>辦理進度</th>
+                            <th>操作</th>
+                            <th class="home-admin-col" style="display: none; color: var(--danger-color);">管理核心</th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="page-add-event" class="page">
+            <div class="card">
+                <h3>新增競賽活動</h3>
+                <form id="newEventForm" onsubmit="createNewEvent(event)">
+                    <div class="form-group">
+                        <label>1. 競賽活動名稱</label>
+                        <input type="text" id="add-name" class="form-control" required placeholder="例如：115年永康杯羽球錦標賽">
+                    </div>
+                    <div class="form-group">
+                        <label>2. 建立活動登記日期 (預設今日，可修改)</label>
+                        <input type="text" id="add-created-date" class="form-control" required placeholder="115/06/18">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>3. 活動開始日期 (EX：115/06/15)</label>
+                            <input type="text" id="add-start-date" class="form-control" required placeholder="115/06/15">
+                        </div>
+                        <div class="form-group">
+                            <label>4. 活動結束日期 (EX：115/06/17)</label>
+                            <input type="text" id="add-end-date" class="form-control" required placeholder="115/06/17">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>5. 活動主辦委員會 <span style="font-size:0.8rem; color:var(--accent-color); font-weight:normal;">(可按住 Ctrl 鍵或 Command 鍵點選多個委員會)</span></label>
+                        <select id="add-committee" class="form-control" multiple style="height: 150px;" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>6. 申請補助受文單位</label>
+                        <select id="add-unit-select" class="form-control" onchange="toggleCustomUnitInput(this.value)" required>
+                            <option value="臺南市政府體育局">臺南市政府體育局</option>
+                            <option value="臺南市議會">臺南市議會</option>
+                            <option value="臺南市體育總會">臺南市議會</option>
+                            <option value="custom">其他 (自行輸入)</option>
+                        </select>
+                        <input type="text" id="add-unit-custom" class="form-control" style="display:none; margin-top:10px;" placeholder="請輸入自訂受文單位名稱">
+                    </div>
+                    <div class="form-group">
+                        <label>7. 活動主要辦理內容簡述</label>
+                        <textarea id="add-items" class="form-control" rows="3" placeholder="請輸入主要辦理項目..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">建立活動</button>
+                    <button type="button" class="btn btn-secondary" onclick="showPage('home')">取消</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="page-detail" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;" class="pdf-exclude">
+                <button class="btn btn-secondary" onclick="showPage('home')">← 返回主頁</button>
+                <button class="btn btn-warning" onclick="exportDetailToPDF()"><i class="fi fi-rr-file-pdf"></i> 匯出活動 PDF 報告</button>
+            </div>
+
+            <div id="pdf-export-area" class="card" style="border: none; padding: 0; background: transparent; box-shadow: none;">
+                
+                <h3 id="det-name" style="margin-bottom: 20px; padding: 5px 0;">活動名稱</h3>
+                
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 6px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+                    <div class="detail-row"><strong>一、活動日期與天數：</strong> <span id="det-date-days"></span></div>
+                    <div class="detail-row"><strong>二、補助單位：</strong> <span id="det-unit"></span></div>
+                    <div class="detail-row"><strong>三、主辦委員會：</strong> <span id="det-comm"></span></div>
+                    <div class="detail-row"><strong>四、主要辦理內容簡述：</strong> <span id="det-items"></span></div>
+                    <div class="detail-row"><strong>五、目前狀態：</strong> <span id="det-status"></span></div>
+                </div>
+
+                <div id="statusRegisterZone" class="pdf-exclude" style="background: #edf2f7; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #cbd5e0;">
+                    <h4 style="margin-bottom: 10px;">★ 變更辦理進度</h4>
+                    <div class="form-row" style="align-items: flex-end; flex-wrap: wrap;">
+                        <div class="form-group" style="flex: 1; min-width: 180px;">
+                            <label>建立新進度</label>
+                            <select id="statusSelect" class="form-control" onchange="handleStatusSelectionChange(this.value)">
+                                <option value="已寄送補助申請">已寄送補助申請</option>
+                                <option value="申請補件">申請補件</option>
+                                <option value="已核定">已核定</option>
+                                <option value="活動修改">活動修改</option>
+                                <option value="已寄送核銷">已寄送核銷</option>
+                                <option value="核銷補件">核銷補件</option>
+                                <option value="已撥款">已撥款</option>
+                                <option value="已匯款至委員會">已匯款至委員會</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="width: 130px;">
+                            <label>經辦日期 (民國)</label>
+                            <input type="text" id="statusDateInput" class="form-control" placeholder="115/06/18">
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 150px;">
+                            <label>相關公文文號</label>
+                            <input type="text" id="statusDocNum" class="form-control" placeholder="若無可留空">
+                        </div>
+                        <div class="form-group" id="noteInputGroup" style="flex: 1; min-width: 180px; display: none;">
+                            <label style="color: var(--danger-color);">補件或修改原因備註</label>
+                            <input type="text" id="statusNote" class="form-control" placeholder="如：核定後時間變更修正說明">
+                        </div>
+                    </div>
+
+                    <div id="modifyFieldsZone" class="modify-alert-zone">
+                        <h5 style="color: var(--danger-color); margin-bottom: 12px;">🛠️ 活動欄位詳細資料變更（未變更項目留白） </h5>
+                        <div class="form-group">
+                            <label>1. 修正活動名稱</label>
+                            <input type="text" id="mod-name" class="form-control" placeholder="請輸入新的活動名稱">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>2. 修正開始日期 (民國)</label>
+                                <input type="text" id="mod-start-date" class="form-control" placeholder="如：115/07/01">
+                            </div>
+                            <div class="form-group">
+                                <label>3. 修正結束日期 (民國)</label>
+                                <input type="text" id="mod-end-date" class="form-control" placeholder="如：115/07/03">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>4. 修正主辦委員會 <span style="font-size:0.8rem; color:gray;">(按住 Ctrl/Cmd 複選)</span></label>
+                            <select id="mod-committee" class="form-control" multiple style="height: 100px;"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>5. 修正主要辦理內容概述</label>
+                            <textarea id="mod-items" class="form-control" rows="2" placeholder="請輸入修正後的項目內容..."></textarea>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; text-align: right;">
+                        <button class="btn btn-success" onclick="updateEventStatus()">儲存並更新狀態</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <h4>⏳ 辦理進度歷史紀錄 (公文簽收文號表)</h4>
+                    <button id="historyAdminBtn" class="btn btn-secondary pdf-exclude" onclick="toggleHistoryAdminMode()"></button>
+                </div>
+                
+                <table style="margin-bottom: 35px; border: 1px solid #ddd;">
+                    <thead>
+                        <tr>
+                            <th>日期 (民國)</th>
+                            <th>行政作業進度</th>
+                            <th>對應文號紀錄 / 備註</th>
+                            <th class="history-admin-col pdf-exclude" style="display: none;">管理操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="det-doc-table"></tbody>
+                </table>
+
+                <h4>📋 辦理進度時程摘要 </h4>
+                <ul class="timeline" id="det-timeline" style="margin-top: 25px; padding-bottom: 20px;"></ul>
+            </div>
+        </div>
+
+        <div id="page-committee" class="page">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>本會下轄委員會管理</h3>
+                    <button id="commAdminMasterBtn" class="btn btn-secondary" onclick="toggleCommAdminMasterMode()"></button>
+                </div>
+                
+                <div id="commAddFormZone" style="background: #f1f2f6; padding: 20px; border-radius: 6px; margin-bottom: 20px; display: none;">
+                    <h5 style="margin-bottom: 15px;">➕ 填寫新增委員會組織資訊</h5>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>委員會名稱</label>
+                            <input type="text" id="comm-add-name" class="form-control" placeholder="如：慢跑委員會">
+                        </div>
+                        <div class="form-group">
+                            <label>成立日期 (民國年/月/日)</label>
+                            <input type="text" id="comm-add-date" class="form-control" placeholder="如：113/03/15">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>主任委員</label>
+                            <input type="text" id="comm-add-leader" class="form-control" placeholder="負責人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>副主任委員</label>
+                            <input type="text" id="comm-add-subleader" class="form-control" placeholder="副負責人姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>總幹事</label>
+                            <input type="text" id="comm-add-director" class="form-control" placeholder="總幹事姓名">
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; text-align: right;">
+                        <button class="btn btn-success" onclick="addNewCommittee()">確認加入委員會系統</button>
+                    </div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>委員會名稱</th>
+                            <th>成立日期</th>
+                            <th>現任主任委員</th>
+                            <th>財務狀態 (入會與當前年費)</th>
+                            <th class="comm-op-th" style="display: none;">行政操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="committeeTableBody"></tbody>
+                </table>
+            </div>
+
+            <div id="commDetailCard" class="card" style="display: none; border-top: 4px solid var(--primary-color);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h4 id="cd-title" style="color: var(--primary-color);">委員會詳細組織財務報告</h4>
+                    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('commDetailCard').style.display='none'">關閉明細</button>
+                </div>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 6px; line-height: 1.8;">
+                    <div class="form-row">
+                        <div class="form-group"><strong>委員會名稱：</strong> <span id="cd-name"></span></div>
+                        <div class="form-group"><strong>成立日期：</strong> 民國 <span id="cd-date"></span></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><strong>主任委員：</strong> <span id="cd-leader"></span></div>
+                        <div class="form-group"><strong>副主任委員：</strong> <span id="cd-subleader"></span></div>
+                        <div class="form-group"><strong>總幹事：</strong> <span id="cd-director"></span></div>
+                    </div>
+
+                    <div id="commEditFieldsZone" style="margin-top: 15px; padding: 15px; background: #edf2f7; border-radius: 6px; border: 1px dashed #cbd5e0;">
+                        <h5 style="color: var(--primary-color); margin-bottom: 12px;"> 🛠️ 修正組織成員與幹部資料</h5>
+                        <input type="hidden" id="comm-edit-index">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>1. 變更組織名稱</label>
+                                <input type="text" id="comm-edit-name" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>2. 修正成立日期</label>
+                                <input type="text" id="comm-edit-date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>3. 新任主任委員</label>
+                                <input type="text" id="comm-edit-leader" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>4. 新任副主任委員</label>
+                                <input type="text" id="comm-edit-subleader" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>5. 新任總幹事</label>
+                                <input type="text" id="comm-edit-director" class="form-control">
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top: 10px;">
+                            <button class="btn btn-warning btn-sm" onclick="saveCommitteeEdits()">儲存修正內容</button>
+                        </div>
+                    </div>
+
+                    <div style="background: #fff; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6; margin-top: 15px;">
+                        <h5 style="color:#2c3e50; margin-bottom: 10px;">📋 歷次規費財務入帳明細簿</h5>
+                        <table style="font-size:0.9rem; margin-top: 5px;">
+                            <thead>
+                                <tr style="background:#f1f2f6;">
+                                    <th>款項類別</th>
+                                    <th>對應年份</th>
+                                    <th>繳費日期</th>
+                                    <th>金額 (元)</th>
+                                    <th>繳費管道</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cd-finance-history-rows"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="commPaymentFormCard" class="card" style="display: none; border-top: 4px solid var(--warning-color); background: #fffcf5;">
+                <h4 id="payFormTitle" style="color: var(--warning-color); margin-bottom: 15px;">💰 登錄規費收據帳目</h4>
+                <input type="hidden" id="payFormIndex">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>款項類型</label>
+                        <select id="pay-type" class="form-control" onchange="togglePayYearDisable(this.value)">
+                            <option value="annual">年度年費</option>
+                            <option value="entrance">入會費</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>適用年度 (民國年，若選入會費則不需填)</label>
+                        <input type="number" id="pay-year" class="form-control" placeholder="如：115">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>繳費日期 (民國年/月/日)</label>
+                        <input type="text" id="pay-date" class="form-control" placeholder="如：115/06/18">
+                    </div>
+                    <div class="form-group">
+                        <label>繳費金額 (元)</label>
+                        <input type="number" id="pay-amount" class="form-control" placeholder="如：2000" value="2000">
+                    </div>
+                    <div class="form-group">
+                        <label>繳費方式</label>
+                        <select id="pay-method" class="form-control">
+                            <option value="現金">現金</option>
+                            <option value="轉帳">銀行轉帳</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button class="btn btn-success" onclick="submitPaymentRecord()">儲存此筆款項</button>
+                    <button class="btn btn-secondary" onclick="document.getElementById('commPaymentFormCard').style.display='none'">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-board" class="page">
+            <div class="card">
+                <div class="term-box">
+                    <div>📆 <span id="currentTermLabel" style="font-size: 1.05rem;">本屆任期：載入中...</span></div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <label style="color:#e65100; font-weight: bold;">切換檢視屆次：</label>
+                        <select id="boardTermSelector" class="form-control" style="width: 140px; background: white;" onchange="switchBoardTerm(this.value)"></select>
+                        <button class="btn btn-secondary btn-sm" onclick="changeTermPeriod()"><i class="fi fi-ss-settings"></i> 修改本屆任期</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3 id="boardTitleHeader">理監事人員名冊</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="boardDeleteTermBtn" class="btn btn-danger" style="display: none;" onclick="deleteEntireBoardTerm()"><i class="fi fi-rr-trash"></i>  刪除整屆名單</button>
+                        <button id="boardNextTermBtn" class="btn btn-success" style="display: none;" onclick="triggerNextTermGeneration()"> 複製並產生下一屆名單</button>
+                        <button id="boardAdminMasterBtn" class="btn btn-secondary" onclick="toggleBoardAdminMasterMode()"></button>
+                    </div>
+                </div>
+
+                <div id="boardAddFormZone" style="background: #edf2f7; padding: 15px; border-radius: 6px; margin-bottom: 20px; display: none;">
+                    <h5 style="margin-bottom: 10px;">➕ 填寫新增理監事人員</h5>
+                    <div class="form-row" style="flex-wrap: wrap;">
+                        <div class="form-group" style="flex: 1; min-width: 120px;">
+                            <label>職別</label>
+                            <input type="text" id="board-add-job" class="form-control" placeholder="如：理事">
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 120px;">
+                            <label>姓名</label>
+                            <input type="text" id="board-add-name" class="form-control" placeholder="王小明">
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 120px;">
+                            <label>出生年月日</label>
+                            <input type="text" id="board-add-birth" class="form-control" placeholder="57.07.12">
+                        </div>
+                        <div class="form-group" style="flex: 2; min-width: 200px;">
+                            <label>住址</label>
+                            <input type="text" id="board-add-addr" class="form-control" placeholder="臺南市永康區...">
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 120px;">
+                            <label>電話</label>
+                            <input type="text" id="board-add-phone" class="form-control" placeholder="0912-345678">
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 100px;">
+                            <label>備註</label>
+                            <input type="text" id="board-add-note" class="form-control" placeholder="羽球">
+                        </div>
+                    </div>
+                    <button class="btn btn-success btn-sm" onclick="addNewBoardMember()">確認加入名冊</button>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>職別</th>
+                            <th>姓名</th>
+                            <th>出生年月日</th>
+                            <th>住址</th>
+                            <th>電話</th>
+                            <th>備註</th>
+                            <th class="board-admin-th" style="display: none; color: var(--danger-color);">管理操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="boardTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 🔄 核心瀏覽器 LocalStorage 儲存同步機制
+        // ==========================================
+        let committees = [];
+        let events = [];
+        let boardDatabase = {};
+        let selectedTermKey = "第三屆"; 
+        let currentTermString = "113/01/01至116/12/31";
+
+        let currentViewingEventId = null;
+        let homeAdminModeActive = false; 
+        let historyAdminModeActive = false;
+        let commAdminMasterModeActive = false; 
+        let boardAdminMasterModeActive = false; 
+
+        function saveToDatabase() {
+            localStorage.setItem('yk_committees', JSON.stringify(committees));
+            localStorage.setItem('yk_events', JSON.stringify(events));
+            localStorage.setItem('yk_board_database', JSON.stringify(boardDatabase));
+            localStorage.setItem('yk_selected_term_key', selectedTermKey);
+            localStorage.setItem('yk_current_term_string', currentTermString);
+        }
+
+        function loadFromDatabase() {
+            const cStr = localStorage.getItem('yk_committees');
+            const eStr = localStorage.getItem('yk_events');
+            const bStr = localStorage.getItem('yk_board_database');
+            const kStr = localStorage.getItem('yk_selected_term_key');
+            const tStr = localStorage.getItem('yk_current_term_string');
+
+            committees = cStr ? JSON.parse(cStr) : [];
+            events = eStr ? JSON.parse(eStr) : [];
+            boardDatabase = bStr ? JSON.parse(bStr) : { "第三屆": [] };
+            selectedTermKey = kStr ? kStr : "第三屆";
+            currentTermString = tStr ? tStr : "113/01/01至116/12/31";
+
+            populateYearFilterDropdown();
+        }
+
+        // 通用輔助日期計算與校驗
+        function populateYearFilterDropdown() {
+            const yearSelect = document.getElementById('yearFilter');
+            const previousSelectedValue = yearSelect ? yearSelect.value : null;
+            let years = events.map(e => e.startDate.split('/')[0]);
+            let uniqueYears = [...new Set(years)].sort((a, b) => parseInt(b) - parseInt(a));
+            let optionsHtml = '<option value="all">顯示全部</option>';
+            uniqueYears.forEach(y => { optionsHtml += `<option value="${y}">${y} 年</option>`; });
+            if(yearSelect) yearSelect.innerHTML = optionsHtml;
+            if (yearSelect && previousSelectedValue && uniqueYears.includes(previousSelectedValue)) { yearSelect.value = previousSelectedValue; } 
+            else if (yearSelect && uniqueYears.length > 0) { yearSelect.value = uniqueYears[0]; } 
+            else if (yearSelect) { yearSelect.value = "all"; }
+        }
+
+        function validateTaiwanDate(dateStr) {
+            if(!dateStr) return false;
+            const regex = /^(\d{2,3})\/(\d{1,2})\/(\d{1,2})$/;
+            if (!regex.test(dateStr)) return false;
+            const matches = dateStr.match(regex);
+            const twYear = parseInt(matches[1]);
+            const month = parseInt(matches[2]);
+            const day = parseInt(matches[3]);
+            if (month < 1 || month > 12) return false;
+            const testDate = new Date(twYear + 1911, month - 1, day);
+            return (testDate.getFullYear() === (twYear + 1911) && testDate.getMonth() === (month - 1) && testDate.getDate() === day);
+        }
+
+        function getTaiwanTodayStr() {
+            const today = new Date();
+            return `${today.getFullYear() - 1911}/${String(today.getMonth() + 1).padStart(2, '0')}/${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        function getTaiwanCurrentYear() { return new Date().getFullYear() - 1911; }
+        function twDateToDateObj(twDateStr) {
+            const parts = twDateStr.split('/');
+            return new Date(parseInt(parts[0]) + 1911, parseInt(parts[1]) - 1, parseInt(parts[2]));
+        }
+
+        function calculateDaysTw(startTw, endTw) {
+            if (!validateTaiwanDate(startTw) || !validateTaiwanDate(endTw)) return 0;
+            return Math.ceil(Math.abs(twDateToDateObj(endTw) - twDateToDateObj(startTw)) / (1000 * 60 * 60 * 24)) + 1;
+        }
+
+        function getStatusStyleClass(statusStr) {
+            if (statusStr.includes("審核中") || statusStr.includes("核銷中") || statusStr.includes("修改")) return "status-blue-text";
+            if (statusStr.includes("建立活動")) return "status-create";
+            if (statusStr.includes("已核定") || statusStr.includes("已撥款") || statusStr.includes("已核定")) return "status-approved";
+            if (statusStr.includes("結案")) return "status-close";
+            return "";
+        }
+
+        function toggleCustomUnitInput(val) { document.getElementById('add-unit-custom').style.display = (val === 'custom') ? 'block' : 'none'; }
+        
+        function handleStatusSelectionChange(statusVal) {
+            document.getElementById('noteInputGroup').style.display = (statusVal === '申請補件' || statusVal === '核銷補件' || statusVal === '活動修改') ? 'block' : 'none';
+            document.getElementById('modifyFieldsZone').style.display = (statusVal === '活動修改') ? 'block' : 'none';
+            if(statusVal === '活動修改') { populateModifyCommitteeDropdown(); }
+        }
+
+        function applyHomeAdminButtonVisual() {
+            const btn = document.getElementById('homeAdminBtn'); if (!btn) return;
+            if (homeAdminModeActive) { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  關閉主頁編輯管理`; btn.className = "btn btn-danger"; } 
+            else { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  開啟主頁編輯管理`; btn.className = "btn btn-secondary"; }
+        }
+        function toggleHomeAdminMode() { homeAdminModeActive = !homeAdminModeActive; applyHomeAdminButtonVisual(); renderEventList(); }
+
+        function applyHistoryAdminButtonVisual() {
+            const btn = document.getElementById('historyAdminBtn'); if (!btn) return;
+            if (historyAdminModeActive) { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  關閉管理`; btn.className = "btn btn-danger"; } 
+            else { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  開啟管理`; btn.className = "btn btn-secondary"; }
+        }
+        function toggleHistoryAdminMode() { historyAdminModeActive = !historyAdminModeActive; applyHistoryAdminButtonVisual(); renderDetailTables(events.find(i=>i.id===currentViewingEventId)); }
+
+        function applyCommAdminMasterButtonVisual() {
+            const btn = document.getElementById('commAdminMasterBtn'); const formZone = document.getElementById('commAddFormZone'); if(!btn) return;
+            if (commAdminMasterModeActive) { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  關閉組織管理`; btn.className = "btn btn-danger"; if(formZone) formZone.style.display = 'block'; } 
+            else { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  開啟組織管理`; btn.className = "btn btn-secondary"; if(formZone) formZone.style.display = 'none'; }
+        }
+        function toggleCommAdminMasterMode() { commAdminMasterModeActive = !commAdminMasterModeActive; applyCommAdminMasterButtonVisual(); renderCommittees(); }
+
+        function applyBoardAdminMasterButtonVisual() {
+            const btn = document.getElementById('boardAdminMasterBtn'); const formZone = document.getElementById('boardAddFormZone'); const nextTermBtn = document.getElementById('boardNextTermBtn'); const delTermBtn = document.getElementById('boardDeleteTermBtn'); if(!btn) return;
+            if (boardAdminMasterModeActive) { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  關閉理監事管理`; btn.className = "btn btn-danger"; if(formZone) formZone.style.display = 'block'; if(nextTermBtn) nextTermBtn.style.display = 'inline-flex'; if(delTermBtn) delTermBtn.style.display = 'inline-flex'; } 
+            else { btn.innerHTML = `<i class="fi fi-ss-settings"></i>  開啟理監事管理`; btn.className = "btn btn-secondary"; if(formZone) formZone.style.display = 'none'; if(nextTermBtn) nextTermBtn.style.display = 'none'; if(delTermBtn) delTermBtn.style.display = 'none'; }
+        }
+        function toggleBoardAdminMasterMode() { boardAdminMasterModeActive = !boardAdminMasterModeActive; applyBoardAdminMasterButtonVisual(); renderBoardMembers(); }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            
+            loadFromDatabase();
+
+            if(pageId === 'home') { document.getElementById('nav-home').classList.add('active'); applyHomeAdminButtonVisual(); renderEventList(); }
+            if(pageId === 'committee') { document.getElementById('nav-committee').classList.add('active'); applyCommAdminMasterButtonVisual(); document.getElementById('commDetailCard').style.display = 'none'; document.getElementById('commPaymentFormCard').style.display = 'none'; renderCommittees(); }
+            if(pageId === 'board') { document.getElementById('nav-board').classList.add('active'); buildBoardTermSelectorOptions(); applyBoardAdminMasterButtonVisual(); renderBoardMembers(); }
+            if(pageId === 'add-event') { document.getElementById('add-created-date').value = getTaiwanTodayStr(); populateCommitteeDropdown(); }
+        }
+
+        function checkCommitteeFinanceStrict(c) {
+            if (!c.payments) c.payments = [];
+            const hasEntrance = c.payments.some(p => p.type === 'entrance' && parseFloat(p.amount) > 0);
+            if (!hasEntrance) return { ok: false, text: "尚未繳費" };
+            const currentYear = getTaiwanCurrentYear();
+            const hasCurrentAnnual = c.payments.some(p => p.type === 'annual' && parseInt(p.year) === currentYear && parseFloat(p.amount) > 0);
+            if (hasCurrentAnnual) return { ok: true, text: "已繳費" }; 
+            return { ok: false, text: "尚未繳費" };
+        }
+
+        function renderCommittees() {
+            document.querySelectorAll('.comm-op-th').forEach(el => el.style.display = commAdminMasterModeActive ? 'table-cell' : 'none');
+            let html = '';
+            committees.forEach((c, index) => {
+                const financeStatus = checkCommitteeFinanceStrict(c);
+                const badgeClass = financeStatus.ok ? "badge-paid" : "badge-unpaid";
+                html += `<tr>
+                    <td><strong>${c.name}</strong></td>
+                    <td>民國 ${c.date}</td>
+                    <td>${c.leader}</td>
+                    <td><span class="badge ${badgeClass}">${financeStatus.text}</span></td>
+                    <td class="comm-op-td" style="display: ${commAdminMasterModeActive ? 'table-cell' : 'none'};">
+                        <button class="btn-link-style" onclick="viewCommitteeDetail(${index})">📋 詳細資料</button>
+                        <button class="btn-link-style" onclick="openPaymentForm(${index})">💰 登錄新繳費</button>
+                        <button class="btn-link-style" style="color:var(--danger-color)!important;" onclick="deleteCommittee(${index})"><i class="fi fi-rr-cross"></i> 刪除</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('committeeTableBody').innerHTML = html;
+        }
+
+        function addNewCommittee() {
+            const name = document.getElementById('comm-add-name').value;
+            const date = document.getElementById('comm-add-date').value;
+            const leader = document.getElementById('comm-add-leader').value;
+            const subleader = document.getElementById('comm-add-subleader').value;
+            const director = document.getElementById('comm-add-director').value;
+            if(!name || !date || !leader) { alert("組織名稱、成立日期與主任委員為必填欄位！"); return; }
+            if(!validateTaiwanDate(date)) { alert("❌ 成立日期格式不正確！"); return; }
+            
+            committees.push({ name, date, leader, subleader, director, payments: [] });
+            saveToDatabase();
+            document.getElementById('comm-add-name').value = ''; document.getElementById('comm-add-date').value = ''; document.getElementById('comm-add-leader').value = ''; document.getElementById('comm-add-subleader').value = ''; document.getElementById('comm-add-director').value = '';
+            renderCommittees();
+        }
+
+        function openPaymentForm(index) {
+            const c = committees[index];
+            document.getElementById('payFormIndex').value = index;
+            document.getElementById('payFormTitle').innerText = `💰 登錄【${c.name}】新收據款項`;
+            document.getElementById('pay-date').value = getTaiwanTodayStr();
+            document.getElementById('pay-year').value = getTaiwanCurrentYear();
+            document.getElementById('pay-type').value = "annual";
+            togglePayYearDisable("annual");
+            document.getElementById('commPaymentFormCard').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('commPaymentFormCard').offsetTop, behavior: 'smooth' });
+        }
+        function togglePayYearDisable(type) { document.getElementById('pay-year').disabled = (type === 'entrance'); }
+
+        function submitPaymentRecord() {
+            const index = document.getElementById('payFormIndex').value;
+            const c = committees[index];
+            const type = document.getElementById('pay-type').value;
+            let year = parseInt(document.getElementById('pay-year').value);
+            const date = document.getElementById('pay-date').value;
+            const amount = parseFloat(document.getElementById('pay-amount').value);
+            const method = document.getElementById('pay-method').value;
+
+            if (!validateTaiwanDate(date)) { alert("❌ 繳費日期格式不正確！"); return; }
+            if (isNaN(amount) || amount <= 0) { alert("❌ 請填寫正確的金額！"); return; }
+            if (type === 'annual' && isNaN(year)) { alert("❌ 請填寫適用的年費年度！"); return; }
+            if (type === 'entrance') year = null;
+
+            if (!c.payments) c.payments = [];
+            c.payments.push({ type, year, date, amount, method });
+            saveToDatabase();
+
+            document.getElementById('commPaymentFormCard').style.display = 'none';
+            renderCommittees();
+            if (document.getElementById('commDetailCard').style.display === 'block') { viewCommitteeDetail(index); }
+            alert("✨ 規費繳費紀錄已成功登錄！");
+        }
+
+        function viewCommitteeDetail(index) {
+            const c = committees[index];
+            document.getElementById('cd-title').innerText = `【${c.name}】完整組織編制與歷史財務報告`;
+            document.getElementById('cd-name').innerText = c.name;
+            document.getElementById('cd-date').innerText = c.date;
+            document.getElementById('cd-leader').innerText = c.leader || '未指定';
+            document.getElementById('cd-subleader').innerText = c.subleader || '未指定';
+            document.getElementById('cd-director').innerText = c.director || '未指定';
+            
+            // 將現有資料帶入修改欄位中預備
+            document.getElementById('comm-edit-index').value = index;
+            document.getElementById('comm-edit-name').value = c.name;
+            document.getElementById('comm-edit-date').value = c.date;
+            document.getElementById('comm-edit-leader').value = c.leader || '';
+            document.getElementById('comm-edit-subleader').value = c.subleader || '';
+            document.getElementById('comm-edit-director').value = c.director || '';
+
+            let rowsHtml = '';
+            if (c.payments && c.payments.length > 0) {
+                c.payments.forEach(p => {
+                    const typeText = p.type === 'entrance' ? '<span style="color:#e67e22;font-weight:bold;">入會費</span>' : '年度年費';
+                    const yearText = p.year ? `民國 ${p.year} 年` : '---';
+                    rowsHtml += `<tr><td>${typeText}</td><td>${yearText}</td><td>${p.date}</td><td><strong>$${p.amount.toLocaleString()}</strong></td><td><span class="badge" style="background:#7f8c8d;">${p.method}</span></td></tr>`;
+                });
+            } else {
+                rowsHtml = `<tr><td colspan="5" style="text-align:center; color:gray;">目前尚無 any 入帳歷史收據。</td></tr>`;
+            }
+            document.getElementById('cd-finance-history-rows').innerHTML = rowsHtml;
+            document.getElementById('commDetailCard').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('commEditFieldsZone').offsetTop - 20, behavior: 'smooth' });
+        }
+
+        // ✨ 新增：儲存委員會組織與幹部修改內容
+        function saveCommitteeEdits() {
+            const index = document.getElementById('comm-edit-index').value;
+            if(index === "" || index === null) return;
+            
+            const newName = document.getElementById('comm-edit-name').value.trim();
+            const newDate = document.getElementById('comm-edit-date').value.trim();
+            const newLeader = document.getElementById('comm-edit-leader').value.trim();
+            const newSubleader = document.getElementById('comm-edit-subleader').value.trim();
+            const newDirector = document.getElementById('comm-edit-director').value.trim();
+
+            if(!newName || !newDate || !newLeader) { alert("❌ 組織名稱、成立日期與主任委員不可留空！"); return; }
+            if(!validateTaiwanDate(newDate)) { alert("❌ 修正之成立日期格式不正確！"); return; }
+
+            // 更新記憶體與資料庫數據
+            committees[index].name = newName;
+            committees[index].date = newDate;
+            committees[index].leader = newLeader;
+            committees[index].subleader = newSubleader;
+            committees[index].director = newDirector;
+
+            saveToDatabase();
+            renderCommittees();
+            viewCommitteeDetail(index); // 重新渲染詳細區域
+            alert("✨ 委員會組織幹部資料已順利修正完成！");
+        }
+
+        function deleteCommittee(index) {
+            const name = committees[index].name;
+            if(confirm(`⚠️ 安全確認\n您確定要將「${name}」完全除名並刪除所有帳目嗎？`)) {
+                committees.splice(index, 1);
+                saveToDatabase();
+                document.getElementById('commDetailCard').style.display = 'none';
+                document.getElementById('commPaymentFormCard').style.display = 'none';
+                renderCommittees();
+            }
+        }
+
+        // --- 理監事名冊模組 ---
+        function buildBoardTermSelectorOptions() {
+            const selector = document.getElementById('boardTermSelector'); if(!selector) return;
+            let html = '';
+            Object.keys(boardDatabase).forEach(key => {
+                const selectedAttr = (key === selectedTermKey) ? 'selected' : '';
+                html += `<option value="${key}" ${selectedAttr}>${key}</option>`;
+            });
+            selector.innerHTML = html;
+        }
+
+        function switchBoardTerm(termKey) { 
+            selectedTermKey = termKey; 
+            saveToDatabase(); 
+            renderBoardMembers(); 
+        }
+
+        function changeTermPeriod() {
+            const newTerm = prompt(`請修正【${selectedTermKey}】的理監事任期區塊資訊：`, currentTermString);
+            if(newTerm && newTerm.trim() !== "") { 
+                currentTermString = newTerm; 
+                saveToDatabase();
+                document.getElementById('currentTermLabel').innerText = `本屆任期：民國 ${currentTermString}`; 
+            }
+        }
+
+        function triggerNextTermGeneration() {
+            const nextTermName = prompt("請輸入欲開啟之新屆次名稱（例如：第四屆）：", ""); if(!nextTermName || nextTermName.trim() === "") return;
+            if (boardDatabase[nextTermName]) { alert(`❌ 失敗：【${nextTermName}】已經存在！`); return; }
+            const currentList = boardDatabase[selectedTermKey] || [];
+            
+            boardDatabase[nextTermName] = JSON.parse(JSON.stringify(currentList));
+            selectedTermKey = nextTermName; 
+            currentTermString = "117/01/01至120/12/31"; 
+            saveToDatabase(); buildBoardTermSelectorOptions();
+            boardAdminMasterModeActive = true; applyBoardAdminMasterButtonVisual(); renderBoardMembers();
+            alert(` 已成功產生【${nextTermName}】並複製前任名單！`);
+        }
+
+        function deleteEntireBoardTerm() {
+            const termsAvailable = Object.keys(boardDatabase);
+            if (termsAvailable.length <= 1) { alert("❌ 系統底層警告：您必須至少保留一屆理監事任期名冊，無法全部刪除！"); return; }
+            if (confirm(`⚠️【高風險操作】\n您確定要將當前檢視的「${selectedTermKey}」整屆人員名冊完全銷毀嗎？`)) {
+                delete boardDatabase[selectedTermKey];
+                selectedTermKey = Object.keys(boardDatabase)[0];
+                saveToDatabase(); buildBoardTermSelectorOptions(); renderBoardMembers();
+                alert(`✨ 已經成功將該錯置屆次名冊完全自系統中抹除！`);
+            }
+        }
+
+        function renderBoardMembers() {
+            applyBoardAdminMasterButtonVisual();
+            document.getElementById('currentTermLabel').innerText = `${selectedTermKey} 任期：民國 ${currentTermString}`;
+            document.getElementById('boardTitleHeader').innerText = `永康區體育會 ${selectedTermKey} 理監事人員名冊`;
+            document.querySelectorAll('.board-admin-th').forEach(el => el.style.display = boardAdminMasterModeActive ? 'table-cell' : 'none');
+            const activeList = boardDatabase[selectedTermKey] || [];
+            document.getElementById('boardTableBody').innerHTML = activeList.map((b, index) => 
+                `<tr>
+                    <td><span class="job-title-text">${b.job}</span></td>
+                    <td><strong>${b.name}</strong></td>
+                    <td>${b.birth || '---'}</td>
+                    <td><span style="font-size:0.9rem; color:#555;">${b.addr || '---'}</span></td>
+                    <td>${b.phone || '---'}</td>
+                    <td><span style="color:var(--accent-color); font-weight:bold;">${b.note || ''}</span></td>
+                    <td class="board-admin-td" style="display: ${boardAdminMasterModeActive ? 'table-cell' : 'none'};">
+                        <button class="btn btn-secondary btn-sm" onclick="editBoardMember(${index})">編輯</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteBoardMember(${index})">刪除</button>
+                    </td>
+                </tr>`
+            ).join('');
+        }
+
+        function addNewBoardMember() {
+            const job = document.getElementById('board-add-job').value;
+            const name = document.getElementById('board-add-name').value;
+            const birth = document.getElementById('board-add-birth').value;
+            const addr = document.getElementById('board-add-addr').value;
+            const phone = document.getElementById('board-add-phone').value;
+            const note = document.getElementById('board-add-note').value;
+            if(!job || !name) { alert("職別與姓名為必填欄位！"); return; }
+            
+            if(!boardDatabase[selectedTermKey]) boardDatabase[selectedTermKey] = [];
+            boardDatabase[selectedTermKey].push({ job, name, birth, addr, phone, note });
+            saveToDatabase();
+            document.getElementById('board-add-job').value = ''; document.getElementById('board-add-name').value = ''; document.getElementById('board-add-birth').value = ''; document.getElementById('board-add-addr').value = ''; document.getElementById('board-add-phone').value = ''; document.getElementById('board-add-note').value = '';
+            renderBoardMembers();
+        }
+
+        function editBoardMember(index) {
+            const b = boardDatabase[selectedTermKey][index];
+            if(confirm(`確定要修改成員「${b.name}」的資料嗎？`)) {
+                const job = prompt("修改職別：", b.job) || b.job;
+                const name = prompt("修改姓名：", b.name) || b.name;
+                const birth = prompt("修改出生年月日：", b.birth) || b.birth;
+                const addr = prompt("修改住址：", b.addr) || b.addr;
+                const phone = prompt("修改電話：", b.phone) || b.phone;
+                const note = prompt("修改備註：", b.note) || b.note;
+                
+                boardDatabase[selectedTermKey][index] = { job, name, birth, addr, phone, note };
+                saveToDatabase(); renderBoardMembers();
+            }
+        }
+
+        function deleteBoardMember(index) {
+            const name = boardDatabase[selectedTermKey][index].name;
+            if(confirm(`您確定要將理監事成員「${name}」自名冊中刪除嗎？`)) {
+                boardDatabase[selectedTermKey].splice(index, 1);
+                saveToDatabase(); renderBoardMembers();
+            }
+        }
+
+        function populateCommitteeDropdown() {
+            let html = '<option value="本會主導辦理">★ 本會主導辦理</option>';
+            committees.forEach(c => { html += `<option value="${c.name}">${c.name}</option>`; });
+            document.getElementById('add-committee').innerHTML = html;
+        }
+
+        function populateModifyCommitteeDropdown() {
+            let html = '<option value="本會主導辦理">★ 本會主導辦理</option>';
+            committees.forEach(c => { html += `<option value="${c.name}">${c.name}</option>`; });
+            document.getElementById('mod-committee').innerHTML = html;
+        }
+
+        // --- 競賽活動列表主流程 ---
+        function renderEventList() {
+            const filterYear = document.getElementById('yearFilter').value;
+            let html = '';
+            const filtered = events.filter(e => e.startDate.split('/')[0] === filterYear || filterYear === 'all');
+            applyHomeAdminButtonVisual();
+            document.querySelectorAll('.home-admin-col').forEach(el => el.style.display = homeAdminModeActive ? 'table-cell' : 'none');
+            filtered.forEach(e => {
+                html += `<tr>
+                    <td><strong>${e.name}</strong></td>
+                    <td><span style="color:#2c3e50; font-weight:500;">${e.committee}</span></td>
+                    <td>${e.startDate} ~ ${e.endDate}</td>
+                    <td><span class="badge ${getStatusStyleClass(e.status)}">${e.status}</span></td>
+                    <td><button class="btn btn-sm" onclick="viewEventDetail(${e.id})">詳細與狀態更動</button></td>
+                    <td class="home-admin-td" style="display: ${homeAdminModeActive ? 'table-cell' : 'none'};">
+                        <button class="btn btn-danger btn-sm" onclick="deleteEntireEvent(${e.id})">刪除活動</button>
+                    </td>
+                </tr>`;
+            });
+            document.getElementById('eventTableBody').innerHTML = html;
+        }
+
+        function deleteEntireEvent(id) {
+            const target = events.find(item => item.id === id);
+            if (confirm(`確定要完全刪除「${target.name}」嗎？`)) {
+                events = events.filter(item => item.id !== id); saveToDatabase(); renderEventList();
+            }
+        }
+
+        function createNewEvent(event) {
+            event.preventDefault();
+            const createdDate = document.getElementById('add-created-date').value;
+            const sDate = document.getElementById('add-start-date').value;
+            const eDate = document.getElementById('add-end-date').value;
+            if(!validateTaiwanDate(createdDate) || !validateTaiwanDate(sDate) || !validateTaiwanDate(eDate)) { alert("❌ 日期格式不合理！"); return; }
+            
+            const selectEl = document.getElementById('add-committee');
+            const selectedCommittees = Array.from(selectEl.selectedOptions).map(option => option.value);
+            if(selectedCommittees.length === 0) { alert("請至少選擇一個主辦委員會！"); return; }
+            
+            let unit = document.getElementById('add-unit-select').value;
+            if(unit === 'custom') unit = document.getElementById('add-unit-custom').value || "自訂單位";
+
+            const newId = Date.now();
+            events.push({
+                id: newId,
+                name: document.getElementById('add-name').value,
+                startDate: sDate,
+                endDate: eDate,
+                committee: selectedCommittees.join('、'),
+                subventionUnit: unit,
+                items: document.getElementById('add-items').value,
+                status: "建立活動",
+                fix_request_count: 0,
+                write_off_fix_count: 0,
+                content_modify_count: 0, 
+                history: [{ date: createdDate, actionText: "建立活動", doc: "系統初始建立" }],
+                timeline: [{ date: createdDate, text: "建立活動" }]
+            });
+
+            saveToDatabase(); document.getElementById('newEventForm').reset(); showPage('home');
+        }
+
+        function viewEventDetail(id) {
+            currentViewingEventId = id; const e = events.find(item => item.id === id); const totalDays = calculateDaysTw(e.startDate, e.endDate);
+            document.getElementById('det-name').innerText = e.name;
+            document.getElementById('det-date-days').innerText = `${e.startDate} 至 ${e.endDate} (共 ${totalDays} 天)`;
+            document.getElementById('det-unit').innerText = e.subventionUnit;
+            document.getElementById('det-comm').innerText = e.committee;
+            document.getElementById('det-items').innerText = e.items ? e.items : '無';
+            
+            document.getElementById('det-status').className = `badge ${getStatusStyleClass(e.status)}`;
+            document.getElementById('det-status').innerText = e.status;
+            document.getElementById('statusDateInput').value = getTaiwanTodayStr();
+            
+            document.getElementById('statusSelect').value = "已寄送補助申請";
+            document.getElementById('statusNote').value = "";
+            handleStatusSelectionChange("已寄送補助申請");
+            
+            renderDetailTables(e);
+        }
+
+        function renderDetailTables(e) {
+            applyHistoryAdminButtonVisual();
+            document.querySelectorAll('.history-admin-col').forEach(el => el.style.display = historyAdminModeActive ? 'table-cell' : 'none');
+            document.getElementById('det-doc-table').innerHTML = e.history.map((h, idx) => 
+                `<tr>
+                    <td><strong>${h.date}</strong></td>
+                    <td><strong>${h.actionText}</strong></td>
+                    <td>${h.doc ? h.doc : '---'}</td>
+                    <td class="history-admin-col" style="display: ${historyAdminModeActive ? 'table-cell' : 'none'};">
+                        <button class="btn btn-secondary btn-sm" onclick="editHistory(${idx})">編輯</button>
+                        <button class="btn btn-danger btn-sm" onclick="clearHistory(${idx})">清除</button>
+                    </td>
+                </tr>`
+            ).join('');
+
+            let timelineHtml = '';
+            for(let i = 0; i < e.timeline.length; i++) {
+                let gapHtml = '';
+                if (i < e.timeline.length - 1) {
+                    const daysGap = calculateDaysTw(e.timeline[i+1].date, e.timeline[i].date) - 1;
+                    gapHtml = `<div class="days-gap">⏳ 歷經 ${daysGap} 天</div>`;
+                }
+                timelineHtml += `<li class="timeline-item"><div class="timeline-content"><strong>[民國 ${e.timeline[i].date}]</strong> ${e.timeline[i].text}</div>${gapHtml}</li>`;
+            }
+            document.getElementById('det-timeline').innerHTML = timelineHtml; showPage('detail');
+        }
+
+        // --- 變更核心資料與狀態覆蓋處理 ---
+        function updateEventStatus() {
+            const e = events.find(item => item.id === currentViewingEventId);
+            const selectedAction = document.getElementById('statusSelect').value;
+            const chosenDate = document.getElementById('statusDateInput').value;
+            const docNum = document.getElementById('statusDocNum').value;
+            const noteText = document.getElementById('statusNote').value;
+            if(!validateTaiwanDate(chosenDate)) { alert(`❌ 經辦日期格式錯誤！`); return; }
+
+            let logAddon = ""; 
+            let actionLabel = selectedAction;
+
+            if (selectedAction === "活動修改") {
+                const newName = document.getElementById('mod-name').value.trim();
+                const newSDate = document.getElementById('mod-start-date').value.trim();
+                const newEDate = document.getElementById('mod-end-date').value.trim();
+                const selectEl = document.getElementById('mod-committee');
+                const selectedCommittees = Array.from(selectEl.selectedOptions).map(option => option.value);
+                const newItems = document.getElementById('mod-items').value.trim();
+
+                let changesLog = [];
+
+                if(newName) { e.name = newName; changesLog.push(`名稱修正為「${newName}」`); }
+                if(newSDate || newEDate) {
+                    const finalSDate = newSDate || e.startDate;
+                    const finalEDate = newEDate || e.endDate;
+                    if(!validateTaiwanDate(finalSDate) || !validateTaiwanDate(finalEDate)) { alert("❌ 修改的日期格式不正確！"); return; }
+                    e.startDate = finalSDate; e.endDate = finalEDate;
+                    changesLog.push(`日期修正為 ${finalSDate}~${finalEDate}`);
+                }
+                if(selectedCommittees.length > 0) {
+                    const commStr = selectedCommittees.join('、');
+                    e.committee = commStr;
+                    changesLog.push(`委員會修正為 [${commStr}]`);
+                }
+                if(newItems) { e.items = newItems; changesLog.push(`辦理項目已修正`); }
+
+                if(changesLog.length === 0 && !noteText) {
+                    alert("您選取了活動修改，但未填寫或修正任何欄位內容！");
+                    return;
+                }
+
+                e.content_modify_count = (e.content_modify_count || 0) + 1;
+
+                const changeDesc = changesLog.length > 0 ? changesLog.join('、') : "未明確標示項目變更";
+                const userReason = noteText ? ` (備註說明：${noteText})` : "";
+                
+                actionLabel = `活動修改 (第${e.content_modify_count}次重新送件)`;
+                logAddon = ` [變更內容] ${changeDesc}${userReason}`;
+                
+                e.history.unshift({ date: chosenDate, actionText: actionLabel, doc: docNum ? `發文號：${docNum}${logAddon}` : `重新送件備查${logAddon}` });
+                e.timeline.unshift({ date: chosenDate, text: `${actionLabel}${logAddon}` });
+                
+                e.status = `已核定 (修改${e.content_modify_count})`; 
+
+                document.getElementById('mod-name').value = "";
+                document.getElementById('mod-start-date').value = "";
+                document.getElementById('mod-end-date').value = "";
+                document.getElementById('mod-items').value = "";
+            } else {
+                if (selectedAction === "申請補件") { e.fix_request_count = (e.fix_request_count || 0) + 1; actionLabel = `申請補件 (第${e.fix_request_count}次)`; if(noteText) logAddon = ` [原因：${noteText}]`; } 
+                else if (selectedAction === "核銷補件") { e.write_off_fix_count = (e.write_off_fix_count || 0) + 1; actionLabel = `核銷補件 (第${e.write_off_fix_count}次)`; if(noteText) logAddon = ` [原因：${noteText}]`; }
+
+                e.history.unshift({ date: chosenDate, actionText: actionLabel, doc: docNum ? `文號：${docNum}${logAddon}` : `無登記文號${logAddon}` });
+                e.timeline.unshift({ date: chosenDate, text: `${actionLabel} ${docNum ? '[文號:'+docNum+']' : ''}${logAddon}` });
+                
+                if (selectedAction === "已寄送補助申請") e.status = `${e.subventionUnit} 審核中`;
+                else if (selectedAction === "申請補件") e.status = `${e.subventionUnit} 審核中 (補件)`;
+                else if (selectedAction === "已核定") e.status = "已核定";
+                else if (selectedAction === "寄送核銷") e.status = `${e.subventionUnit} 核銷中`;
+                else if (selectedAction === "核銷補件") e.status = `${e.subventionUnit} 核銷中 (補件)`;
+                else if (selectedAction === "已撥款") e.status = "已撥款";
+                else if (selectedAction === "已匯款至委員會") e.status = "結案";
+                else e.status = selectedAction;
+            }
+
+            saveToDatabase(); viewEventDetail(e.id);
+        }
+
+        function editHistory(idx) {
+            const e = events.find(item => item.id === currentViewingEventId); const h = e.history[idx];
+            if(confirm(`確定要修改此筆紀錄嗎？`)) {
+                const newDate = prompt("請修正民國日期：", h.date); if(newDate && !validateTaiwanDate(newDate)) { alert("❌ 日期錯誤！"); return; }
+                const newDoc = prompt("請修正文號/備註：", h.doc);
+                if(newDate) { h.date = newDate; h.doc = newDoc; saveToDatabase(); viewEventDetail(e.id); }
+            }
+        }
+
+        function clearHistory(idx) {
+            const e = events.find(item => item.id === currentViewingEventId);
+            if(confirm(`確定要清除此筆歷史動作嗎？`)) { 
+                e.history.splice(idx, 1); e.timeline.splice(idx, 1); 
+                if(e.history.length > 0) {
+                    const topAction = e.history[0].actionText;
+                    if(topAction.includes("活動修改")) e.status = `已核定 (修改${e.content_modify_count})`;
+                    else if (topAction.includes("補助申請")) e.status = `${e.subventionUnit} 審核中`;
+                    else if (topAction.includes("申請補件")) e.status = `${e.subventionUnit} 審核中 (補件)`;
+                    else if (topAction === "已核定") e.status = "已核定";
+                    else if (topAction.includes("核銷")) e.status = `${e.subventionUnit} 核銷中`;
+                    else if (topAction.includes("核銷補件")) e.status = `${e.subventionUnit} 核銷中 (補件)`;
+                    else if (topAction === "已撥款" || topAction === "已撥款") e.status = "已撥款";
+                    else if (topAction.includes("匯款至委員會")) e.status = "結案";
+                    else e.status = topAction;
+                } else {
+                    e.status = "建立活動";
+                }
+                saveToDatabase(); viewEventDetail(e.id); 
+            }
+        }
+
+        // ==========================================
+        //  PDF 匯出功能（完美排除指定區塊設計）
+        // ==========================================
+        function exportDetailToPDF() {
+            if(historyAdminModeActive) {
+                historyAdminModeActive = false;
+                const e = events.find(item => item.id === currentViewingEventId);
+                renderDetailTables(e);
+            }
+            const element = document.getElementById('pdf-export-area');
+            const eventName = document.getElementById('det-name').innerText || "活動詳細報告";
+            const options = {
+                margin:       15,
+                filename:     `${eventName}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            const style = document.createElement('style');
+            style.id = "pdf-temp-style";
+            style.innerHTML = `
+                .pdf-exclude { display: none !important; }
+                .days-gap { box-shadow: none !important; border: 1px solid #ddd !important; }
+            `;
+            document.head.appendChild(style);
+
+            html2pdf().set(options).from(element).save().then(() => {
+                const tempStyle = document.getElementById('pdf-temp-style');
+                if (tempStyle) tempStyle.remove();
+            }).catch(err => {
+                console.error("PDF 匯出失敗", err);
+                const tempStyle = document.getElementById('pdf-temp-style');
+                if (tempStyle) tempStyle.remove();
+                alert("🔴 匯出 PDF 發生錯誤。");
+            });
+        }
+
+        window.onload = function() {
+            document.getElementById('currentDate').innerText = `今日： ${getTaiwanTodayStr()}`;
+            loadFromDatabase();
+            applyHomeAdminButtonVisual(); applyCommAdminMasterButtonVisual(); applyBoardAdminMasterButtonVisual();
+            renderCommittees(); renderEventList();
+        };
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
